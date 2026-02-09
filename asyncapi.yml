@@ -1,0 +1,13 @@
+asyncapi: 3.0.0
+info:
+  title: sheetmusic-learner
+  version: 0.0.1
+  description: An application for collaboratively learning sheetmusic.
+  contact:
+    name: Rafael Urben
+    url: https://www.rafaelurben.ch/impressum
+servers:
+  development:
+    protocol: stomp
+    host: localhost:8080
+    pathname: /ws
