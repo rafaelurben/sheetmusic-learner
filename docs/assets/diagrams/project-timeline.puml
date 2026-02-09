@@ -1,0 +1,18 @@
+@startgantt
+'https://plantuml.com/gantt-diagram
+
+Project starts 2026-02-09
+ganttscale weekly
+
+[M1] lasts 2 weeks and is colored in Lavender/LightBlue
+[M1 rev.] lasts 2 weeks and starts at [M1]'s end and is colored in Lavender/LightBlue
+[M2] lasts 2 weeks and starts at [M1 rev.]'s end and is colored in LightPink/LightCoral
+[M2 rev.] lasts 2 weeks and starts at [M2]'s end and is colored in LightPink/LightCoral
+[M3] lasts 2 weeks and starts at [M2 rev.]'s end and is colored in LightGreen/LightYellow
+[M3 rev.] lasts 2 weeks and starts at [M3]'s end and is colored in LightGreen/LightYellow
+[M4] lasts 2 weeks and starts at [M3 rev.]'s end and is colored in LightSkyBlue/LightSteelBlue
+[M4 rev.] lasts 2 weeks and starts at [M4]'s end and is colored in LightSkyBlue/LightSteelBlue
+[M4 depl.] lasts 2 weeks and starts at [M4 rev.]'s end and is colored in LightSkyBlue/LightSteelBlue
+[Present.] lasts 2 weeks and starts at [M4 rev.]'s end and is colored in Yellow/LightYellow
+[Fin. rev.] lasts 2 weeks and starts at [M4 depl.]'s end and is colored in LightGray/LightSlateGray
+@endgantt

@@ -1,19 +1,20 @@
 # sheetmusic-learner requirements
 
-## Overview grouped by category
+## Requirements grouped by category
 
 - Auth
     - [FR-01 — OAuth sign-in](#fr-01--oauth-sign-in)
 - Piece-management
-    - [FR-02 — Upload piece](#fr-02--upload-piece)
+    - [FR-02 — Create piece](#fr-02--create-piece)
+    - [FR-02 — Upload score](#fr-02--upload-score)
     - [FR-03 — Access control (ACL)](#fr-03--access-control-acl)
     - [FR-04 — Timing/metronome info](#fr-04--timingmetronome-info)
-    - [OFR-02 — Track selection](#ofr-02--track-management)
+    - [OFR-02 — Staff management](#ofr-02--staff-management)
 - Player
     - [FR-05 — Page navigation](#fr-05--page-navigation)
     - [FR-06 — Playback with tempo multiplier](#fr-06--playback-with-tempo-multiplier)
     - [FR-07 — Visual cursor](#fr-07--visual-cursor)
-    - [OFR-03 — Persist track preferences](#ofr-03--track-view)
+    - [OFR-03 — Staff view](#ofr-03--staff-view)
     - [OFR-04 — Visual metronome](#ofr-04--visual-metronome)
     - [OFR-05 — Audio metronome](#ofr-05--audio-metronome)
 - Rooms
@@ -31,7 +32,7 @@
 - UI
     - [ONFR-01 — User avatars via Gravatar](#onfr-01--user-avatars-via-gravatar)
 
-## Requirements
+## Mandatory Requirements
 
 ### Functional requirements (FR)
 
@@ -41,35 +42,40 @@ Categories: Auth
 
 A user can sign in using OAuth2/OIDC using a predefined external IdP.
 
-#### FR-02 — Upload piece
+#### FR-02 — Create piece
 
 Categories: Piece-management
 
-A signed-in user can upload sheet music pieces as a PDF. The piece is uploaded to the server and stored for later
-download. The user can also provide metadata about the piece, such as title, composer and instruments/voices. The user
-is the owner of the piece and has full permission to manage it. By default, the piece is private and only visible to the
-owner.
+A signed-in user can create a piece by providing a title and composer. The piece is stored on the server and can be
+managed by the user. By default, the piece is private and only visible to the owner.
+
+#### FR-02 — Upload score
+
+Categories: Piece-management
+
+A signed-in user can upload sheet music scores for a piece as a PDF. The score is uploaded to the server and stored for
+later download. The user is the owner of the score and has full permission to manage it. The score is associated with
+the piece and inherits its visibility (private by default).
 
 #### FR-03 — Access control (ACL)
 
 Categories: Piece-management / Auth
 
-The owner of a piece can define which users can view, edit and manage its uploaded sheet music (Access Control List).
-The owner can also make the piece public, which allows any authenticated user to view it, but only the owner can edit
-and manage it.
+The owner of a piece can define which users can view, edit and manage it (Access Control List). The owner can also make
+the piece public, which allows any authenticated user to view it, but only the owner can edit and manage it.
 
 #### FR-04 — Timing/metronome info
 
 Categories: Piece-management
 
-An authorized user can add timing/metronome information to a piece, defining the separate sections of the piece with
+An authorized user can add timing/metronome information to a score, defining the separate sections of the score with
 their respective tempo.
 
 #### FR-05 — Page navigation
 
 Categories: Player
 
-An authorized user can view pieces page by page and navigate between pages.
+An authorized user can view scores page by page and navigate between pages.
 
 #### FR-06 — Playback with tempo multiplier
 
@@ -82,7 +88,7 @@ the piece and automatically turns pages.
 
 Categories: Player
 
-The player can enable a visual cursor that shows the current position in the piece.
+The player can enable a visual cursor that shows the current position in the score.
 
 #### FR-08 — Create room
 
@@ -113,7 +119,7 @@ Players in the same room can chat with each other.
 
 Categories: Rooms
 
-The owner can navigate the selected piece or start automatic playback. The current position in the piece is synchronized
+The owner can navigate the selected score or start automatic playback. The current position in the score is synchronized
 for all users in the same room.
 
 ### Non-functional requirements (NFR)
@@ -122,20 +128,19 @@ for all users in the same room.
 
 Categories: Data
 
-Uploaded pieces are stored in an S3-compatible bucket.
+Uploaded files are stored in an S3-compatible bucket.
 
 #### NFR-02 — Relational metadata
 
 Categories: Data
 
-Metadata about pieces, rooms and users is stored in a relational database (PostgreSQL).
+Data about pieces, rooms and users is stored in a relational database (PostgreSQL).
 
 #### NFR-03 — WebSockets for sync/chat
 
 Categories: Communication
 
-The player uses WebSockets for chatting and synchronizing the current position in the piece between players in the same
-room.
+The frontend and backend communicate in real-time using WebSockets.
 
 ## Optional requirements
 
@@ -147,18 +152,18 @@ Categories: Rooms
 
 A user can select and change the visibility of a room.
 
-#### OFR-02 — Track management
+#### OFR-02 — Staff management
 
 Categories: Piece-management
 
-Separate tracks of a piece (on the same sheet) can be separately managed. For example, a piece with a
-voice and a piano track can be displayed with only the voice track, only the piano track or both tracks.
+Separate staffs of a score (on the same sheet) can be separately managed. For example, a score with a
+voice and a piano staff can be displayed with only the voice staff, only the piano staff or both staffs.
 
-#### OFR-03 — Track view
+#### OFR-03 — Staff view
 
 Categories: Player
 
-Every user can select the track(s) they want to see for a specific piece. The selected tracks are stored in the user's
+Every user can select the staff(s) they want to see for a specific piece. The selected staffs are stored in the user's
 preferences and applied whenever the user views that piece.
 
 #### OFR-04 — Visual metronome
@@ -181,3 +186,16 @@ Categories: UI
 
 Users see avatars of other users in the same room. The avatars are provided by Gravatar based on the users' email
 addresses.
+
+## Dictionary
+
+| DE       | EN          | Description                                               |
+|----------|-------------|-----------------------------------------------------------|
+| Stück    | Piece       | A piece of musical work.                                  |
+| Partitur | Score       | The sheet music of a piece.                               |
+| Zeile    | Staff/Stave | A single instrument's part in a score (en: [1] / de: [2]) |
+| Raum     | Room        | A virtual place where collaboration happens.              |
+
+[1]: https://en.wikipedia.org/wiki/Staff_(music)#Ensemble_staves
+
+[2]: https://de.wikipedia.org/wiki/Notensystem_(Musik)
