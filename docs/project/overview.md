@@ -19,9 +19,11 @@ tempo control. The application is designed to make collaborative music practice 
 - Backend:
   - Spring Boot
     - STOMP support
-    - ACL and authentication/authorization
+    - Spring Security
+      - OAuth2/OIDC Authentication/authorization
     - S3 client
     - PostgreSQL (metadata storage)
+  - Liquibase (database migrations)
 - External services:
   - S3-compatible storage
   - External IdP for OAuth2/OIDC authentication

@@ -1,0 +1,105 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+' configuration
+hide circle
+skinparam linetype ortho
+
+' User model
+entity "User" as user {
+  id: uuid
+  --
+  first_name: varchar
+  last_name: varchar
+  email: varchar
+  avatar_url: varchar
+  ..
+  timestamp_created: datetime
+  timestamp_updated: datetime
+}
+
+' Piece model
+entity "Piece" as piece {
+  id: uuid
+  --
+  title: varchar
+  composer: varchar
+  difficulty: varchar
+  bpm_range: varchar
+  is_public: boolean
+  ..
+  timestamp_created: datetime
+  timestamp_updated: datetime
+}
+
+' ScoreSheet model
+entity "ScoreSheet" as scoresheet {
+  id: uuid
+  --
+  piece_id: uuid
+  ..
+  position: number
+  title: varchar
+  image_url: varchar
+  ..
+  timestamp_created: datetime
+  timestamp_updated: datetime
+}
+
+' Section model
+entity "Section" as section {
+  id: uuid
+  --
+  piece_id: uuid
+  score_sheet_id: uuid
+  ..
+  position: number
+  time_signature_numerator: number
+  time_signature_denominator: number
+  bar_count: number
+  bpm: number
+  ..
+  timestamp_created: datetime
+  timestamp_updated: datetime
+}
+
+' PiecePermission model
+entity "PiecePermission" as piecepermission {
+  id: uuid
+  --
+  piece_id: uuid
+  user_id: uuid
+  ..
+  perm: varchar (READER, EDITOR, OWNER)
+  ..
+  timestamp_created: datetime
+  timestamp_updated: datetime
+}
+
+' Room model
+entity "Room" as room {
+  id: uuid
+  --
+  owner_id: uuid
+  piece_id: uuid
+  ..
+  title: varchar
+  playing: boolean
+  last_play_section_position: number
+  last_play_timestamp: datetime
+  tempo_multiplier: float
+  ..
+  timestamp_created: datetime
+  timestamp_updated: datetime
+}
+
+' Relationships
+scoresheet }o--|| piece
+section }o--|| piece
+section }o--|| scoresheet
+piecepermission }o--|| user
+piecepermission }--|| piece
+room }o--|| user
+room }o--|| piece
+
+@enduml
