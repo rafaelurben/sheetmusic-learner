@@ -3,7 +3,7 @@
 ## Project journal
 
 - 2026-02-09: Initial project planning. Repo created, requirements and project overview documents created.
-- 2026-02-13: Update requirements, add use-case diagrams
+- 2026-02-13: Update requirements, add use-case diagrams, add basic communication protocol.
 
 ## Project milestones
 

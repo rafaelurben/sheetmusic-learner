@@ -40,6 +40,7 @@ rectangle "Pieces" {
 
 rectangle "Rooms" {
   usecase UC_GetRooms << REST >> as "Get rooms"
+  usecase UC_GetRoom << REST >> as "Get room"
   usecase UC_CreateRoom << REST >> as "Create room"
   usecase UC_JoinRoom as "Join room"
 
@@ -59,6 +60,7 @@ AU -- UC_GetPieces
 AU -- UC_GetPiece
 AU -- UC_CreatePiece
 AU -- UC_GetRooms
+AU -- UC_GetRoom
 AU -- UC_CreateRoom
 AU -- UC_JoinRoom
 

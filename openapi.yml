@@ -1,0 +1,11 @@
+openapi: 3.1.0
+info:
+  title: sheetmusic-learner
+  version: 0.0.1
+  description: An application for collaboratively learning sheetmusic.
+  contact:
+    name: Rafael Urben
+    url: https://www.rafaelurben.ch/impressum
+servers:
+  - url: 'http://localhost:8080/api/'
+paths: { }
