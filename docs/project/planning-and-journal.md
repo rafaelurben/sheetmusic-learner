@@ -1,12 +1,13 @@
-# Project Planning and Journal
+# sheetmusic-learner project planning and journal
 
 ## Project journal
 
 - 2026-02-09: Initial project planning. Repo created, requirements and project overview documents created.
+- 2026-02-13: Update requirements, add use-case diagrams
 
 ## Project milestones
 
-![Project timeline](./assets/diagrams/project-timeline.png)
+![Project timeline](../assets/diagrams/project-timeline.svg)
 
 ### Milestone 1
 

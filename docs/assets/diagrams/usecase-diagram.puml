@@ -1,0 +1,92 @@
+@startuml
+' https://plantuml.com/use-case-diagram
+left to right direction
+
+skinparam usecase {
+    BorderThickness 1.5
+    BorderColor Black
+
+    BackgroundColor DarkSeaGreen
+
+    BackgroundColor<< REST >> YellowGreen
+}
+
+actor "Authenticated User" as AU
+actor "Piece Owner" as PO
+actor "Piece Editor" as PE
+actor "Room Owner" as RO
+actor "Room Visitor" as RV
+
+rectangle "General" {
+  usecase UC_GetUser as "Get user"
+}
+
+rectangle "Pieces" {
+  usecase UC_GetPieces << REST >> as "Get pieces"
+  usecase UC_GetPiece << REST >> as "Get piece"
+  usecase UC_CreatePiece << REST >> as "Create piece"
+
+  usecase UC_TogglePublic as "Toggle public status"
+  usecase UC_AddUserPerm as "Add user permission"
+  usecase UC_RemoveUserPerm as "Remove user permission"
+
+  usecase UC_EditMetadata as "Edit piece metadata"
+  usecase UC_UploadScore << REST >> as "Upload score"
+  usecase UC_AddSection as "Add section"
+  usecase UC_EditSection as "Edit section"
+  usecase UC_RemoveSection as "Remove section"
+  usecase UC_MoveSection as "Move section"
+}
+
+rectangle "Rooms" {
+  usecase UC_GetRooms << REST >> as "Get rooms"
+  usecase UC_CreateRoom << REST >> as "Create room"
+  usecase UC_JoinRoom as "Join room"
+
+  usecase UC_UpdateRoomMeta as "Update room metadata"
+  usecase UC_ChangeSelected as "Change selected piece"
+  usecase UC_Play as "Play"
+  usecase UC_Pause as "Pause"
+  usecase UC_ChangeCurrentPosition as "Select page"
+
+  usecase UC_LeaveRoom as "Leave room"
+  usecase UC_SendChat as "Send chat message"
+}
+
+' Authenticated user actions
+AU -- UC_GetUser
+AU -- UC_GetPieces
+AU -- UC_GetPiece
+AU -- UC_CreatePiece
+AU -- UC_GetRooms
+AU -- UC_CreateRoom
+AU -- UC_JoinRoom
+
+' Piece owner actions
+PO -- UC_TogglePublic
+PO -- UC_AddUserPerm
+PO -- UC_RemoveUserPerm
+
+' Piece editor actions
+PE -- UC_EditMetadata
+PE -- UC_UploadScore
+PE -- UC_AddSection
+PE -- UC_EditSection
+PE -- UC_RemoveSection
+PE -- UC_MoveSection
+
+' Room owner actions
+RO -- UC_UpdateRoomMeta
+RO -- UC_ChangeSelected
+RO -- UC_Play
+RO -- UC_Pause
+RO -- UC_ChangeCurrentPosition
+RO -- UC_LeaveRoom
+RO -- UC_SendChat
+
+' Room visitor actions
+RV -- UC_LeaveRoom
+RV -- UC_SendChat
+
+
+@enduml
