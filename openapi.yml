@@ -298,9 +298,6 @@ components:
         id:
           type: string
           format: uuid
-        piece_id:
-          type: string
-          format: uuid
         position:
           type: integer
         title:
@@ -308,7 +305,7 @@ components:
         image_url:
           type: string
           format: uri
-      required: [ id, piece_id, position, title, image_url ]
+      required: [ id, position, title, image_url ]
 
     SectionDto:
       type: object
@@ -316,29 +313,19 @@ components:
         id:
           type: string
           format: uuid
-        piece_id:
-          type: string
-          format: uuid
         score_sheet_id:
           type: string
           format: uuid
-      required: [ id, piece_id, score_sheet_id ]
+      required: [ id, score_sheet_id ]
 
     PiecePermissionDto:
       type: object
       properties:
-        id:
-          type: string
-          format: uuid
-        piece_id:
-          type: string
-          format: uuid
-        user_id:
-          type: string
-          format: uuid
+        user:
+          $ref: '#/components/schemas/UserDto'
         permission_type:
           $ref: '#/components/schemas/PermissionType'
-      required: [ id, piece_id, user_id, permission_type ]
+      required: [ user, permission_type ]
 
     RoomDto:
       type: object
