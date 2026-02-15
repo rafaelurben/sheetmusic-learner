@@ -17,7 +17,7 @@ public class SecurityConfig {
     http.oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/api/public/**")
+                auth.requestMatchers("/api/v1/public/frontend-config")
                     .permitAll()
                     .requestMatchers("/actuator/**")
                     .permitAll()

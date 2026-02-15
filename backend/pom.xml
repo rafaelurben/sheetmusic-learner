@@ -82,6 +82,18 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- OpenAPI/Swagger dependencies -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+            <version>2.2.30</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.2.6</version>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -151,6 +163,40 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <!-- OpenAPI Generator -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>7.14.0</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/../openapi.yml</inputSpec>
+                            <generatorName>spring</generatorName>
+                            <modelPackage>ch.rafaelurben.sheetmusiclearner.backend.api.dto</modelPackage>
+                            <apiPackage>ch.rafaelurben.sheetmusiclearner.backend.api.controller</apiPackage>
+                            <addCompileSourceRoot>true</addCompileSourceRoot>
+                            <configOptions>
+                                <groupId>ch.rafaelurben.sheetmusiclearner</groupId>
+                                <artifactId>backend-api-spec</artifactId>
+                                <interfaceOnly>true</interfaceOnly>
+                                <skipDefaultInterface>true</skipDefaultInterface>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <dateLibrary>java8</dateLibrary>
+                                <useTags>true</useTags>
+                                <useResponseEntity>false</useResponseEntity>
+                                <useSwaggerUI>false</useSwaggerUI>
+                                <generateBuilders>true</generateBuilders>
+                                <configPackage>ch.rafaelurben.sheetmusiclearner.backend.api.config</configPackage>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Formatting -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
@@ -171,8 +217,8 @@
                     </java>
                     <yaml>
                         <includes>
-                            <include>**/*.yml</include>
-                            <include>**/*.yaml</include>
+                            <include>src/**/*.yml</include>
+                            <include>src/**/*.yaml</include>
                         </includes>
                         <trimTrailingWhitespace/>
                         <endWithNewline/>
@@ -184,7 +230,8 @@
                     <formats>
                         <format>
                             <includes>
-                                <include>**/*.xml</include>
+                                <include>src/**/*.xml</include>
+                                <include>pom.xml</include>
                             </includes>
                             <trimTrailingWhitespace/>
                             <endWithNewline/>
@@ -200,7 +247,7 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
-                        <phase>compile</phase>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
             </plugin>
