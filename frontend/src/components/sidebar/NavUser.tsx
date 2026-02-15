@@ -21,13 +21,13 @@ import { useAuth } from "react-oidc-context";
 
 export function NavUser({
   user,
-}: {
+}: Readonly<{
   user: {
     name: string;
     email: string;
     avatar: string;
   };
-}) {
+}>) {
   const { isMobile } = useSidebar();
   const auth = useAuth();
 
@@ -59,7 +59,7 @@ export function NavUser({
           >
             <DropdownMenuItem
               variant="destructive"
-              onClick={() => void auth.removeUser()}
+              onClick={() => void auth.signoutRedirect()}
             >
               <LogOutIcon />
               Log out

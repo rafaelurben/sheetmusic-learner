@@ -6,6 +6,7 @@ import { AuthProvider, type AuthProviderProps } from "react-oidc-context";
 import { BrowserRouter } from "react-router-dom";
 import { loadConfig } from "@/config";
 import { TooltipProvider } from "@/shadcn/components/ui/tooltip.tsx";
+import { WebStorageStateStore } from "oidc-client-ts";
 
 async function bootstrap() {
   const appConfig = await loadConfig();
@@ -18,6 +19,7 @@ async function bootstrap() {
     onSigninCallback: () => {
       window.history.replaceState({}, document.title, "/");
     },
+    userStore: new WebStorageStateStore({ store: window.localStorage }),
   };
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -34,4 +36,4 @@ async function bootstrap() {
   );
 }
 
-void bootstrap();
+await bootstrap();
