@@ -5,7 +5,7 @@ let config: AppConfig | null = null;
 export async function loadConfig(): Promise<AppConfig> {
   if (config) return config;
 
-  const response = await fetch("/config.json", {
+  const response = await fetch("/api/v1/public/frontend-config", {
     cache: "no-store",
   });
 
