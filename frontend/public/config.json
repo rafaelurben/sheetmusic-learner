@@ -1,0 +1,7 @@
+{
+  "oidc": {
+    "issuer": "https://auth.cloud.rafaelurben.ch/application/o/sheetmusic-learner/",
+    "clientId": "9hqglmXcUaCUv1ZyRWe2yFaELwlrrqO4UHZ1PNt8",
+    "scope": "openid profile email"
+  }
+}
