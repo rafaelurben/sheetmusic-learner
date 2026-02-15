@@ -13,8 +13,7 @@ export async function loadConfig(): Promise<AppConfig> {
     throw new Error("Failed to load runtime config.");
   }
 
-  const json = await response.json();
-  config = AppConfigSchema.parse(json);
+  config = AppConfigSchema.parse(await response.json());
 
   return config;
 }

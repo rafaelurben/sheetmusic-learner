@@ -14,7 +14,7 @@ import {
 } from "@/shadcn/components/ui/field.tsx";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 
-export default function Unauthenticated() {
+export default function AppUnauthenticated() {
   const auth = useAuth();
 
   return (
