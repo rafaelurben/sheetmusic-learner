@@ -16,38 +16,13 @@ import { NavUser } from "@/components/sidebar/NavUser.tsx";
 import { useAuth } from "react-oidc-context";
 import { Link, NavLink } from "react-router-dom";
 
-const dummyPieces = [
-  {
-    id: "1",
-    title: "Piece 1",
-  },
-  {
-    id: "2",
-    title: "Piece 2",
-  },
-  {
-    id: "3",
-    title: "Piece 3",
-  },
-];
-
-const dummyRooms = [
-  {
-    id: "1",
-    title: "Room 1",
-  },
-  {
-    id: "2",
-    title: "Room 2",
-  },
-  {
-    id: "3",
-    title: "Room 3",
-  },
-];
+import { useMainStore } from "@/zustand/main/mainStoreContext.tsx";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const auth = useAuth();
+  const mainStore = useMainStore();
+  const pieces = Object.values(mainStore.pieces);
+  const rooms = Object.values(mainStore.rooms);
 
   return (
     <Sidebar variant="sidebar" {...props}>
@@ -72,7 +47,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupLabel>Pieces</SidebarGroupLabel>
           <SidebarMenu className="gap-2">
-            {dummyPieces.map((piece) => (
+            {pieces.map((piece) => (
               <SidebarMenuItem key={piece.id}>
                 <SidebarMenuButton asChild>
                   <NavLink to={`/pieces/${piece.id}`} className="font-medium">
@@ -86,7 +61,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarGroup>
           <SidebarGroupLabel>Rooms</SidebarGroupLabel>
           <SidebarMenu className="gap-2">
-            {dummyRooms.map((room) => (
+            {rooms.map((room) => (
               <SidebarMenuItem key={room.id}>
                 <SidebarMenuButton asChild>
                   <NavLink to={`/rooms/${room.id}`} className="font-medium">
