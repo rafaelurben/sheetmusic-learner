@@ -5,6 +5,11 @@
 - 2026-02-09: Initial project planning. Repo created, requirements and project overview documents created.
 - 2026-02-13: Update requirements, add use-case diagrams, add basic communication protocol, add database diagram.
 - 2026-02-22: Update requirements, update communication protocol, add data structure, add mockups.
+- 2026-02-09 - 2026-02-22: Preparations for milestone 2
+  - Setup basic frontend project with React, TypeScript, React Router, Shadcn UI, Tailwind CSS
+  - Setup basic backend project with Spring Boot, Java, PostgreSQL
+  - Setup OpenAPI generator to generate API client and server stubs
+  - Implement login/authentication
 
 ## Project milestones
 
