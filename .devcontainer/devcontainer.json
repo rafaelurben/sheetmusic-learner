@@ -14,6 +14,9 @@
       "installGradle": false
     }
   },
+  "forwardPorts": [
+    5173
+  ],
   "customizations": {
     "jetbrains": {
       "backend": "IntelliJ"
