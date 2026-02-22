@@ -7,12 +7,26 @@ info:
     name: Rafael Urben
     url: https://www.rafaelurben.ch/impressum
 servers:
-  - url: 'http://localhost:8080/api/'
+  - url: 'http://localhost:8080/'
 
 paths:
-  /v1/users/me:
+  /api/v1/public/frontend-config:
+    get:
+      summary: Get frontend configuration
+      operationId: getFrontendConfig
+      tags:
+        - public
+      responses:
+        '200':
+          description: Frontend configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FrontendConfigDto'
+  /api/v1/users/me:
     get:
       summary: Get the current user
+      operationId: getCurrentUser
       tags:
         - users
       responses:
@@ -25,9 +39,10 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /v1/pieces:
+  /api/v1/pieces:
     get:
       summary: Get all accessible pieces
+      operationId: getPieces
       tags:
         - pieces
       responses:
@@ -43,6 +58,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
     post:
       summary: Create a new piece
+      operationId: createPiece
       tags:
         - pieces
       requestBody:
@@ -63,9 +79,10 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /v1/pieces/{id}:
+  /api/v1/pieces/{id}:
     get:
       summary: Get a specific piece
+      operationId: getPiece
       tags:
         - pieces
       parameters:
@@ -99,9 +116,10 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /v1/pieces/{id}/score/upload:
+  /api/v1/pieces/{id}/score/upload:
     post:
       summary: Upload new score sheets for a piece
+      operationId: uploadScoreSheets
       tags:
         - pieces
       parameters:
@@ -136,9 +154,10 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /v1/rooms:
+  /api/v1/rooms:
     get:
       summary: Get all accessible rooms
+      operationId: getRooms
       tags:
         - rooms
       responses:
@@ -154,6 +173,7 @@ paths:
           $ref: '#/components/responses/Unauthorized'
     post:
       summary: Create a new room
+      operationId: createRoom
       tags:
         - rooms
       requestBody:
@@ -174,9 +194,10 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /v1/rooms/{id}:
+  /api/v1/rooms/{id}:
     get:
       summary: Get a specific room
+      operationId: getRoom
       tags:
         - rooms
       parameters:
@@ -257,6 +278,20 @@ components:
           type: integer
         message:
           type: string
+
+    FrontendConfigDto:
+      type: object
+      properties:
+        oidc:
+          type: object
+          properties:
+            issuer:
+              type: string
+              format: uri
+            clientId:
+              type: string
+            scope:
+              type: string
 
     UserDto:
       type: object

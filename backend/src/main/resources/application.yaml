@@ -1,0 +1,14 @@
+app:
+  oidc:
+    client-id: 9hqglmXcUaCUv1ZyRWe2yFaELwlrrqO4UHZ1PNt8
+    issuer: https://auth.cloud.rafaelurben.ch/application/o/sheetmusic-learner/
+    scope: openid profile email
+
+spring:
+  application:
+    name: sheetmusic-learner-backend
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${app.oidc.issuer}
