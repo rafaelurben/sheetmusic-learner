@@ -23,31 +23,32 @@ requirements and are not listed separately to avoid redundancy.
     - [OFR-03 — Edit score](#ofr-03--edit-score)
     - [OFR-04 — Repeat sections](#ofr-04--repeat-sections)
 - Player
-  - [FR-09 — Page navigation](#fr-09--page-navigation)
-  - [FR-10 — Playback with tempo multiplier](#fr-10--playback-with-tempo-multiplier)
-  - [FR-11 — Visual cursor](#fr-11--visual-cursor)
+    - [FR-09 — Page navigation](#fr-09--page-navigation)
+    - [FR-10 — Playback with tempo multiplier](#fr-10--playback-with-tempo-multiplier)
+    - [FR-11 — Visual cursor](#fr-11--visual-cursor)
     - [OFR-05 — Staff view](#ofr-05--staff-view)
     - [OFR-06 — Visual metronome](#ofr-06--visual-metronome)
     - [OFR-07 — Audio metronome](#ofr-07--audio-metronome)
+    - [OFR-08 — Full-screen view](#ofr-08--full-screen-view)
 - Rooms
-  - [FR-12 — Create room](#fr-12--create-room)
-  - [FR-13 — Share piece to room](#fr-13--share-piece-to-room)
-  - [FR-14 — List, join and leave rooms](#fr-14--list-join-and-leave-rooms)
-  - [FR-15 — Room chat](#fr-15--room-chat)
-  - [FR-16 — Owner control & sync](#fr-16--owner-control--sync)
+    - [FR-12 — Create room](#fr-12--create-room)
+    - [FR-13 — Share piece to room](#fr-13--share-piece-to-room)
+    - [FR-14 — List, join and leave rooms](#fr-14--list-join-and-leave-rooms)
+    - [FR-15 — Room chat](#fr-15--room-chat)
+    - [FR-16 — Owner control & sync](#fr-16--owner-control--sync)
     - [OFR-01 — Change room visibility](#ofr-01--change-room-visibility)
 - General/Other
-  - [FR-17 — OAuth sign-in](#fr-17--oauth-sign-in)
+    - [FR-17 — OAuth sign-in](#fr-17--oauth-sign-in)
     - [NFR-01 — File storage](#nfr-01--file-store)
     - [NFR-02 — Data storage](#nfr-02--data-store)
     - [NFR-03 — Realtime communication](#nfr-03--realtime-communication)
     - [NFR-04 — Responsive design](#nfr-04--responsive-design)
-  - [NFR-05 — Audit-Logging](#nfr-05--audit-logging)
+    - [NFR-05 — Audit-Logging](#nfr-05--audit-logging)
     - [ONFR-01 — User avatars via Gravatar](#onfr-01--user-avatars-via-gravatar)
 - Qualitative requirements (QR)
-  - [QR-01 — Maintainability: No redundancy](#qr-01--maintainability-no-redundancy)
-  - [QR-02 — Maintainability: Project structure](#qr-02--maintainability-project-structure)
-  - [QR-03 — Testability: Loose coupling](#qr-03--testability-loose-coupling)
+    - [QR-01 — Maintainability: No redundancy](#qr-01--maintainability-no-redundancy)
+    - [QR-02 — Maintainability: Project structure](#qr-02--maintainability-project-structure)
+    - [QR-03 — Testability: Loose coupling](#qr-03--testability-loose-coupling)
 
 ## Mandatory Requirements
 
@@ -246,6 +247,12 @@ The user can enable a visual metronome that shows the current beat and tempo.
 Categories: Player
 
 The user can enable an audio metronome that plays a click sound on the current beat.
+
+#### OFR-08 — Full-screen view
+
+Categories: Player
+
+The user can optionally display the player in full-screen mode.
 
 ### Optional non-functional requirements (ONFR)
 
