@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Pre-Commit checks" type="CompoundRunConfigurationType">
+    <toRun name="backend [spotless:apply]" type="MavenRunConfiguration" />
+    <toRun name="frontend: fix" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

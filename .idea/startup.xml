@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectStartupSharedConfiguration">
+    <configurations>
+      <configuration id="Spring Boot.BackendApplication" name="BackendApplication" />
+      <configuration id="npm.frontend: dev" name="frontend: dev" />
+    </configurations>
+  </component>
+</project>
