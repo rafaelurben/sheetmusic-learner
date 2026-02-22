@@ -18,7 +18,7 @@ actor "Room Owner" as RO
 actor "Room Visitor" as RV
 
 rectangle "General" {
-  usecase UC_GetUser as "Get user"
+  usecase UC_GetUser << REST >> as "Get user"
 }
 
 rectangle "Pieces" {

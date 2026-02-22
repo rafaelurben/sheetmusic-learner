@@ -14,10 +14,12 @@ Endpoint base: `/api/v1/`
 | GET    | `pieces`                   | Get all accessible pieces. |
 | POST   | `pieces`                   | Create a new piece.        |
 | GET    | `pieces/{id}`              | Get a specific piece.      |
+| DELETE | `pieces/{id}`              | Delete a specific piece.   |
 | POST   | `pieces/{id}/score/upload` | Upload new score sheets.   |
 | GET    | `rooms`                    | Get all accessible rooms   |
 | POST   | `rooms`                    | Create a new room.         |
 | GET    | `rooms/{id}`               | Get a specific room.       |
+| DELETE | `rooms/{id}`               | Delete a specific room.    |
 
 A detailed description of the REST API endpoints can be found in the [OpenAPI document](../openapi.yml).
 

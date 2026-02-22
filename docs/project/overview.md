@@ -18,7 +18,7 @@ tempo control. The application is designed to make collaborative music practice 
   - STOMP.js (WebSocket communication)
 - Backend:
   - Spring Boot
-    - STOMP support
+    - STOMP (over WebSocket)
     - Spring Security
       - OAuth2/OIDC Authentication/authorization
     - S3 client
@@ -27,3 +27,9 @@ tempo control. The application is designed to make collaborative music practice 
 - External services:
   - S3-compatible storage
   - External IdP for OAuth2/OIDC authentication
+- Other:
+  - Docker (containerization)
+  - GitLab CI/CD (continuous integration and deployment)
+  - Git (version control)
+  - PlantUML (diagrams)
+  - OpenAPI Generator

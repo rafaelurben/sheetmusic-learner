@@ -83,6 +83,21 @@ paths:
           $ref: '#/components/responses/NotFound'
         '401':
           $ref: '#/components/responses/Unauthorized'
+    delete:
+      summary: Delete a specific piece
+      tags:
+        - pieces
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
   /v1/pieces/{id}/score/upload:
     post:
@@ -179,6 +194,21 @@ paths:
           $ref: '#/components/responses/NotFound'
         '401':
           $ref: '#/components/responses/Unauthorized'
+    delete:
+      summary: Delete a specific room
+      tags:
+        - rooms
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
 
 components:
   parameters:
@@ -216,6 +246,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ErrorDto'
+    NoContent:
+      description: No content
 
   schemas:
     ErrorDto:

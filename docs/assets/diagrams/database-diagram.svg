@@ -1,0 +1,323 @@
+<svg xmlns="http://www.w3.org/2000/svg" contentStyleType="text/css"
+     data-diagram-type="CLASS" height="903px" preserveAspectRatio="none"
+     style="width:827px;height:903px;background:#FFFFFF;" version="1.1" viewBox="0 0 827 903" width="827px"
+     zoomAndPan="magnify">
+    <defs/>
+    <g><!--class user-->
+        <g class="entity" data-entity="user" data-source-line="8" data-uid="ent0002" id="entity_user">
+            <rect fill="#F1F1F1" height="182.9688" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="196.4404" x="153.5" y="704.5"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="29.5586"
+                  x="236.9409" y="724.6074">User
+            </text>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="154.5" x2="348.9404" y1="733.1211" y2="733.1211"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45.1445"
+                  x="159.5" y="752.2285">id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;" x1="154.5" x2="348.9404" y1="759.7422" y2="759.7422"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119.8203"
+                  x="159.5" y="778.8496">first_name: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119.0547"
+                  x="159.5" y="797.4707">last_name: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="87.917"
+                  x="159.5" y="816.0918">email: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="116.7168"
+                  x="159.5" y="834.7129">avatar_url: varchar
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="154.5" x2="348.9404" y1="842.2266"
+                  y2="842.2266"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="180.5303"
+                  x="159.5" y="861.334">timestamp_created: datetime
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184.4404"
+                  x="159.5" y="879.9551">timestamp_updated: datetime
+            </text>
+        </g><!--class piece-->
+        <g class="entity" data-entity="piece" data-source-line="21" data-uid="ent0003" id="entity_piece">
+            <rect fill="#F1F1F1" height="201.5898" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="196.4404" x="398.5" y="695"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="35.0205"
+                  x="479.21" y="715.1074">Piece
+            </text>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="399.5" x2="593.9404" y1="723.6211" y2="723.6211"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45.1445"
+                  x="404.5" y="742.7285">id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;" x1="399.5" x2="593.9404" y1="750.2422" y2="750.2422"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76.248"
+                  x="404.5" y="769.3496">title: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="115.9307"
+                  x="404.5" y="787.9707">composer: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="105.0342"
+                  x="404.5" y="806.5918">difficulty: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="125.2891"
+                  x="404.5" y="825.2129">bpm_range: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="112.082"
+                  x="404.5" y="843.834">is_public: boolean
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="399.5" x2="593.9404" y1="851.3477"
+                  y2="851.3477"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="180.5303"
+                  x="404.5" y="870.4551">timestamp_created: datetime
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184.4404"
+                  x="404.5" y="889.0762">timestamp_updated: datetime
+            </text>
+        </g><!--class scoresheet-->
+        <g class="entity" data-entity="scoresheet" data-source-line="35" data-uid="ent0004" id="entity_scoresheet">
+            <rect fill="#F1F1F1" height="190.9688" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="196.4404" x="525.5" y="416"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="73.1582"
+                  x="587.1411" y="436.1074">ScoreSheet
+            </text>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="526.5" x2="720.9404" y1="444.6211" y2="444.6211"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45.1445"
+                  x="531.5" y="463.7285">id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;" x1="526.5" x2="720.9404" y1="471.2422" y2="471.2422"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86.3994"
+                  x="531.5" y="490.3496">piece_id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="526.5" x2="720.9404" y1="497.8633"
+                  y2="497.8633"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103.5029"
+                  x="531.5" y="516.9707">position: number
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76.248"
+                  x="531.5" y="535.5918">title: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="115.9375"
+                  x="531.5" y="554.2129">image_url: varchar
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="526.5" x2="720.9404" y1="561.7266"
+                  y2="561.7266"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="180.5303"
+                  x="531.5" y="580.834">timestamp_created: datetime
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184.4404"
+                  x="531.5" y="599.4551">timestamp_updated: datetime
+            </text>
+        </g><!--class section-->
+        <g class="entity" data-entity="section" data-source-line="49" data-uid="ent0005" id="entity_section">
+            <rect fill="#F1F1F1" height="321.3164" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="244.6885" x="576" y="7"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="46.6963"
+                  x="674.9961" y="27.1074">Section
+            </text>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="577" x2="819.6885" y1="35.6211" y2="35.6211"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45.1445"
+                  x="582" y="54.7285">id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;" x1="577" x2="819.6885" y1="62.2422" y2="62.2422"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86.3994"
+                  x="582" y="81.3496">piece_id: uuid
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="129.1992"
+                  x="582" y="99.9707">score_sheet_id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="577" x2="819.6885" y1="107.4844"
+                  y2="107.4844"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="103.5029"
+                  x="582" y="126.5918">position: number
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="218.668"
+                  x="582" y="145.2129">time_signature_numerator: number
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="232.6885"
+                  x="582" y="163.834">time_signature_denominator: number
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="117.5166"
+                  x="582" y="182.4551">bar_count: number
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="82.4824"
+                  x="582" y="201.0762">bpm: number
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="79.3857"
+                  x="582" y="219.6973">pos_x1: float
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="79.3857"
+                  x="582" y="238.3184">pos_y1: float
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="79.3857"
+                  x="582" y="256.9395">pos_x2: float
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="79.3857"
+                  x="582" y="275.5605">pos_y2: float
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="577" x2="819.6885" y1="283.0742"
+                  y2="283.0742"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="180.5303"
+                  x="582" y="302.1816">timestamp_created: datetime
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184.4404"
+                  x="582" y="320.8027">timestamp_updated: datetime
+            </text>
+        </g><!--class piecepermission-->
+        <g class="entity" data-entity="piecepermission" data-source-line="70" data-uid="ent0006"
+           id="entity_piecepermission">
+            <rect fill="#F1F1F1" height="172.3477" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="216.6338" x="7" y="425.5"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="104.2617"
+                  x="63.186" y="445.6074">PiecePermission
+            </text>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="8" x2="222.6338" y1="454.1211" y2="454.1211"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45.1445"
+                  x="13" y="473.2285">id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;" x1="8" x2="222.6338" y1="480.7422" y2="480.7422"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86.3994"
+                  x="13" y="499.8496">piece_id: uuid
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="80.165"
+                  x="13" y="518.4707">user_id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="8" x2="222.6338" y1="525.9844"
+                  y2="525.9844"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="204.6338"
+                  x="13" y="545.0918">permission_type: varchar (enum)
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="8" x2="222.6338" y1="552.6055"
+                  y2="552.6055"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="180.5303"
+                  x="13" y="571.7129">timestamp_created: datetime
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184.4404"
+                  x="13" y="590.334">timestamp_updated: datetime
+            </text>
+        </g><!--class room-->
+        <g class="entity" data-entity="room" data-source-line="83" data-uid="ent0007" id="entity_room">
+            <rect fill="#F1F1F1" height="246.832" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="230.6885" x="259" y="388"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="37.3447"
+                  x="355.6719" y="408.1074">Room
+            </text>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="260" x2="488.6885" y1="416.6211" y2="416.6211"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="45.1445"
+                  x="265" y="435.7285">id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;" x1="260" x2="488.6885" y1="443.2422" y2="443.2422"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="91.0615"
+                  x="265" y="462.3496">owner_id: uuid
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="86.3994"
+                  x="265" y="480.9707">piece_id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="260" x2="488.6885" y1="488.4844"
+                  y2="488.4844"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="76.248"
+                  x="265" y="507.5918">title: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="101.9717"
+                  x="265" y="526.2129">playing: boolean
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="218.6885"
+                  x="265" y="544.834">last_play_section_position: number
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="189.0889"
+                  x="265" y="563.4551">last_play_timestamp: datetime
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="136.9512"
+                  x="265" y="582.0762">tempo_multiplier: float
+            </text>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="260" x2="488.6885" y1="589.5898"
+                  y2="589.5898"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="180.5303"
+                  x="265" y="608.6973">timestamp_created: datetime
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="184.4404"
+                  x="265" y="627.3184">timestamp_updated: datetime
+            </text>
+        </g><!--link scoresheet to piece-->
+        <g class="link" data-entity-1="scoresheet" data-entity-2="piece" data-source-line="100" data-uid="lnk8"
+           id="link_scoresheet_piece">
+            <path codeLine="100" d="M560,625.03 C560,653.28 560,658.29 560,686.88" fill="none" id="scoresheet-piece"
+                  style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="560" x2="554" y1="615.03" y2="607.03"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="560" x2="566" y1="615.03" y2="607.03"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="560" x2="560" y1="615.03" y2="607.03"/>
+            <ellipse cx="560" cy="621.03" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="564" x2="556" y1="690.88" y2="690.88"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="564" x2="556" y1="687.88" y2="687.88"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="560" x2="560" y1="686.88" y2="694.88"/>
+        </g><!--link section to piece-->
+        <g class="link" data-entity-1="section" data-entity-2="piece" data-source-line="101" data-uid="lnk9"
+           id="link_section_piece">
+            <path codeLine="101"
+                  d="M557.81,168 C520.78,168 507.75,168 507.75,168 C507.75,168 507.75,509.12 507.75,686.75" fill="none"
+                  id="section-piece" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="567.81" x2="575.81" y1="168" y2="162"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="567.81" x2="575.81" y1="168" y2="174"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="567.81" x2="575.81" y1="168" y2="168"/>
+            <ellipse cx="561.81" cy="168" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="511.75" x2="503.75" y1="690.75" y2="690.75"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="511.75" x2="503.75" y1="687.75" y2="687.75"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="507.75" x2="507.75" y1="686.75" y2="694.75"/>
+        </g><!--link section to scoresheet-->
+        <g class="link" data-entity-1="section" data-entity-2="scoresheet" data-source-line="102" data-uid="lnk10"
+           id="link_section_scoresheet">
+            <path codeLine="102" d="M648.75,346.17 C648.75,376.1 648.75,380.48 648.75,407.68" fill="none"
+                  id="section-scoresheet" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="648.75" x2="642.75" y1="336.17" y2="328.17"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="648.75" x2="654.75" y1="336.17" y2="328.17"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="648.75" x2="648.75" y1="336.17" y2="328.17"/>
+            <ellipse cx="648.75" cy="342.17" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="652.75" x2="644.75" y1="411.68" y2="411.68"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="652.75" x2="644.75" y1="408.68" y2="408.68"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="648.75" x2="648.75" y1="407.68" y2="415.68"/>
+        </g><!--link piecepermission to user-->
+        <g class="link" data-entity-1="piecepermission" data-entity-2="user" data-source-line="103" data-uid="lnk11"
+           id="link_piecepermission_user">
+            <path codeLine="103" d="M177,615.63 C177,649.32 177,662.01 177,696.23" fill="none" id="piecepermission-user"
+                  style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="177" x2="171" y1="605.63" y2="597.63"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="177" x2="183" y1="605.63" y2="597.63"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="177" x2="177" y1="605.63" y2="597.63"/>
+            <ellipse cx="177" cy="611.63" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="181" x2="173" y1="700.23" y2="700.23"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="181" x2="173" y1="697.23" y2="697.23"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="177" x2="177" y1="696.23" y2="704.23"/>
+        </g><!--link piecepermission to piece-->
+        <g class="link" data-entity-1="piecepermission" data-entity-2="piece" data-source-line="104" data-uid="lnk12"
+           id="link_piecepermission_piece">
+            <path codeLine="104" d="M200.5,605.75 C200.5,655.39 200.5,700 200.5,700 C200.5,700 304.18,700 390.35,700"
+                  fill="none" id="piecepermission-piece" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="200.5" x2="192.5" y1="605.75" y2="597.75"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="200.5" x2="208.5" y1="605.75" y2="597.75"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="200.5" x2="200.5" y1="605.75" y2="597.75"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="394.35" x2="394.35" y1="696" y2="704"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="391.35" x2="391.35" y1="696" y2="704"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="390.35" x2="398.35" y1="700" y2="700"/>
+        </g><!--link room to user-->
+        <g class="link" data-entity-1="room" data-entity-2="user" data-source-line="105" data-uid="lnk13"
+           id="link_room_user">
+            <path codeLine="105" d="M304.25,653.04 C304.25,676.29 304.25,674.21 304.25,696.27" fill="none"
+                  id="room-user" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="304.25" x2="298.25" y1="643.04" y2="635.04"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="304.25" x2="310.25" y1="643.04" y2="635.04"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="304.25" x2="304.25" y1="643.04" y2="635.04"/>
+            <ellipse cx="304.25" cy="649.04" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="308.25" x2="300.25" y1="700.27" y2="700.27"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="308.25" x2="300.25" y1="697.27" y2="697.27"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="304.25" x2="304.25" y1="696.27" y2="704.27"/>
+        </g><!--link room to piece-->
+        <g class="link" data-entity-1="room" data-entity-2="piece" data-source-line="106" data-uid="lnk14"
+           id="link_room_piece">
+            <path codeLine="106" d="M444.25,653.04 C444.25,672.99 444.25,667.43 444.25,686.77" fill="none"
+                  id="room-piece" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="444.25" x2="438.25" y1="643.04" y2="635.04"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="444.25" x2="450.25" y1="643.04" y2="635.04"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="444.25" x2="444.25" y1="643.04" y2="635.04"/>
+            <ellipse cx="444.25" cy="649.04" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="448.25" x2="440.25" y1="690.77" y2="690.77"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="448.25" x2="440.25" y1="687.77" y2="687.77"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="444.25" x2="444.25" y1="686.77" y2="694.77"/>
+        </g><!--SRC=[jPNDRjim3CVlVWgXbsw79EYEVegYGS-28jCsCNr17rs3jUzUIibYsV667BAB4_r9MlfH9FqunkX2kziv9KnCMcsbrJkfH0YR3iNWXMwQHoQjwN58NaIqfXcn0oRHImLD-8d62N9Z2Wt4emDcVHnjZdeDu9cs7QW6JCHuP0zPUc0Yi9Hjlnl6i6jPIjZHtys67Ztw4BaH6bhs9hmSXIUL3dGjWXQeQa6yYIWyJtwcRhVqYAWXHA4Tbnv41Dgrevyipwp9TGlhPqPvHf2mO2bQWN75kaP3dcfsPagliyHUQntsFSgauh5M3qvpBymm2yV0NJeeb2qxMAj0c3i1xgNri1y1ue9oCXJKa9UX-AtnbapmIYrd8sBCbTCoa_G1_5fYK8i1_iVLxK7clPTO9_N4TFQu2QWaW9SCtCQfoHi78sAYEDA1kiZwlxjqOAn6it0wK5rBcqoiDQUh5MtEtvzQrYihudbzNApVVopirVfkRV8CNcC8rpbVMAVMSLF4JNUGXyTryYyluNaCNSg8VGFAqVSx4RvOgnTOMIeiFjlM0EmlCp_mUfjSzGGDvIEQeUxrCWYppizLorUARdAwyCmfWOOGrpHnq2dCm-YUHV02gdmdmeWkDDN0-BIRpSV72RxvqtJ_4gVOPbadPuzS2TUswetbJchdMZYvV040]-->
+    </g>
+</svg>
