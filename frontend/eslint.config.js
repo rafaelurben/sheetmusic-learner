@@ -9,7 +9,7 @@ import { defineConfig, globalIgnores } from "eslint/config";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 
 export default defineConfig([
-  globalIgnores(["dist", "src/shadcn", "src/api/generated"]),
+  globalIgnores(["dist", "src/shadcn", "src/api/generated", ".vite"]),
   {
     files: ["**/*.{ts,tsx}"],
     extends: [
