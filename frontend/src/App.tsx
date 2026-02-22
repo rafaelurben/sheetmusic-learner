@@ -23,6 +23,10 @@ export default function App() {
             id: "3",
             title: "Piece 3",
           },
+          dummy: {
+            id: "dummy",
+            title: "Dummy Piece",
+          },
         }}
         rooms={{
           1: {
@@ -36,6 +40,10 @@ export default function App() {
           3: {
             id: "3",
             title: "Room 3",
+          },
+          dummy: {
+            id: "dummy",
+            title: "Dummy Room",
           },
         }}
       >

@@ -18,6 +18,8 @@ import { Separator } from "@/shadcn/components/ui/separator.tsx";
 import { AppSidebar } from "@/components/sidebar/AppSidebar.tsx";
 import React from "react";
 import Piece from "@/pages/Piece.tsx";
+import DummyPiece from "@/pages/DummyPiece.tsx";
+import DummyRoom from "@/pages/DummyRoom.tsx";
 
 export default function AppAuthenticated() {
   return (
@@ -53,7 +55,9 @@ export default function AppAuthenticated() {
           <main className="flex-1 p-4">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/rooms/dummy" element={<DummyRoom />} />
               <Route path="/rooms/:id" element={<Room />} />
+              <Route path="/pieces/dummy" element={<DummyPiece />} />
               <Route path="/pieces/:id" element={<Piece />} />
             </Routes>
           </main>
