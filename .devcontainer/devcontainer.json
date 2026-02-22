@@ -1,0 +1,30 @@
+{
+  "name": "sheetmusic-learner-devcontainer",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "devcontainer",
+  "runServices": [
+    "postgresdb"
+  ],
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "25",
+      "installMaven": true,
+      "mavenVersion": "3.9.12",
+      "installGradle": false
+    }
+  },
+  "customizations": {
+    "jetbrains": {
+      "backend": "IntelliJ"
+    }
+  },
+  "postStartCommand": {
+    "backend": "cd backend && mvn verify -DskipTests",
+    "frontend": "cd frontend && npm ci && npm run generate:openapi"
+  },
+  "postAttachCommand": {
+    "backend": "cd backend && mvn spring-boot:start",
+    "frontend": "cd frontend && npm run dev"
+  }
+}
