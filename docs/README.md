@@ -1,6 +1,7 @@
 # sheetmusic-learner docs
 
 - [Communication protocol](communication.md)
+- [Data structure](data-structure.md)
 
 ## Project management
 
