@@ -237,21 +237,21 @@ relevant for a specific user, such as error messages or notifications about acti
 
 Application destinations are used for sending messages from clients to the server.
 
-| Destination                         | Description                                                   |
-|-------------------------------------|---------------------------------------------------------------|
-| `/app/piece.{id}/update`            | Edit piece metadata                                           |
-| `/app/piece.{id}/section/add`       | Add a section to a piece                                      |
-| `/app/piece.{id}/section/update`    | Edit/update an existing section                               |
-| `/app/piece.{id}/section/remove`    | Remove a section from a piece                                 |
-| `/app/piece.{id}/permission/add`    | Add a user permission                                         |
-| `/app/piece.{id}/permission/update` | Update a user permissions                                     |
-| `/app/piece.{id}/permission/remove` | Remove a user permissions                                     |
-| `/app/room.{id}/update`             | Update room metadata (visibility, title, etc.) (owner action) |
-| `/app/room.{id}/change-piece`       | Change selected piece for the room (owner action)             |
-| `/app/room.{id}/control/play`       | Start playback in the room (owner action)                     |
-| `/app/room.{id}/control/pause`      | Pause playback in the room (owner action)                     |
-| `/app/room.{id}/control/position`   | Change current position / select page (owner action)          |
-| `/app/room.{id}/chat`               | Send a chat message to a room                                 |
+| Destination                         | Description                                                   | Payload                  |
+|-------------------------------------|---------------------------------------------------------------|--------------------------|
+| `/app/piece.{id}/update`            | Edit piece metadata                                           | Metadata                 |
+| `/app/piece.{id}/section/add`       | Add a section to a piece                                      | Section object           |
+| `/app/piece.{id}/section/update`    | Edit/update an existing section                               | Section id & object      |
+| `/app/piece.{id}/section/remove`    | Remove a section from a piece                                 | Section id               |
+| `/app/piece.{id}/permission/add`    | Add a user permission                                         | User id, permission type |
+| `/app/piece.{id}/permission/update` | Update a user permissions                                     | User id, permission type |
+| `/app/piece.{id}/permission/remove` | Remove a user permissions                                     | User id                  |
+| `/app/room.{id}/update`             | Update room metadata (visibility, title, etc.) (owner action) | Metadata                 |
+| `/app/room.{id}/change-piece`       | Change selected piece for the room (owner action)             | Piece id                 |
+| `/app/room.{id}/control/play`       | Start playback in the room (owner action)                     |                          |
+| `/app/room.{id}/control/pause`      | Pause playback in the room (owner action)                     |                          |
+| `/app/room.{id}/control/position`   | Change current position / select page (owner action)          | Current position         |
+| `/app/room.{id}/chat`               | Send a chat message to a room                                 | Message                  |
 
 **Room join** and **leave** actions are handled by subscribing and unsubscribing to the room topic, so there are no
 specific application destinations for that. A session disconnect event is also considered a leave action and handled

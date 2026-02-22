@@ -69,11 +69,9 @@ entity "Section" as section {
 
 ' PiecePermission model
 entity "PiecePermission" as piecepermission {
-  id: uuid
-  --
   piece_id: uuid
   user_id: uuid
-  ..
+  --
   permission_type: varchar (enum)
   ..
   timestamp_created: datetime
