@@ -3,7 +3,8 @@
   "dockerComposeFile": "docker-compose.yml",
   "service": "devcontainer",
   "runServices": [
-    "postgresdb"
+    "postgresdb",
+    "oidc-server-mock"
   ],
   "features": {
     "ghcr.io/devcontainers/features/node:1": {},

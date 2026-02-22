@@ -4,6 +4,8 @@ volumes:
 services:
   devcontainer:
     image: mcr.microsoft.com/devcontainers/base:trixie
+    extra_hosts:
+      - host.docker.internal:host-gateway
 
   postgresdb:
     container_name: postgresdb
@@ -17,3 +19,132 @@ services:
       POSTGRES_DB: postgres
     ports:
       - "5432:5432"
+
+  # https://github.com/Soluto/oidc-server-mock
+  oidc-server-mock:
+    container_name: oidc-server-mock
+    image: ghcr.io/soluto/oidc-server-mock:0.12.1
+    ports:
+      - "4011:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNET_SERVICES_OPTIONS_INLINE: |
+        {
+          "ForwardedHeadersOptions": {
+            "ForwardedHeaders" : "All"
+          }
+        }
+      SERVER_OPTIONS_INLINE: |
+        {
+          "AccessTokenJwtType": "JWT",
+          "Discovery": {
+            "ShowKeySet": true
+          },
+          "Authentication": {
+            "CookieSameSiteMode": "Lax",
+            "CheckSessionCookieSameSiteMode": "Lax"
+          }
+        }
+      SERVER_CORS_ALLOWED_ORIGINS_INLINE: |
+        [
+          "http://localhost:5173"
+        ]
+      LOGIN_OPTIONS_INLINE: |
+        {
+          "AllowRememberLogin": false
+        }
+      LOGOUT_OPTIONS_INLINE: |
+        {
+          "AutomaticRedirectAfterSignOut": true
+        }
+      API_SCOPES_INLINE: |
+        []
+      API_RESOURCES_INLINE: |
+        []
+      USERS_CONFIGURATION_INLINE: |
+        [
+          {
+            "SubjectId":"1",
+            "Username":"rafael",
+            "Password":"rafael",
+            "Claims": [
+              {
+                "Type": "name",
+                "Value": "Rafael Urben",
+                "ValueType": "string"
+              },
+              {
+                "Type": "email",
+                "Value": "dev@rafaelurben.ch",
+                "ValueType": "string"
+              },
+              {
+                "Type": "picture",
+                "Value": "https://gravatar.com/avatar/a6edbd223876f44c6794092ec50f41dc?s=128",
+                "ValueType": "string"
+              }
+            ]
+          },
+          {
+            "SubjectId":"2",
+            "Username":"rick",
+            "Password":"rick",
+            "Claims": [
+              {
+                "Type": "name",
+                "Value": "Rick Astley",
+                "ValueType": "string"
+              },
+              {
+                "Type": "email",
+                "Value": "rick.astley@tpto.ch",
+                "ValueType": "string"
+              },
+              {
+                "Type": "picture",
+                "Value": "https://gravatar.com/avatar/a6edbd223876f44c6794092ec50f41da?s=128",
+                "ValueType": "string"
+              }
+            ]
+          },
+          {
+            "SubjectId":"3",
+            "Username":"bart",
+            "Password":"bart",
+            "Claims": [
+              {
+                "Type": "name",
+                "Value": "Bart Simpson",
+                "ValueType": "string"
+              },
+              {
+                "Type": "email",
+                "Value": "bart.simpson@tpto.ch",
+                "ValueType": "string"
+              },
+              {
+                "Type": "picture",
+                "Value": "https://gravatar.com/avatar/a6edbd223876f44c6794092ec50f41da?s=128",
+                "ValueType": "string"
+              }
+            ]
+          }
+        ]
+      CLIENTS_CONFIGURATION_INLINE: |
+        [
+          {
+            "ClientId": "sheetmusic-learner",
+            "ClientSecrets": ["test"],
+            "Description": "Client for sheetmusic-learner",
+            "AllowedGrantTypes": ["authorization_code"],
+            "AllowAccessTokensViaBrowser": true,
+            "RedirectUris": ["http://localhost:5173"],
+            "PostLogoutRedirectUris": ["http://localhost:5173"],
+            "AllowedScopes": ["openid", "profile", "email"],
+            "AlwaysIncludeUserClaimsInIdToken": true,
+            "RequirePkce": true,
+            "IdentityTokenLifetime": 3600,
+            "AccessTokenLifetime": 3600,
+            "RequireClientSecret": false
+          }
+        ]

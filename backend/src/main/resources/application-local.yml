@@ -3,6 +3,11 @@ spring.datasource:
   username: postgres
   password: postgres
 
+app:
+  oidc:
+    client-id: sheetmusic-learner
+    issuer: http://host.docker.internal:4011
+    scope: openid profile email
 
 logging:
   level:
