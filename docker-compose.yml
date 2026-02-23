@@ -2,11 +2,6 @@ volumes:
   postgres-data:
 
 services:
-  devcontainer:
-    image: mcr.microsoft.com/devcontainers/base:trixie
-    extra_hosts:
-      - host.docker.internal:host-gateway
-
   postgresdb:
     container_name: postgresdb
     image: postgres:18.2-trixie
@@ -148,3 +143,5 @@ services:
             "RequireClientSecret": false
           }
         ]
+
+

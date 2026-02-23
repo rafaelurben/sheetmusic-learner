@@ -1,12 +1,10 @@
 {
   "name": "sheetmusic-learner-devcontainer",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "devcontainer",
-  "runServices": [
-    "postgresdb",
-    "oidc-server-mock"
-  ],
+  "image": "mcr.microsoft.com/devcontainers/base:trixie",
   "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": false
+    },
     "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/devcontainers/features/java:1": {
       "version": "25",
@@ -16,7 +14,9 @@
     }
   },
   "forwardPorts": [
-    5173
+    5173,
+    5432,
+    4011
   ],
   "customizations": {
     "jetbrains": {
@@ -24,6 +24,7 @@
     }
   },
   "postStartCommand": {
+    "docker": "docker compose up -d",
     "backend": "cd backend && mvn verify -DskipTests",
     "frontend": "cd frontend && npm ci && npm run generate:openapi"
   },

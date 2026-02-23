@@ -28,10 +28,7 @@ async function bootstrap() {
   }
 
   const oidcConfig: AuthProviderProps = {
-    authority: appConfig.oidc.issuer.replace(
-      "http://host.docker.internal:",
-      "http://localhost:",
-    ),
+    authority: appConfig.oidc.issuer,
     client_id: appConfig.oidc.clientId,
     scope: appConfig.oidc.scope,
     redirect_uri: globalThis.location.origin,

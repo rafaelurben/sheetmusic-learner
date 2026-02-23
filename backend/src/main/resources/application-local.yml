@@ -1,12 +1,12 @@
 spring.datasource:
-  url: jdbc:postgresql://postgresdb:5432/postgres
+  url: jdbc:postgresql://localhost:5432/postgres
   username: postgres
   password: postgres
 
 app:
   oidc:
     client-id: sheetmusic-learner
-    issuer: http://host.docker.internal:4011
+    issuer: http://localhost:4011
     scope: openid profile email
 
 logging:
