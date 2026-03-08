@@ -6,9 +6,11 @@ import { MainStoreProvider } from "@/zustand/main/mainStoreProvider.tsx";
 import { useEffect } from "react";
 import { stompService } from "@/service/stompService.ts";
 import { useWebsocketStore } from "@/zustand/websocket/websocketStore.ts";
+import { useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
 
 export default function App() {
   const auth = useAuth();
+  const usersApi = useUsersApi();
 
   useEffect(() => {
     if (auth.isAuthenticated && auth.user?.access_token) {
@@ -21,15 +23,29 @@ export default function App() {
             const parsed: unknown = JSON.parse(message.body);
             useWebsocketStore.getState().addMessage("/topic/general", parsed);
           });
+          stompService.subscribe("/user/queue/notifications", (message) => {
+            const parsed: unknown = JSON.parse(message.body);
+            useWebsocketStore
+              .getState()
+              .addMessage("/user/queue/notifications", parsed);
+          });
         },
         onStompError: (frame) => {
           console.error("STOMP Error:", frame);
         },
       });
+      usersApi
+        .getCurrentUser()
+        .then((user) => {
+          console.log(user);
+        })
+        .catch((error: unknown) => {
+          console.error("Failed to fetch current user:", error);
+        });
     } else if (!auth.isAuthenticated) {
       void stompService.disconnect();
     }
-  }, [auth.isAuthenticated, auth.user?.access_token]);
+  }, [auth.isAuthenticated, auth.user?.access_token, usersApi]);
 
   if (auth.isAuthenticated) {
     return (

@@ -1,19 +1,18 @@
 import { type AppConfig, AppConfigSchema } from "./schema";
+import { PublicApi } from "@/api/generated/openapi";
 
 let config: AppConfig | null = null;
 
 export async function loadConfig(): Promise<AppConfig> {
   if (config) return config;
 
-  const response = await fetch("/api/v1/public/frontend-config", {
-    cache: "no-store",
-  });
+  try {
+    const response = await new PublicApi().getFrontendConfig();
+    config = AppConfigSchema.parse(response);
 
-  if (!response.ok) {
-    throw new Error("Failed to load runtime config.");
+    return config;
+  } catch (error) {
+    console.error("Error loading configuration:", error);
+    throw new Error("Failed to load runtime configuration!", { cause: error });
   }
-
-  config = AppConfigSchema.parse(await response.json());
-
-  return config;
 }
