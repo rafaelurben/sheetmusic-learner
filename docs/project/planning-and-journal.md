@@ -13,6 +13,7 @@
 - 2026-03-08:
   - Finish STOMP communication basic implementation.
   - Create database models
+  - Add persistence helpers: Repositories & Mappers
 
 ## Project milestones
 

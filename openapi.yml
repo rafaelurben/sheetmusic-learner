@@ -417,14 +417,13 @@ components:
           default: false
         last_play_section_position:
           type:
-            - string
+            - integer
             - 'null'
-          format: number
         last_play_timestamp:
           type:
             - string
             - 'null'
-          format: date-time
+          format: timestamp
         tempo_multiplier:
           type: number
           format: float

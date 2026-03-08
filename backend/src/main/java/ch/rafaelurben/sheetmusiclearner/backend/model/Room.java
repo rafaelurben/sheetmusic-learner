@@ -2,6 +2,7 @@
 package ch.rafaelurben.sheetmusiclearner.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import java.time.Instant;
 import java.util.UUID;
 import lombok.*;
@@ -35,6 +36,7 @@ public class Room extends BaseEntity {
   private Boolean playing = false;
 
   @Column(name = "last_play_section_position")
+  @Min(0)
   private Integer lastPlaySectionPosition;
 
   @Column(name = "last_play_timestamp")

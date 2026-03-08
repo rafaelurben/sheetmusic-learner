@@ -42,9 +42,11 @@ public class Piece extends BaseEntity {
   // Relationships
 
   @OneToMany(mappedBy = "piece", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OrderBy("position ASC")
   private List<ScoreSheet> scoreSheets;
 
   @OneToMany(mappedBy = "piece", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OrderBy("position ASC")
   private List<Section> sections;
 
   @OneToMany(mappedBy = "piece", cascade = CascadeType.ALL, orphanRemoval = true)

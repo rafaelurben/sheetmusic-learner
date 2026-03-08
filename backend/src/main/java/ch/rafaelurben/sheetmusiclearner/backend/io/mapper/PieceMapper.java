@@ -1,0 +1,23 @@
+/* (C) 2026 - Rafael Urben */
+package ch.rafaelurben.sheetmusiclearner.backend.io.mapper;
+
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
+import ch.rafaelurben.sheetmusiclearner.backend.model.Piece;
+import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
+
+@Mapper(
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE,
+    uses = {ScoreSheetMapper.class, SectionMapper.class, PiecePermissionMapper.class})
+public interface PieceMapper {
+
+  PieceDto toDto(Piece piece);
+
+  List<PieceDto> toDtoList(List<Piece> pieces);
+
+  Piece toEntityFromCreateRequest(PieceCreateRequestDto createRequestDto);
+}
