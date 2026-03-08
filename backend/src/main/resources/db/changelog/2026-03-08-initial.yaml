@@ -1,0 +1,356 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1772986777219-1
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_piece_permissions
+                  name: piece_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_updated
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_piece_permissions
+                  name: user_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: permission_type
+                  type: VARCHAR(255)
+            tableName: piece_permissions
+  - changeSet:
+      id: 1772986777219-2
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_pieces
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_updated
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  name: composer
+                  type: VARCHAR(255)
+              - column:
+                  name: difficulty
+                  type: VARCHAR(255)
+              - column:
+                  name: bpm_range
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: is_public
+                  type: BOOLEAN
+            tableName: pieces
+  - changeSet:
+      id: 1772986777219-3
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_rooms
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_updated
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: tempo_multiplier
+                  type: FLOAT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: playing
+                  type: BOOLEAN
+              - column:
+                  name: last_play_section_position
+                  type: INT
+              - column:
+                  name: last_play_timestamp
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: owner_id
+                  type: UUID
+              - column:
+                  name: piece_id
+                  type: UUID
+            tableName: rooms
+  - changeSet:
+      id: 1772986777219-4
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_score_sheets
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_updated
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: position
+                  type: INT
+              - column:
+                  name: image_url
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: piece_id
+                  type: UUID
+            tableName: score_sheets
+  - changeSet:
+      id: 1772986777219-5
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_sections
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_updated
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: positions
+                  type: INT
+              - column:
+                  name: time_signature_numerator
+                  type: INT
+              - column:
+                  name: time_signature_denominator
+                  type: INT
+              - column:
+                  name: bar_count
+                  type: INT
+              - column:
+                  name: bpm
+                  type: INT
+              - column:
+                  name: pos_x1
+                  type: FLOAT
+              - column:
+                  name: pos_y1
+                  type: FLOAT
+              - column:
+                  name: pos_x2
+                  type: FLOAT
+              - column:
+                  name: pos_y2
+                  type: FLOAT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: piece_id
+                  type: UUID
+              - column:
+                  name: score_sheet_id
+                  type: UUID
+            tableName: sections
+  - changeSet:
+      id: 1772986777219-6
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users
+                  name: id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_updated
+                  type: DATETIME
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: avatar_url
+                  type: VARCHAR(255)
+            tableName: users
+  - changeSet:
+      id: 1772986777219-7
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: piece_id
+            baseTableName: piece_permissions
+            constraintName: FK_PIECE_PERMISSIONS_ON_PIECE
+            referencedColumnNames: id
+            referencedTableName: pieces
+  - changeSet:
+      id: 1772986777219-8
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: piece_permissions
+            constraintName: FK_PIECE_PERMISSIONS_ON_USER
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: 1772986777219-9
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: owner_id
+            baseTableName: rooms
+            constraintName: FK_ROOMS_ON_OWNER
+            referencedColumnNames: id
+            referencedTableName: users
+  - changeSet:
+      id: 1772986777219-10
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: piece_id
+            baseTableName: rooms
+            constraintName: FK_ROOMS_ON_PIECE
+            referencedColumnNames: id
+            referencedTableName: pieces
+  - changeSet:
+      id: 1772986777219-11
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: piece_id
+            baseTableName: score_sheets
+            constraintName: FK_SCORE_SHEETS_ON_PIECE
+            referencedColumnNames: id
+            referencedTableName: pieces
+  - changeSet:
+      id: 1772986777219-12
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: piece_id
+            baseTableName: sections
+            constraintName: FK_SECTIONS_ON_PIECE
+            referencedColumnNames: id
+            referencedTableName: pieces
+  - changeSet:
+      id: 1772986777219-13
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: score_sheet_id
+            baseTableName: sections
+            constraintName: FK_SECTIONS_ON_SCORE_SHEET
+            referencedColumnNames: id
+            referencedTableName: score_sheets
+
