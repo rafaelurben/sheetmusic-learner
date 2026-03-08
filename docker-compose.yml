@@ -53,13 +53,23 @@ services:
           "AutomaticRedirectAfterSignOut": true
         }
       API_SCOPES_INLINE: |
-        []
+        [
+          {
+            "Name": "api",
+            "DisplayName": "Backend API access",
+            "UserClaims": [
+              "name",
+              "email",
+              "picture"
+            ]
+          }
+        ]
       API_RESOURCES_INLINE: |
         []
       USERS_CONFIGURATION_INLINE: |
         [
           {
-            "SubjectId":"1",
+            "SubjectId":"a0aa35b4-d9f8-4f08-98cb-476678ae5c13",
             "Username":"rafael",
             "Password":"rafael",
             "Claims": [
@@ -81,7 +91,7 @@ services:
             ]
           },
           {
-            "SubjectId":"2",
+            "SubjectId":"d68a5dac-c084-4887-ae3b-2c3373ce1c56",
             "Username":"rick",
             "Password":"rick",
             "Claims": [
@@ -103,7 +113,7 @@ services:
             ]
           },
           {
-            "SubjectId":"3",
+            "SubjectId":"92bebadf-92c2-462a-b5f0-6c693772d8ae",
             "Username":"bart",
             "Password":"bart",
             "Claims": [
@@ -135,13 +145,12 @@ services:
             "AllowAccessTokensViaBrowser": true,
             "RedirectUris": ["http://localhost:5173"],
             "PostLogoutRedirectUris": ["http://localhost:5173"],
-            "AllowedScopes": ["openid", "profile", "email"],
+            "AllowedScopes": ["openid", "profile", "email", "api"],
             "AlwaysIncludeUserClaimsInIdToken": true,
+            "AlwaysSendClientClaims": true,
             "RequirePkce": true,
             "IdentityTokenLifetime": 3600,
             "AccessTokenLifetime": 3600,
             "RequireClientSecret": false
           }
         ]
-
-

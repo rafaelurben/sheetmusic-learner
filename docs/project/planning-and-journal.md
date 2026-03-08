@@ -14,6 +14,7 @@
   - Finish STOMP communication basic implementation.
   - Create database models
   - Add persistence helpers: Repositories & Mappers
+  - User service: Store user information in database
 
 ## Project milestones
 

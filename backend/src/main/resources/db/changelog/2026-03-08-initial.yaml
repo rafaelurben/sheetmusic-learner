@@ -353,4 +353,3 @@ databaseChangeLog:
             constraintName: FK_SECTIONS_ON_SCORE_SHEET
             referencedColumnNames: id
             referencedTableName: score_sheets
-

@@ -7,7 +7,7 @@ app:
   oidc:
     client-id: sheetmusic-learner
     issuer: http://localhost:4011
-    scope: openid profile email
+    scope: openid profile email api
 
 logging:
   level:
