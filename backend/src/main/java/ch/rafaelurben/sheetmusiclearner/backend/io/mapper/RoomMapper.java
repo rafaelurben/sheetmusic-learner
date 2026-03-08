@@ -21,6 +21,5 @@ public interface RoomMapper {
 
   List<RoomDto> toDtoList(List<Room> rooms);
 
-  @Mapping(source = "pieceId", target = "piece.id")
   Room toEntityFromCreateRequest(RoomCreateRequestDto createRequestDto);
 }

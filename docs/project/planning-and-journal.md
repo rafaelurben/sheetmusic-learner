@@ -15,6 +15,7 @@
   - Create database models
   - Add persistence helpers: Repositories & Mappers
   - User service: Store user information in database
+  - Backend: Add basic implementation for synchronous room endpoints, add dummy chat implementation
 
 ## Project milestones
 
