@@ -10,6 +10,7 @@
   - Setup basic backend project with Spring Boot, Java, PostgreSQL
   - Setup OpenAPI generator to generate API client and server stubs
   - Implement login/authentication
+- 2026-03-08: Finish STOMP communication basic implementation.
 
 ## Project milestones
 

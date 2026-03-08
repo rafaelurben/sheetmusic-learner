@@ -13,3 +13,5 @@ logging:
   level:
     org.springframework.security: DEBUG
     org.springframework.web.client: DEBUG
+    org.springframework.messaging: DEBUG
+    ch.rafaelurben: DEBUG

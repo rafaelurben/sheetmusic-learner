@@ -26,12 +26,15 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) {
-    http.oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
+    http.csrf(csrf -> csrf.ignoringRequestMatchers("/ws"))
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
         .authorizeHttpRequests(
             auth ->
                 auth.requestMatchers("/api/v1/public/frontend-config")
                     .permitAll()
                     .requestMatchers("/actuator/**")
+                    .permitAll()
+                    .requestMatchers("/ws") // HTTP upgrade allowed, JWT validated in STOMP CONNECT
                     .permitAll()
                     .anyRequest()
                     .authenticated());
@@ -40,7 +43,7 @@ public class SecurityConfig {
 
   @Bean
   public RestOperations restOperations() {
-    log.info("Configuring RestTemplate with 30 second timeouts for OIDC discovery");
+    log.info("Configuring RestTemplate with 5 second timeouts for OIDC discovery");
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     requestFactory.setConnectTimeout(Duration.ofSeconds(5));
     requestFactory.setReadTimeout(Duration.ofSeconds(5));

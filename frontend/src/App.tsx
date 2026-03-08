@@ -3,9 +3,33 @@ import { useAuth } from "react-oidc-context";
 import AppAuthenticated from "@/AppAuthenticated.tsx";
 
 import { MainStoreProvider } from "@/zustand/main/mainStoreProvider.tsx";
+import { useEffect } from "react";
+import { stompService } from "@/service/stompService.ts";
+import { useWebsocketStore } from "@/zustand/websocket/websocketStore.ts";
 
 export default function App() {
   const auth = useAuth();
+
+  useEffect(() => {
+    if (auth.isAuthenticated && auth.user?.access_token) {
+      console.log("Connecting to WebSocket...");
+      stompService.connect(auth.user.access_token, {
+        onConnect: () => {
+          console.log("WebSocket connected");
+          useWebsocketStore.getState().setConnected(true);
+          stompService.subscribe("/topic/general", (message) => {
+            const parsed: unknown = JSON.parse(message.body);
+            useWebsocketStore.getState().addMessage("/topic/general", parsed);
+          });
+        },
+        onStompError: (frame) => {
+          console.error("STOMP Error:", frame);
+        },
+      });
+    } else if (!auth.isAuthenticated) {
+      void stompService.disconnect();
+    }
+  }, [auth.isAuthenticated, auth.user?.access_token]);
 
   if (auth.isAuthenticated) {
     return (
