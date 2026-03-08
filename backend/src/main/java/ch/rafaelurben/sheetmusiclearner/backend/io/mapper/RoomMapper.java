@@ -12,8 +12,7 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
-    unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = {HelperMapper.class})
+    unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface RoomMapper {
 
   @Mapping(source = "owner.id", target = "ownerId")

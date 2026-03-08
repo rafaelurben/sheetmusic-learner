@@ -7,7 +7,10 @@ info:
     name: Rafael Urben
     url: https://www.rafaelurben.ch/impressum
 servers:
-  - url: 'http://localhost:8080/'
+  - url: 'http://localhost:8080'
+
+security:
+  - bearerAuth: [ ]
 
 paths:
   /api/v1/public/frontend-config:
@@ -445,3 +448,9 @@ components:
     PermissionType:
       type: string
       enum: [ READER, EDITOR, OWNER ]
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: Bearer
+      bearerFormat: JWT
