@@ -1,5 +1,5 @@
 /* (C) 2026 - Rafael Urben */
-package ch.rafaelurben.sheetmusiclearner.backend.controller;
+package ch.rafaelurben.sheetmusiclearner.backend.io.sync.controller;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.controller.UsersApi;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
