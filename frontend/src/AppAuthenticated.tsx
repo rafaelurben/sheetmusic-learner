@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home.tsx";
-import Room from "./pages/Room.tsx";
+import RoomPageContainer from "./pages/room/RoomPageContainer.tsx";
 import {
   SidebarInset,
   SidebarProvider,
@@ -21,8 +21,8 @@ import Piece from "@/pages/Piece.tsx";
 import DummyPiece from "@/pages/DummyPiece.tsx";
 import DummyRoom from "@/pages/DummyRoom.tsx";
 import { stompService } from "@/service/stompService.ts";
-import { useMainStore } from "@/zustand/mainStore.tsx";
-import { useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
+import { useMainStore } from "@/zustand/mainStore.ts";
+import { useRoomsApi, useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
 import { useAuth } from "react-oidc-context";
 
 export default function AppAuthenticated() {
@@ -36,6 +36,7 @@ export default function AppAuthenticated() {
     removeRoom,
   } = useMainStore();
   const usersApi = useUsersApi();
+  const roomsApi = useRoomsApi();
   const auth = useAuth();
 
   // Initialize store with dummy data
@@ -46,12 +47,19 @@ export default function AppAuthenticated() {
     addPiece({ id: "3", title: "Piece 3" });
     addPiece({ id: "dummy", title: "Dummy Piece" });
 
-    // Add dummy rooms
-    addRoom({ id: "1", title: "Room 1" });
-    addRoom({ id: "2", title: "Room 2" });
-    addRoom({ id: "3", title: "Room 3" });
-    addRoom({ id: "dummy", title: "Dummy Room" });
-  }, [addPiece, addRoom]);
+    // Add rooms
+    addRoom({ id: "dummy", title: "Dummy RoomPageContainer" });
+    roomsApi
+      .getRooms()
+      .then((rooms) => {
+        rooms.forEach((room) => {
+          addRoom(room);
+        });
+      })
+      .catch((err: unknown) => {
+        console.error("Failed to fetch rooms:", err);
+      });
+  }, [addPiece, addRoom, roomsApi]);
 
   // Global subscriptions
   useEffect(() => {
@@ -183,7 +191,7 @@ export default function AppAuthenticated() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/rooms/dummy" element={<DummyRoom />} />
-              <Route path="/rooms/:id" element={<Room />} />
+              <Route path="/rooms/:id" element={<RoomPageContainer />} />
               <Route path="/pieces/dummy" element={<DummyPiece />} />
               <Route path="/pieces/:id" element={<Piece />} />
             </Routes>

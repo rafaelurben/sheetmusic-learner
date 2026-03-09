@@ -9,6 +9,7 @@ export interface MainStoreState {
   connected: boolean;
   rooms: Record<string, RoomMetadata>;
   pieces: Record<string, PieceMetadata>;
+
   setConnected: (value: boolean) => void;
   addRoom: (room: RoomMetadata) => void;
   updateRoom: (roomId: string, room: RoomMetadata) => void;

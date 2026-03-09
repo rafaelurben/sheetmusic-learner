@@ -16,7 +16,7 @@ import { NavUser } from "@/components/sidebar/NavUser.tsx";
 import { useAuth } from "react-oidc-context";
 import { Link, NavLink } from "react-router-dom";
 
-import { useMainStore } from "@/zustand/mainStore.tsx";
+import { useMainStore } from "@/zustand/mainStore.ts";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const auth = useAuth();

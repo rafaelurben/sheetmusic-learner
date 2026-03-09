@@ -1,0 +1,54 @@
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { stompService } from "@/service/stompService.ts";
+import { useRoomStore } from "@/zustand/roomStore.ts";
+import { useRoomsApi } from "@/api/useAuthenticatedApiClient.ts";
+import RoomPage from "./RoomPage";
+import { Spinner } from "@/shadcn/components/ui/spinner.tsx";
+
+export default function RoomPageContainer() {
+  const { id } = useParams();
+  const { setRoom, reset, addChatMessage, initialLoadComplete } =
+    useRoomStore();
+  const roomsApi = useRoomsApi();
+
+  useEffect(() => {
+    if (id) {
+      const destination = `/topic/room.${id}`;
+      const subId = stompService.addSubscription(destination, (event) => {
+        console.log(`Event for room ${id}:`, event);
+        switch (event.type) {
+          case "chat-message":
+            addChatMessage(event.payload);
+            break;
+          default:
+            console.warn(`Unhandled event type ${event.type} for room ${id}`);
+        }
+      });
+
+      return () => {
+        stompService.removeSubscription(destination, subId);
+        reset();
+      };
+    }
+  }, [id, addChatMessage, reset]);
+
+  useEffect(() => {
+    if (id) {
+      roomsApi
+        .getRoom({ id })
+        .then((room) => {
+          setRoom(room);
+        })
+        .catch((err: unknown) => {
+          console.error(`Failed to fetch room ${id}:`, err);
+        });
+    }
+  }, [id, setRoom, roomsApi]);
+
+  if (initialLoadComplete) {
+    return <RoomPage />;
+  } else {
+    return <Spinner />;
+  }
+}

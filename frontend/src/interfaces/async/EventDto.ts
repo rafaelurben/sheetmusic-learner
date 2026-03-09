@@ -95,6 +95,15 @@ export type PieceEventDto =
       };
     };
 
+// Room
+
+export interface ChatMessageDto {
+  messageId: string;
+  sender: UserDto;
+  content: string;
+  timestamp: string;
+}
+
 export type RoomEventDto =
   | {
       type: "metadata-updated";
@@ -124,12 +133,7 @@ export type RoomEventDto =
     }
   | {
       type: "chat-message";
-      payload: {
-        messageId: string;
-        sender: UserDto;
-        content: string;
-        timestamp: string;
-      };
+      payload: ChatMessageDto;
     };
 
 export type UserEventDto =
