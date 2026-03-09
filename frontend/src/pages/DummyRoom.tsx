@@ -94,11 +94,11 @@ export default function DummyRoom() {
     >
       <div className="flex h-full w-full">
         {/* Main content */}
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="flex flex-1 flex-col gap-4 p-2 pt-0">
           {/* Header */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-full bg-green-500 text-xs font-semibold text-white">
+              <div className="flex size-4 items-center justify-center rounded-full bg-green-500 text-xs font-semibold text-white">
                 ●
               </div>
               <h1 className="text-xl font-bold sm:text-2xl">

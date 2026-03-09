@@ -4,13 +4,16 @@
 import { create } from "zustand";
 import type RoomMetadata from "@/interfaces/RoomMetadata.ts";
 import type PieceMetadata from "@/interfaces/PieceMetadata.ts";
+import type { UserDto } from "@/api/generated/openapi";
 
 export interface MainStoreState {
   connected: boolean;
   rooms: Record<string, RoomMetadata>;
   pieces: Record<string, PieceMetadata>;
+  currentUser: UserDto | null;
 
   setConnected: (value: boolean) => void;
+  setCurrentUser: (user: UserDto) => void;
   addRoom: (room: RoomMetadata) => void;
   updateRoom: (roomId: string, room: RoomMetadata) => void;
   removeRoom: (roomId: string) => void;
@@ -23,8 +26,12 @@ export const useMainStore = create<MainStoreState>((set) => ({
   rooms: {},
   pieces: {},
   connected: false,
+  currentUser: null,
   setConnected: (value) => {
     set({ connected: value });
+  },
+  setCurrentUser: (user) => {
+    set({ currentUser: user });
   },
   addRoom: (room: RoomMetadata) => {
     set((state) => ({

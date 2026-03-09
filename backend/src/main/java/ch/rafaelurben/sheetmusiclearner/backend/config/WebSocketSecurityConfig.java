@@ -1,8 +1,7 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.config;
 
-import static org.springframework.messaging.simp.SimpMessageType.CONNECT;
-import static org.springframework.messaging.simp.SimpMessageType.DISCONNECT;
+import static org.springframework.messaging.simp.SimpMessageType.*;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,7 @@ public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer
     messages
         // CONNECT and DISCONNECT must be first to ensure they pass through
         // The WebSocketAuthChannelInterceptor will handle actual authentication for CONNECT
-        .simpTypeMatchers(CONNECT, DISCONNECT)
+        .simpTypeMatchers(CONNECT, DISCONNECT, UNSUBSCRIBE)
         .permitAll()
         // MESSAGE to application destinations
         .simpMessageDestMatchers("/app/**")

@@ -16,6 +16,7 @@
   - Add persistence helpers: Repositories & Mappers
   - User service: Store user information in database
   - Backend: Add basic implementation for synchronous room endpoints, add dummy chat implementation
+- 2026-03-09: Basic room page with chat UI implemented. Basic chat functionality working.
 
 ## Project milestones
 

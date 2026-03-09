@@ -28,6 +28,7 @@ import { useAuth } from "react-oidc-context";
 export default function AppAuthenticated() {
   const {
     setConnected,
+    setCurrentUser,
     addPiece,
     updatePiece,
     removePiece,
@@ -133,6 +134,18 @@ export default function AppAuthenticated() {
         onDisconnect: () => {
           setConnected(false);
         },
+        onWebSocketError: (evt) => {
+          console.log("WebSocket error:", evt);
+          setConnected(false);
+        },
+        onWebSocketClose: (evt) => {
+          console.log("WebSocket closed:", evt);
+          setConnected(false);
+        },
+        onStompError: (evt) => {
+          console.log("STOMP error:", evt);
+          setConnected(false);
+        },
       });
 
       // Cleanup function
@@ -150,12 +163,13 @@ export default function AppAuthenticated() {
         .getCurrentUser()
         .then((user) => {
           console.log(user);
+          setCurrentUser(user);
         })
         .catch((error: unknown) => {
           console.error("Failed to fetch current user:", error);
         });
     }
-  }, [auth.isAuthenticated, auth.user?.access_token, usersApi]);
+  }, [auth.isAuthenticated, auth.user?.access_token, usersApi, setCurrentUser]);
 
   return (
     <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6">
