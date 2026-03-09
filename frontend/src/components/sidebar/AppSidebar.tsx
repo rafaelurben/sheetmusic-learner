@@ -16,13 +16,18 @@ import { NavUser } from "@/components/sidebar/NavUser.tsx";
 import { useAuth } from "react-oidc-context";
 import { Link, NavLink } from "react-router-dom";
 
-import { useMainStore } from "@/zustand/main/mainStoreContext.tsx";
+import { useMainStore } from "@/zustand/mainStore.tsx";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const auth = useAuth();
-  const mainStore = useMainStore();
-  const pieces = Object.values(mainStore.pieces);
-  const rooms = Object.values(mainStore.rooms);
+  const piecesRecord = useMainStore((state) => state.pieces);
+  const roomsRecord = useMainStore((state) => state.rooms);
+
+  const pieces = React.useMemo(
+    () => Object.values(piecesRecord),
+    [piecesRecord],
+  );
+  const rooms = React.useMemo(() => Object.values(roomsRecord), [roomsRecord]);
 
   return (
     <Sidebar variant="sidebar" {...props}>

@@ -16,12 +16,139 @@ import {
 } from "@/shadcn/components/ui/breadcrumb.tsx";
 import { Separator } from "@/shadcn/components/ui/separator.tsx";
 import { AppSidebar } from "@/components/sidebar/AppSidebar.tsx";
-import React from "react";
+import React, { useEffect } from "react";
 import Piece from "@/pages/Piece.tsx";
 import DummyPiece from "@/pages/DummyPiece.tsx";
 import DummyRoom from "@/pages/DummyRoom.tsx";
+import { stompService } from "@/service/stompService.ts";
+import { useMainStore } from "@/zustand/mainStore.tsx";
+import { useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
+import { useAuth } from "react-oidc-context";
 
 export default function AppAuthenticated() {
+  const {
+    setConnected,
+    addPiece,
+    updatePiece,
+    removePiece,
+    addRoom,
+    updateRoom,
+    removeRoom,
+  } = useMainStore();
+  const usersApi = useUsersApi();
+  const auth = useAuth();
+
+  // Initialize store with dummy data
+  useEffect(() => {
+    // Add dummy pieces
+    addPiece({ id: "1", title: "Piece 1" });
+    addPiece({ id: "2", title: "Piece 2" });
+    addPiece({ id: "3", title: "Piece 3" });
+    addPiece({ id: "dummy", title: "Dummy Piece" });
+
+    // Add dummy rooms
+    addRoom({ id: "1", title: "Room 1" });
+    addRoom({ id: "2", title: "Room 2" });
+    addRoom({ id: "3", title: "Room 3" });
+    addRoom({ id: "dummy", title: "Dummy Room" });
+  }, [addPiece, addRoom]);
+
+  // Global subscriptions
+  useEffect(() => {
+    const generalHandlerId = stompService.addSubscription(
+      "/topic/general",
+      (event) => {
+        console.log("General event:", event);
+        switch (event.type) {
+          case "piece-now-available":
+            addPiece(event.payload.piece);
+            break;
+          case "piece-metadata-updated":
+            updatePiece(event.payload.piece.id, event.payload.piece);
+            break;
+          case "piece-now-unavailable":
+            removePiece(event.payload.pieceId);
+            break;
+          case "room-now-available":
+            addRoom(event.payload.room);
+            break;
+          case "room-metadata-updated":
+            updateRoom(event.payload.room.id, event.payload.room);
+            break;
+          case "room-now-unavailable":
+            removeRoom(event.payload.roomId);
+            break;
+        }
+      },
+    );
+
+    const userNotificationHandlerId = stompService.addSubscription(
+      "/user/queue/notifications",
+      (event) => {
+        console.log("User notification:", event);
+
+        switch (event.type) {
+          case "error":
+            console.error(
+              "Server error:",
+              event.payload.error,
+              event.payload.message,
+            );
+            // TODO: Show error notification to user
+            break;
+          case "room-joined":
+            console.log("Successfully joined room:", event.payload.room);
+            // TODO: Navigate to room or update room state
+            break;
+        }
+      },
+    );
+
+    // Cleanup
+    return () => {
+      stompService.removeSubscription("/topic/general", generalHandlerId);
+      stompService.removeSubscription(
+        "/user/queue/notifications",
+        userNotificationHandlerId,
+      );
+    };
+  }, [addPiece, updatePiece, removePiece, addRoom, updateRoom, removeRoom]);
+
+  // Connect to WebSocket when authenticated
+  useEffect(() => {
+    if (auth.isAuthenticated && auth.user?.access_token) {
+      console.log("Setting up WebSocket connection...");
+      stompService.connect(auth.user.access_token, {
+        onConnect: () => {
+          setConnected(true);
+        },
+        onDisconnect: () => {
+          setConnected(false);
+        },
+      });
+
+      // Cleanup function
+      return () => {
+        console.log("Cleaning up WebSocket connection...");
+        void stompService.disconnect();
+      };
+    }
+  }, [auth.isAuthenticated, auth.user?.access_token, setConnected]);
+
+  // Call users API when authenticated (to ensure user exists in database)
+  useEffect(() => {
+    if (auth.isAuthenticated && auth.user?.access_token) {
+      usersApi
+        .getCurrentUser()
+        .then((user) => {
+          console.log(user);
+        })
+        .catch((error: unknown) => {
+          console.error("Failed to fetch current user:", error);
+        });
+    }
+  }, [auth.isAuthenticated, auth.user?.access_token, usersApi]);
+
   return (
     <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6">
       <SidebarProvider
