@@ -304,17 +304,17 @@ components:
         id:
           type: string
           format: uuid
-        first_name:
+        firstName:
           type: string
-        last_name:
+        lastName:
           type: string
         email:
           type: string
           format: email
-        avatar_url:
+        avatarUrl:
           type: string
           format: uri
-      required: [ id, first_name, last_name, email ]
+      required: [ id, firstName, lastName, email ]
 
     PieceDto:
       type: object
@@ -328,9 +328,9 @@ components:
           type: string
         difficulty:
           type: string
-        bpm_range:
+        bpmRange:
           type: string
-        is_public:
+        isPublic:
           type: boolean
         permissions:
           type: array
@@ -344,7 +344,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SectionDto'
-      required: [ id, title, composer, difficulty, bpm_range, is_public, permissions, scoreSheets, sections ]
+      required: [ id, title, composer, difficulty, bpmRange, isPublic, permissions, scoreSheets, sections ]
 
     PieceCreateRequestDto:
       type: object
@@ -356,13 +356,13 @@ components:
         difficulty:
           type: string
           default: ""
-        bpm_range:
+        bpmRange:
           type: string
           default: ""
-        is_public:
+        isPublic:
           type: boolean
           default: false
-      required: [ title, composer, is_public ]
+      required: [ title, composer, isPublic ]
 
     ScoreSheetDto:
       type: object
@@ -374,10 +374,10 @@ components:
           type: integer
         title:
           type: string
-        image_url:
+        imageUrl:
           type: string
           format: uri
-      required: [ id, position, title, image_url ]
+      required: [ id, position, title, imageUrl ]
 
     SectionDto:
       type: object
@@ -385,19 +385,19 @@ components:
         id:
           type: string
           format: uuid
-        score_sheet_id:
+        scoreSheetId:
           type: string
           format: uuid
-      required: [ id, score_sheet_id ]
+      required: [ id, scoreSheetId ]
 
     PiecePermissionDto:
       type: object
       properties:
         user:
           $ref: '#/components/schemas/UserDto'
-        permission_type:
+        permissionType:
           $ref: '#/components/schemas/PermissionType'
-      required: [ user, permission_type ]
+      required: [ user, permissionType ]
 
     RoomDto:
       type: object
@@ -407,10 +407,10 @@ components:
           format: uuid
         title:
           type: string
-        owner_id:
+        ownerId:
           type: string
           format: uuid
-        piece_id:
+        pieceId:
           type:
             - string
             - 'null'
@@ -418,27 +418,27 @@ components:
         playing:
           type: boolean
           default: false
-        last_play_section_position:
+        lastPlaySectionPosition:
           type:
             - integer
             - 'null'
-        last_play_timestamp:
+        lastPlayTimestamp:
           type:
             - string
             - 'null'
           format: timestamp
-        tempo_multiplier:
+        tempoMultiplier:
           type: number
           format: float
           default: 1.0
-      required: [ id, title, owner_id ]
+      required: [ id, title, ownerId ]
 
     RoomCreateRequestDto:
       type: object
       properties:
         title:
           type: string
-        piece_id:
+        pieceId:
           type:
             - string
             - 'null'
