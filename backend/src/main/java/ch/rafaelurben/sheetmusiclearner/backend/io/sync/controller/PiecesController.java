@@ -5,6 +5,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.controller.PiecesApi;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
+import ch.rafaelurben.sheetmusiclearner.backend.exceptions.NotImplementedException;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -19,26 +20,26 @@ public class PiecesController implements PiecesApi {
 
   @Override
   public List<PieceDto> getPieces() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw new NotImplementedException("Not supported yet.");
   }
 
   @Override
   public PieceDto createPiece(PieceCreateRequestDto pieceCreateRequestDto) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw new NotImplementedException("Not supported yet.");
   }
 
   @Override
   public PieceDto getPiece(UUID id) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw new NotImplementedException("Not supported yet.");
   }
 
   @Override
   public void deletePiece(UUID id) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw new NotImplementedException("Not supported yet.");
   }
 
   @Override
   public List<ScoreSheetDto> uploadScoreSheets(UUID id, List<MultipartFile> files) {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw new NotImplementedException("Not supported yet.");
   }
 }

@@ -3,6 +3,8 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomDto;
+import ch.rafaelurben.sheetmusiclearner.backend.exceptions.InsufficientPermissionException;
+import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.RoomMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Room;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
@@ -39,7 +41,7 @@ public class RoomServiceImpl implements RoomService {
   private Room getRoomById(final UUID roomId) {
     return roomRepository
         .findById(roomId)
-        .orElseThrow(() -> new IllegalArgumentException("Room not found"));
+        .orElseThrow(() -> new ObjectNotFoundException("Room not found"));
   }
 
   @Override
@@ -53,7 +55,7 @@ public class RoomServiceImpl implements RoomService {
     Room room = getRoomById(roomId);
 
     if (!room.getOwner().getId().equals(user.getId())) {
-      throw new IllegalArgumentException("Only the owner can delete the room");
+      throw new InsufficientPermissionException("Only the owner can delete the room");
     }
 
     roomRepository.delete(room);
