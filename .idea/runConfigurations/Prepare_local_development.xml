@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Prepare local development" type="CompoundRunConfigurationType">
+    <toRun name="backend [mvn clean install -DskipTests]" type="MavenRunConfiguration" />
+    <toRun name="frontend: generate:openapi" type="js.build_tools.npm" />
+    <toRun name="frontend: install" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>
