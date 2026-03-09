@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Music2Icon } from "lucide-react";
+import { Music2Icon, PlusIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -15,6 +15,8 @@ import {
 import { NavUser } from "@/components/sidebar/NavUser.tsx";
 import { useAuth } from "react-oidc-context";
 import { Link, NavLink } from "react-router-dom";
+import { Button } from "@/shadcn/components/ui/button";
+import { CreateRoomDialog } from "@/components/sidebar/CreateRoomDialog.tsx";
 
 import { useMainStore } from "@/zustand/mainStore.ts";
 
@@ -22,6 +24,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const auth = useAuth();
   const piecesRecord = useMainStore((state) => state.pieces);
   const roomsRecord = useMainStore((state) => state.rooms);
+
+  const [isCreatingRoom, setIsCreatingRoom] = React.useState(false);
 
   const pieces = React.useMemo(
     () => Object.values(piecesRecord),
@@ -64,7 +68,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Rooms</SidebarGroupLabel>
+          <SidebarGroupLabel className="flex items-center justify-between">
+            <span>Rooms</span>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-6"
+              onClick={() => {
+                setIsCreatingRoom(true);
+              }}
+            >
+              <PlusIcon className="size-4" />
+            </Button>
+          </SidebarGroupLabel>
           <SidebarMenu className="gap-2">
             {rooms.map((room) => (
               <SidebarMenuItem key={room.id}>
@@ -87,6 +103,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           }}
         />
       </SidebarFooter>
+
+      <CreateRoomDialog
+        open={isCreatingRoom}
+        onOpenChange={setIsCreatingRoom}
+      />
     </Sidebar>
   );
 }
