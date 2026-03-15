@@ -19,6 +19,7 @@ function useAuthenticatedApiClient<T extends BaseAPI>(
 
   return useMemo(() => {
     const config = new Configuration({
+      basePath: globalThis.location.origin,
       fetchApi: async (input, init) => {
         const token = auth.user?.access_token;
 
