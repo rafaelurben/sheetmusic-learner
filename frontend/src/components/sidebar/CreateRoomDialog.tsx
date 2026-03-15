@@ -14,6 +14,7 @@ import { Label } from "@/shadcn/components/ui/label";
 import { Input } from "@/shadcn/components/ui/input";
 import { useRoomsApi } from "@/api/useAuthenticatedApiClient.ts";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 interface CreateRoomDialogProps {
   open: boolean;
@@ -43,8 +44,10 @@ export function CreateRoomDialog({
       onOpenChange(false);
       setRoomTitle("");
       void navigate(`/rooms/${newRoom.id}`);
+      toast.success("Successfully created new room!");
     } catch (error) {
       console.error("Failed to create room:", error);
+      toast.error("Failed to create room!");
     } finally {
       setIsSubmitting(false);
     }

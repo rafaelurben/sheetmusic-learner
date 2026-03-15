@@ -8,6 +8,7 @@ import { loadConfig } from "@/config";
 import { TooltipProvider } from "@/shadcn/components/ui/tooltip.tsx";
 import { WebStorageStateStore } from "oidc-client-ts";
 import ErrorPage from "@/pages/ErrorPage.tsx";
+import { Toaster } from "sonner";
 
 async function bootstrap() {
   let appConfig: Awaited<ReturnType<typeof loadConfig>>;
@@ -48,6 +49,7 @@ async function bootstrap() {
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
+      <Toaster position="top-right" closeButton={true} richColors={true} />
     </StrictMode>,
   );
 }

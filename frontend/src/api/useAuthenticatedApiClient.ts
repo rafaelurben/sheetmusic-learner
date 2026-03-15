@@ -11,6 +11,7 @@ import {
   RoomsApi,
   UsersApi,
 } from "@/api/generated/openapi";
+import { toast } from "sonner";
 
 function useAuthenticatedApiClient<T extends BaseAPI>(
   apiClass: new (config: Configuration) => T,
@@ -30,6 +31,18 @@ function useAuthenticatedApiClient<T extends BaseAPI>(
             ...init?.headers,
             ...(token && { Authorization: `Bearer ${token}` }),
           },
+        }).then((response: Response) => {
+          console.log("API request error:", response);
+          if (response.status === 401) {
+            toast.error("Not authenticated. Maybe your session expired?");
+          } else if (response.status === 403) {
+            toast.error("Access denied!");
+          } else if (response.status === 404) {
+            toast.warning("Resource not found.");
+          } else if (response.status >= 500) {
+            toast.error("Internal Server Error. This shouldn't have happened.");
+          }
+          return response;
         });
       },
     });
