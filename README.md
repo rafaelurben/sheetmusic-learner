@@ -5,7 +5,7 @@ An application for collaboratively learning sheetmusic.
 ## Repository structure
 
 - `backend`: Spring Boot backend (Port: 8080)
-- `frontend`: Angular frontend (Port: 5173)
+- `frontend`: React frontend (Port: 5173)
 - [`docs`](./docs/README.md): Documentation
 
 ## Local setup
