@@ -3,11 +3,13 @@ package ch.rafaelurben.sheetmusiclearner.backend.io.mapper;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Room;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -22,4 +24,7 @@ public interface RoomMapper {
   List<RoomDto> toDtoList(List<Room> rooms);
 
   Room toEntityFromCreateRequest(RoomCreateRequestDto createRequestDto);
+
+  void updateEntityFromUpdateRequest(
+      @MappingTarget Room room, RoomUpdateRequestDto updateRequestDto);
 }

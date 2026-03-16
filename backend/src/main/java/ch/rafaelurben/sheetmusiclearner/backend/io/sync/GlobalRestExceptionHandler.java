@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "ch.rafaelurben.sheetmusiclearner.backend.io.sync.controller")
 public class GlobalRestExceptionHandler {
 
   @ExceptionHandler(BadRequestException.class)
