@@ -2,6 +2,7 @@ import { Client, StompConfig, type StompSubscription } from "@stomp/stompjs";
 import type { EventDto } from "@/interfaces/async/EventDto.ts";
 import type { SubscribeDestinationName } from "@/interfaces/SubscribeDestinationName.ts";
 import type { PublishDestinationName } from "@/interfaces/PublishDestinationName.ts";
+import type { RequestDto } from "@/interfaces/async/RequestDto.ts";
 
 type handlerType = (message: EventDto) => void;
 
@@ -161,7 +162,7 @@ class StompService {
   /**
    * Send a message to the broker
    */
-  publish(destination: PublishDestinationName, body: unknown) {
+  publish(destination: PublishDestinationName, body: RequestDto) {
     if (!this.client?.connected) {
       throw new Error("StompService disconnected");
     }

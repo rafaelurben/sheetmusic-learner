@@ -113,7 +113,7 @@ are relevant only for those users.
     - Payload:
       ```json5
       {
-        "section": {/* Section */}
+        "section": {/* SectionDto */}
       }
       ```
 - `type`: `section-updated`
@@ -121,8 +121,7 @@ are relevant only for those users.
     - Payload:
       ```json5
       {
-        "sectionId": "uuid",
-        "section": {/* Section */}
+        "section": {/* SectionDto */}
       }
       ```
 - `type`: `section-removed`
@@ -138,7 +137,7 @@ are relevant only for those users.
     - Payload:
       ```json5
       {
-        "user": {/* UserMetadata */},
+        "user": {/* UserDto */},
         "permissionType": "<PermissionType>"
       }
       ```
@@ -178,7 +177,7 @@ users.
     - Payload:
       ```json5
       {
-        "piece": {/* Piece */}
+        "piece": {/* PieceDto */}
       }
       ```
 - `type`: `playback-started`
@@ -192,7 +191,7 @@ users.
     - Payload:
       ```json5
       {
-        "current_section_position": 5
+        "currentSectionPosition": 5
       }
       ```
 - `type`: `chat-message`
@@ -201,7 +200,7 @@ users.
       ```json5
       {
         "messageId": "uuid",
-        "sender": {/* UserMetadata */},
+        "sender": {/* UserDto */},
         "content": "string",
         "timestamp": "2024-01-01T12:00:00Z"
       }
@@ -238,14 +237,14 @@ Application destinations are used for sending messages from clients to the serve
 
 | Destination                         | Description                                                   | Payload                  |
 |-------------------------------------|---------------------------------------------------------------|--------------------------|
-| `/app/piece.{id}/update`            | Edit piece metadata                                           | Metadata                 |
+| `/app/piece.{id}/update`            | Edit piece metadata                                           | Piece metadata           |
 | `/app/piece.{id}/section/add`       | Add a section to a piece                                      | Section object           |
-| `/app/piece.{id}/section/update`    | Edit/update an existing section                               | Section id & object      |
+| `/app/piece.{id}/section/update`    | Edit/update an existing section                               | Section object           |
 | `/app/piece.{id}/section/remove`    | Remove a section from a piece                                 | Section id               |
 | `/app/piece.{id}/permission/add`    | Add a user permission                                         | User id, permission type |
 | `/app/piece.{id}/permission/update` | Update a user permissions                                     | User id, permission type |
 | `/app/piece.{id}/permission/remove` | Remove a user permissions                                     | User id                  |
-| `/app/room.{id}/update`             | Update room metadata (visibility, title, etc.) (owner action) | Metadata                 |
+| `/app/room.{id}/update`             | Update room metadata (visibility, title, etc.) (owner action) | Room Metadata            |
 | `/app/room.{id}/change-piece`       | Change selected piece for the room (owner action)             | Piece id                 |
 | `/app/room.{id}/control/play`       | Start playback in the room (owner action)                     |                          |
 | `/app/room.{id}/control/pause`      | Pause playback in the room (owner action)                     |                          |
