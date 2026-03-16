@@ -20,6 +20,13 @@
   - Basic room page with chat UI implemented. Basic chat functionality working.
   - Better exception handling for REST endpoints.
   - Add create room dialog.
+- 2026-03-15 - 2026-03-16:
+  - Added installation/setup instructions.
+  - Added toasts for user feedback on error/success.
+  - Added DTOs for asynchronous communication.
+  - Added STOMP debug page to send test messages.
+  - Improved error handling and WebSocket connection user feedback.
+  - Add update room dialog.
 
 ## Project milestones
 

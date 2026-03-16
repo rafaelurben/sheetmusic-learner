@@ -134,6 +134,12 @@ export default function ChatSidebar() {
               </div>
             ),
           )}
+          {chatMessages.length === 0 && (
+            <div className="text-muted-foreground text-sm">
+              Start chatting by sending a message. The chat history is only kept
+              as long as you stay in this room.
+            </div>
+          )}
         </div>
       </SidebarContent>
       <SidebarFooter className="border-t p-4">
