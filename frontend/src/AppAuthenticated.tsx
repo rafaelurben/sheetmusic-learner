@@ -20,6 +20,7 @@ import React, { useEffect } from "react";
 import Piece from "@/pages/Piece.tsx";
 import DummyPiece from "@/pages/DummyPiece.tsx";
 import DummyRoom from "@/pages/DummyRoom.tsx";
+import DebugStompPage from "@/pages/debug/DebugStompPage.tsx";
 import { stompService } from "@/service/stompService.ts";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { useRoomsApi, useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
@@ -240,6 +241,7 @@ export default function AppAuthenticated() {
               <Route path="/rooms/:id" element={<RoomPageContainer />} />
               <Route path="/pieces/dummy" element={<DummyPiece />} />
               <Route path="/pieces/:id" element={<Piece />} />
+              <Route path="/debug/stomp" element={<DebugStompPage />} />
             </Routes>
           </main>
         </SidebarInset>
