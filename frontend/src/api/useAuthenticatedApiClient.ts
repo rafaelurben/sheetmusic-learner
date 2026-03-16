@@ -32,15 +32,19 @@ function useAuthenticatedApiClient<T extends BaseAPI>(
             ...(token && { Authorization: `Bearer ${token}` }),
           },
         }).then((response: Response) => {
-          console.log("API request error:", response);
-          if (response.status === 401) {
-            toast.error("Not authenticated. Maybe your session expired?");
-          } else if (response.status === 403) {
-            toast.error("Access denied!");
-          } else if (response.status === 404) {
-            toast.warning("Resource not found.");
-          } else if (response.status >= 500) {
-            toast.error("Internal Server Error. This shouldn't have happened.");
+          if (response.status >= 400) {
+            console.log("API request error:", response);
+            if (response.status === 401) {
+              toast.error("Not authenticated. Maybe your session expired?");
+            } else if (response.status === 403) {
+              toast.error("Access denied!");
+            } else if (response.status === 404) {
+              toast.warning("Resource not found.");
+            } else if (response.status >= 500) {
+              toast.error(
+                "Internal Server Error. This shouldn't have happened.",
+              );
+            }
           }
           return response;
         });

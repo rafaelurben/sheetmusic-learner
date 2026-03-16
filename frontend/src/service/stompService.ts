@@ -3,6 +3,7 @@ import type { EventDto } from "@/interfaces/async/EventDto.ts";
 import type { SubscribeDestinationName } from "@/interfaces/SubscribeDestinationName.ts";
 import type { PublishDestinationName } from "@/interfaces/PublishDestinationName.ts";
 import type { RequestDto } from "@/interfaces/async/RequestDto.ts";
+import { toast } from "sonner";
 
 type handlerType = (message: EventDto) => void;
 
@@ -36,18 +37,13 @@ class StompService {
       },
       reconnectDelay: 5000,
       debug: (str) => {
-        console.log("STOMP DEBUG:", str);
-      },
-      onStompError: (frame) => {
-        console.error("=== STOMP ERROR ===", frame);
-      },
-      onWebSocketError: (error) => {
-        console.error("=== WEBSOCKET ERROR ===", error);
+        console.debug("STOMP DEBUG:", str);
       },
       ...config,
       onConnect: (frame) => {
         console.log("=== STOMP CONNECTED ===");
         // Subscribe to all destinations that have handlers
+        console.log("Resubscribing to subscriptions...", this.subscriptionMap);
         this.subscriptionMap.forEach((entry, destination) => {
           if (entry.handlers.size > 0 && !entry.subscription) {
             this.subscribeToDestination(destination);
@@ -58,12 +54,21 @@ class StompService {
       },
       onDisconnect: (frame) => {
         console.log("=== STOMP DISCONNECTED ===");
-        // Clear subscription references (they're invalid now)
-        this.subscriptionMap.forEach((entry) => {
-          entry.subscription = null;
-        });
-
+        this.clearSubscriptions();
         config?.onDisconnect?.(frame);
+      },
+      onWebSocketClose: (data) => {
+        console.log("=== WEBSOCKET CLOSED ===");
+        this.clearSubscriptions();
+        config?.onWebSocketClose?.(data);
+      },
+      onWebSocketError: (data) => {
+        console.error("=== WEBSOCKET ERROR ===", data);
+        config?.onWebSocketError?.(data);
+      },
+      onStompError: (frame) => {
+        console.error("=== STOMP ERROR ===", frame);
+        config?.onStompError?.(frame);
       },
     });
 
@@ -71,13 +76,17 @@ class StompService {
     this.client.activate();
   }
 
-  async disconnect() {
-    console.log("StompService: Disconnecting...");
-    await this.client?.deactivate();
+  private clearSubscriptions() {
     // Clear all subscriptions
     this.subscriptionMap.forEach((entry) => {
       entry.subscription = null;
     });
+  }
+
+  async disconnect() {
+    console.log("StompService: Disconnecting...");
+    await this.client?.deactivate();
+    this.clearSubscriptions();
   }
 
   private subscribeToDestination(destination: SubscribeDestinationName) {
@@ -163,8 +172,12 @@ class StompService {
    * Send a message to the broker
    */
   publish(destination: PublishDestinationName, body: RequestDto) {
-    if (!this.client?.connected) {
-      throw new Error("StompService disconnected");
+    if (!this.client) {
+      throw new Error("No STOMP client!");
+    }
+    if (!this.client.connected) {
+      toast.error("Not connected! Sending failed.");
+      throw new Error("STOMP client not connected!");
     }
 
     this.client.publish({

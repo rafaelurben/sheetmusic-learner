@@ -24,6 +24,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const auth = useAuth();
   const piecesRecord = useMainStore((state) => state.pieces);
   const roomsRecord = useMainStore((state) => state.rooms);
+  const isConnected = useMainStore((state) => state.connected);
 
   const [isCreatingRoom, setIsCreatingRoom] = React.useState(false);
 
@@ -46,6 +47,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-medium">sheetmusic-learner</span>
                   <span className="font-light">by @rafaelurben</span>
+                </div>
+                <div
+                  className={
+                    "flex size-4 items-center justify-center rounded-full text-xs font-semibold text-white ml-auto " +
+                    (isConnected ? "bg-green-500" : "bg-red-500")
+                  }
+                >
+                  ●
                 </div>
               </Link>
             </SidebarMenuButton>

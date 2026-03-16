@@ -13,11 +13,9 @@ import {
 } from "@/shadcn/components/ui/dialog.tsx";
 import React, { useState } from "react";
 import ChatSidebar from "@/pages/room/ChatSidebar.tsx";
-import { useMainStore } from "@/zustand/mainStore.ts";
 
 export default function RoomPageContainer() {
   const { room } = useRoomStore();
-  const isConnected = useMainStore((state) => state.connected);
 
   const [isEditingRoom, setIsEditingRoom] = useState(false);
 
@@ -36,19 +34,9 @@ export default function RoomPageContainer() {
         <div className="flex flex-1 flex-col gap-4 p-2 pt-0 ">
           {/* Header */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
-              <div
-                className={
-                  "flex size-4 items-center justify-center rounded-full text-xs font-semibold text-white " +
-                  (isConnected ? "bg-green-500" : "bg-red-500")
-                }
-              >
-                ●
-              </div>
-              <h1 className="text-xl font-bold sm:text-2xl">
-                Room: {room.title}
-              </h1>
-            </div>
+            <h1 className="text-xl font-bold sm:text-2xl">
+              Room: {room.title}
+            </h1>
             <div className="flex items-center gap-3">
               {/* Users */}
               <div className="flex items-center gap-2">

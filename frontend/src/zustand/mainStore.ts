@@ -7,7 +7,7 @@ import type PieceMetadata from "@/interfaces/PieceMetadata.ts";
 import type { UserDto } from "@/api/generated/openapi";
 
 export interface MainStoreState {
-  connected: boolean;
+  connected: boolean | null;
   rooms: Record<string, RoomMetadata>;
   pieces: Record<string, PieceMetadata>;
   currentUser: UserDto | null;
@@ -25,7 +25,7 @@ export interface MainStoreState {
 export const useMainStore = create<MainStoreState>((set) => ({
   rooms: {},
   pieces: {},
-  connected: false,
+  connected: null,
   currentUser: null,
   setConnected: (value) => {
     set({ connected: value });

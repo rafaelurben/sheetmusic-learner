@@ -25,6 +25,7 @@ import { stompService } from "@/service/stompService.ts";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { useRoomsApi, useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
 import { useAuth } from "react-oidc-context";
+import { toast } from "sonner";
 
 export default function AppAuthenticated() {
   const {
@@ -36,6 +37,7 @@ export default function AppAuthenticated() {
     addRoom,
     updateRoom,
     removeRoom,
+    connected,
   } = useMainStore();
   const usersApi = useUsersApi();
   const roomsApi = useRoomsApi();
@@ -132,11 +134,13 @@ export default function AppAuthenticated() {
         switch (event.type) {
           case "error":
             console.error(
-              "Server error:",
+              "Received error event:",
               event.payload.error,
               event.payload.message,
             );
-            // TODO: Show error notification to user
+            toast.error("Fehler: " + event.payload.error, {
+              description: event.payload.message,
+            });
             break;
           case "room-joined":
             console.log("Successfully joined room:", event.payload.room);
@@ -167,16 +171,13 @@ export default function AppAuthenticated() {
         onDisconnect: () => {
           setConnected(false);
         },
-        onWebSocketError: (evt) => {
-          console.log("WebSocket error:", evt);
+        onWebSocketError: () => {
           setConnected(false);
         },
-        onWebSocketClose: (evt) => {
-          console.log("WebSocket closed:", evt);
+        onWebSocketClose: () => {
           setConnected(false);
         },
-        onStompError: (evt) => {
-          console.log("STOMP error:", evt);
+        onStompError: () => {
           setConnected(false);
         },
       });
@@ -203,6 +204,15 @@ export default function AppAuthenticated() {
         });
     }
   }, [auth.isAuthenticated, auth.user?.access_token, usersApi, setCurrentUser]);
+
+  // Show toast on connection state changes
+  useEffect(() => {
+    if (connected === false) {
+      toast.error("Connection to realtime service lost!", { duration: 10000 });
+    } else if (connected) {
+      toast.info("Connected to realtime service!", { duration: 2500 });
+    }
+  }, [connected]);
 
   return (
     <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6">
