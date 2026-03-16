@@ -90,7 +90,6 @@ Messages sent to topics are sent in JSON and have the following format:
     - Payload:
       ```json5
       {
-        "roomId": "string",
         "room": {/* RoomMetadata */}
       }
       ```

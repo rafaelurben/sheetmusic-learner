@@ -1,12 +1,14 @@
 import { Client, StompConfig, type StompSubscription } from "@stomp/stompjs";
 import type { EventDto } from "@/interfaces/async/EventDto.ts";
+import type { SubscribeDestinationName } from "@/interfaces/SubscribeDestinationName.ts";
+import type { PublishDestinationName } from "@/interfaces/PublishDestinationName.ts";
 
 type handlerType = (message: EventDto) => void;
 
 class StompService {
   private client: Client | null = null;
   private readonly subscriptionMap = new Map<
-    string,
+    SubscribeDestinationName,
     {
       handlers: Map<string, handlerType>;
       subscription: StompSubscription | null;
@@ -77,7 +79,7 @@ class StompService {
     });
   }
 
-  private subscribeToDestination(destination: string) {
+  private subscribeToDestination(destination: SubscribeDestinationName) {
     const entry = this.subscriptionMap.get(destination);
     if (!entry || entry.subscription) return;
 
@@ -99,7 +101,7 @@ class StompService {
     }
   }
 
-  private unsubscribeFromDestination(destination: string) {
+  private unsubscribeFromDestination(destination: SubscribeDestinationName) {
     const entry = this.subscriptionMap.get(destination);
     if (!entry?.subscription) return;
 
@@ -111,7 +113,10 @@ class StompService {
    * Adds a subscription handler for a specific destination. If the client is already connected, it will subscribe immediately.
    * Returns a handler ID that can be used to remove the subscription later.
    */
-  addSubscription(destination: string, callback: handlerType): string {
+  addSubscription(
+    destination: SubscribeDestinationName,
+    callback: handlerType,
+  ): string {
     // Get or create entry for this destination
     let entry = this.subscriptionMap.get(destination);
     if (!entry) {
@@ -138,7 +143,7 @@ class StompService {
    * Removes a subscription handler for a specific destination using the handler ID returned by addSubscription.
    * If no more handlers remain for that destination, it will unsubscribe from the server.
    */
-  removeSubscription(destination: string, handlerId: string) {
+  removeSubscription(destination: SubscribeDestinationName, handlerId: string) {
     const entry = this.subscriptionMap.get(destination);
     if (!entry) return;
 
@@ -156,7 +161,7 @@ class StompService {
   /**
    * Send a message to the broker
    */
-  publish(destination: string, body: unknown) {
+  publish(destination: PublishDestinationName, body: unknown) {
     if (!this.client?.connected) {
       throw new Error("StompService disconnected");
     }

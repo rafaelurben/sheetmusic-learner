@@ -43,13 +43,45 @@ export default function AppAuthenticated() {
   // Initialize store with dummy data
   useEffect(() => {
     // Add dummy pieces
-    addPiece({ id: "1", title: "Piece 1" });
-    addPiece({ id: "2", title: "Piece 2" });
-    addPiece({ id: "3", title: "Piece 3" });
-    addPiece({ id: "dummy", title: "Dummy Piece" });
+    addPiece({
+      id: "1",
+      title: "Piece 1",
+      composer: "",
+      difficulty: "",
+      bpmRange: "",
+      isPublic: false,
+    });
+    addPiece({
+      id: "2",
+      title: "Piece 2",
+      composer: "",
+      difficulty: "",
+      bpmRange: "",
+      isPublic: false,
+    });
+    addPiece({
+      id: "3",
+      title: "Piece 3",
+      composer: "",
+      difficulty: "",
+      bpmRange: "",
+      isPublic: false,
+    });
+    addPiece({
+      id: "dummy",
+      title: "Dummy Piece",
+      composer: "",
+      difficulty: "",
+      bpmRange: "",
+      isPublic: false,
+    });
 
     // Add rooms
-    addRoom({ id: "dummy", title: "Dummy RoomPageContainer" });
+    addRoom({
+      id: "dummy",
+      title: "Dummy RoomPageContainer",
+      ownerId: "00000000-0000-0000-0000-000000000000",
+    });
     roomsApi
       .getRooms()
       .then((rooms) => {

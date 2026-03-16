@@ -1,20 +1,20 @@
 import { create } from "zustand";
 import type { RoomDto } from "@/api/generated/openapi";
-import type { ChatMessageDto } from "@/interfaces/async/EventDto.ts";
+import type ChatMessagePayload from "@/interfaces/async/payload/room/ChatMessagePayload.ts";
 
 interface RoomStoreState {
   room: RoomDto;
-  chatMessages: ChatMessageDto[];
+  chatMessages: ChatMessagePayload[];
   initialLoadComplete: boolean;
 
   reset: () => void;
   setRoom: (room: RoomDto) => void;
-  addChatMessage: (message: ChatMessageDto) => void;
+  addChatMessage: (message: ChatMessagePayload) => void;
 }
 
 const initialState = {
   room: {} as RoomDto,
-  chatMessages: [] as ChatMessageDto[],
+  chatMessages: [] as ChatMessagePayload[],
   initialLoadComplete: false,
 };
 

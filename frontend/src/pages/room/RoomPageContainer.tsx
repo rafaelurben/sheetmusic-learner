@@ -16,20 +16,22 @@ export default function RoomPageContainer() {
 
   useEffect(() => {
     if (id) {
-      const destination = `/topic/room.${id}`;
-      const subId = stompService.addSubscription(destination, (event) => {
-        console.log(`Event for room ${id}:`, event);
-        switch (event.type) {
-          case "chat-message":
-            addChatMessage(event.payload);
-            break;
-          default:
-            console.warn(`Unhandled event type ${event.type} for room ${id}`);
-        }
-      });
+      const subId = stompService.addSubscription(
+        `/topic/room.${id}`,
+        (event) => {
+          console.log(`Event for room ${id}:`, event);
+          switch (event.type) {
+            case "chat-message":
+              addChatMessage(event.payload);
+              break;
+            default:
+              console.warn(`Unhandled event type ${event.type} for room ${id}`);
+          }
+        },
+      );
 
       return () => {
-        stompService.removeSubscription(destination, subId);
+        stompService.removeSubscription(`/topic/room.${id}`, subId);
         reset();
       };
     }
