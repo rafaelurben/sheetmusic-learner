@@ -138,7 +138,7 @@ export default function AppAuthenticated() {
               event.payload.error,
               event.payload.message,
             );
-            toast.error("Fehler: " + event.payload.error, {
+            toast.error("Error: " + event.payload.error, {
               description: event.payload.message,
             });
             break;

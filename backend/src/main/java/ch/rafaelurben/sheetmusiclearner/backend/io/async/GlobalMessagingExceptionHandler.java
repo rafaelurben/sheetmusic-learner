@@ -50,6 +50,6 @@ public class GlobalMessagingExceptionHandler {
   @SendToUser(Destinations.USER_QUEUE_NOTIFICATIONS)
   public EventDto<UserErrorEvent> handleException(RuntimeException ex) {
     log.debug("Handling RuntimeException", ex);
-    return new UserErrorEvent("Interner Serverfehler", ex.getClass().getSimpleName()).asDto();
+    return new UserErrorEvent("Internal Server Error", ex.getClass().getSimpleName()).asDto();
   }
 }

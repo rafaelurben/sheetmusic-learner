@@ -6,18 +6,18 @@ import {
 import { MessageSquareIcon, SettingsIcon, UsersIcon } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card } from "@/shadcn/components/ui/card.tsx";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from "@/shadcn/components/ui/dialog.tsx";
 import React, { useState } from "react";
 import ChatSidebar from "@/pages/room/ChatSidebar.tsx";
+import EditRoomDialog from "@/pages/room/EditRoomDialog.tsx";
+import { useMainStore } from "@/zustand/mainStore.ts";
 
 export default function RoomPageContainer() {
   const { room } = useRoomStore();
+  const userId = useMainStore((state) => state.currentUser?.id);
 
   const [isEditingRoom, setIsEditingRoom] = useState(false);
+
+  const canEditRoom = userId === room.ownerId;
 
   return (
     <SidebarProvider
@@ -43,20 +43,24 @@ export default function RoomPageContainer() {
                 <UsersIcon className="size-5 text-muted-foreground" />
                 <div className="flex -space-x-2">{/* TODO: Users */}</div>
               </div>
+              {/* Chat */}
               <SidebarTrigger>
                 <Button variant="outline" size="icon">
                   <MessageSquareIcon />
                 </Button>
               </SidebarTrigger>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => {
-                  setIsEditingRoom(true);
-                }}
-              >
-                <SettingsIcon />
-              </Button>
+              {/* Edit */}
+              {canEditRoom && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => {
+                    setIsEditingRoom(true);
+                  }}
+                >
+                  <SettingsIcon />
+                </Button>
+              )}
             </div>
           </div>
 
@@ -74,12 +78,12 @@ export default function RoomPageContainer() {
         <ChatSidebar />
       </div>
 
-      {/* Edit Room Dialog */}
-      <Dialog open={isEditingRoom} onOpenChange={setIsEditingRoom}>
-        <DialogContent>
-          <DialogTitle>Placeholder...</DialogTitle>
-        </DialogContent>
-      </Dialog>
+      <EditRoomDialog
+        open={isEditingRoom}
+        onOpenChange={setIsEditingRoom}
+        roomId={room.id}
+        initialTitle={room.title}
+      />
     </SidebarProvider>
   );
 }

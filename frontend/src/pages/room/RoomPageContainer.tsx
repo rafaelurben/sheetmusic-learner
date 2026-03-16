@@ -21,6 +21,11 @@ export default function RoomPageContainer() {
         (event) => {
           console.log(`Event for room ${id}:`, event);
           switch (event.type) {
+            case "metadata-updated":
+              if ("room" in event.payload) {
+                setRoom(event.payload.room);
+              }
+              break;
             case "chat-message":
               addChatMessage(event.payload);
               break;
@@ -35,7 +40,7 @@ export default function RoomPageContainer() {
         reset();
       };
     }
-  }, [id, addChatMessage, reset]);
+  }, [id, addChatMessage, reset, setRoom]);
 
   useEffect(() => {
     if (id) {
