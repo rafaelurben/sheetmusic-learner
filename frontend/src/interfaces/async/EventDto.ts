@@ -78,6 +78,9 @@ export type PieceEventDto =
   | {
       type: "permission-removed";
       payload: PermissionRemovedPayload;
+    }
+  | {
+      type: "piece-deleted";
     };
 
 export type RoomEventDto =
@@ -104,6 +107,9 @@ export type RoomEventDto =
   | {
       type: "chat-message";
       payload: ChatMessagePayload;
+    }
+  | {
+      type: "room-deleted";
     };
 
 export type UserEventDto =

@@ -76,8 +76,7 @@ public class RoomServiceImpl implements RoomService {
 
     messagingService.send(
         Destinations.topicGeneral(), new GeneralRoomNowUnavailableEvent(roomId).asDto());
-
-    // TODO: Maybe also send event to room topic?
+    messagingService.send(Destinations.topicRoom(roomId), new RoomDeletedEvent().asDto());
   }
 
   @Override

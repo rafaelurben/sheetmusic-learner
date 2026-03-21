@@ -27,6 +27,8 @@
   - Added STOMP debug page to send test messages.
   - Improved error handling and WebSocket connection user feedback.
   - Add update room dialog.
+- 2026-03-21:
+  - Implemented room deletion
 
 ## Project milestones
 

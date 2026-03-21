@@ -158,6 +158,9 @@ are relevant only for those users.
         "userId": "uuid"
       }
       ```
+- `type`: `piece-deleted`
+    - Description: The piece was deleted.
+    - Payload: *none*
 
 #### Topic: Room
 
@@ -205,6 +208,9 @@ users.
         "timestamp": "2024-01-01T12:00:00Z"
       }
       ```
+- `type`: `room-deleted`
+    - Description: The room was deleted.
+    - Payload: *none*
 
 #### Topic: User
 

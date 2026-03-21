@@ -3,21 +3,66 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/shadcn/components/ui/sidebar.tsx";
-import { MessageSquareIcon, SettingsIcon, UsersIcon } from "lucide-react";
+import {
+  MessageSquareIcon,
+  SettingsIcon,
+  Trash2Icon,
+  UsersIcon,
+} from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card } from "@/shadcn/components/ui/card.tsx";
 import React, { useState } from "react";
 import ChatSidebar from "@/pages/room/ChatSidebar.tsx";
 import EditRoomDialog from "@/pages/room/EditRoomDialog.tsx";
 import { useMainStore } from "@/zustand/mainStore.ts";
+import { useRoomsApi } from "@/api/useAuthenticatedApiClient.ts";
+import { toast } from "sonner";
 
 export default function RoomPageContainer() {
   const { room } = useRoomStore();
   const userId = useMainStore((state) => state.currentUser?.id);
+  const removeRoom = useMainStore((state) => state.removeRoom);
+  const roomsApi = useRoomsApi();
 
   const [isEditingRoom, setIsEditingRoom] = useState(false);
+  const [isDeletingRoom, setIsDeletingRoom] = useState(false);
 
   const canEditRoom = userId === room.ownerId;
+
+  const handleDeleteRoom = async () => {
+    if (isDeletingRoom) return;
+
+    setIsDeletingRoom(true);
+    try {
+      await roomsApi.deleteRoom({ id: room.id });
+      removeRoom(room.id);
+      toast.success("Room deleted.");
+    } catch (error) {
+      console.error("Failed to delete room:", error);
+      toast.error("Failed to delete room.");
+    } finally {
+      setIsDeletingRoom(false);
+    }
+  };
+
+  const handleConfirmDeleteRoom = () => {
+    toast.error("Delete this room?", {
+      description: "This action cannot be undone.",
+      closeButton: false,
+      action: {
+        label: "Delete",
+        onClick: () => {
+          void handleDeleteRoom();
+        },
+      },
+      cancel: {
+        label: "Cancel",
+        onClick: () => {
+          toast.dismiss();
+        },
+      },
+    });
+  };
 
   return (
     <SidebarProvider
@@ -51,15 +96,25 @@ export default function RoomPageContainer() {
               </SidebarTrigger>
               {/* Edit */}
               {canEditRoom && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    setIsEditingRoom(true);
-                  }}
-                >
-                  <SettingsIcon />
-                </Button>
+                <>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => {
+                      setIsEditingRoom(true);
+                    }}
+                  >
+                    <SettingsIcon />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    disabled={isDeletingRoom}
+                    onClick={handleConfirmDeleteRoom}
+                  >
+                    <Trash2Icon />
+                  </Button>
+                </>
               )}
             </div>
           </div>
