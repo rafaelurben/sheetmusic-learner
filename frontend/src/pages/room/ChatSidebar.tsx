@@ -23,8 +23,8 @@ import type RoomChatMessageRequestDto from "@/interfaces/async/request/room/Room
 
 export default function ChatSidebar() {
   const roomId = useRoomStore((state) => state.room.id);
-  const { chatMessages } = useRoomStore();
-  const { currentUser } = useMainStore();
+  const chatMessages = useRoomStore((state) => state.chatMessages);
+  const currentUser = useMainStore((state) => state.currentUser);
   const { toggleSidebar } = useSidebar();
 
   const [messageInput, setMessageInput] = useState("");

@@ -18,6 +18,7 @@ export default function RoomPageContainer() {
   const roomFromMainStore = useMainStore((state) =>
     id ? state.rooms[id] : undefined,
   );
+  const currentUser = useMainStore((state) => state.currentUser);
   const { setRoom, reset, addChatMessage, initialLoadComplete } =
     useRoomStore();
   const roomsApi = useRoomsApi();
@@ -38,9 +39,11 @@ export default function RoomPageContainer() {
             break;
           case "chat-message":
             addChatMessage(event.payload);
-            toast.message("New chat message!", {
-              duration: 1500,
-            });
+            if (event.payload.sender.id !== currentUser?.id) {
+              toast.message("New chat message!", {
+                duration: 1500,
+              });
+            }
             break;
           case "room-deleted":
             void navigate("/");
@@ -64,6 +67,7 @@ export default function RoomPageContainer() {
     initialLoadComplete,
     notFound,
     navigate,
+    currentUser?.id,
   ]);
 
   useEffect(() => {
