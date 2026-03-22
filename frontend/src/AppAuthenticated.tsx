@@ -6,14 +6,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/shadcn/components/ui/sidebar.tsx";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/shadcn/components/ui/breadcrumb.tsx";
 import { Separator } from "@/shadcn/components/ui/separator.tsx";
 import { AppSidebar } from "@/components/sidebar/AppSidebar.tsx";
 import React, { useEffect } from "react";
@@ -26,6 +18,7 @@ import { useMainStore } from "@/zustand/mainStore.ts";
 import { useRoomsApi, useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
 import { useAuth } from "react-oidc-context";
 import { toast } from "sonner";
+import AppBreadcrumbs from "@/components/navigation/AppBreadcrumbs.tsx";
 
 export default function AppAuthenticated() {
   const {
@@ -232,17 +225,7 @@ export default function AppAuthenticated() {
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Pages</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>A page</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
+            <AppBreadcrumbs />
           </header>
           <main className="flex-1 p-4">
             <Routes>

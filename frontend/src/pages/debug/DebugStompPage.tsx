@@ -17,11 +17,15 @@ import type { PublishDestinationName } from "@/interfaces/PublishDestinationName
 import type { RequestDto } from "@/interfaces/async/RequestDto.ts";
 import { toast } from "sonner";
 
+import { usePageTitle } from "@/zustand/pageTitleStore.ts";
+
 export default function DebugStompPage() {
   const [destination, setDestination] = React.useState("/app/room.dummy/chat");
   const [payload, setPayload] = React.useState(
     '{"message":"Hello from debug"}',
   );
+
+  usePageTitle("STOMP Debug");
 
   const handleSubmit: React.ComponentProps<"form">["onSubmit"] = (event) => {
     event.preventDefault();

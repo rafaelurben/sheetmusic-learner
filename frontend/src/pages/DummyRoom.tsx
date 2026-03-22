@@ -40,6 +40,8 @@ import {
   UsersIcon,
 } from "lucide-react";
 
+import { usePageTitle } from "@/zustand/pageTitleStore.ts";
+
 export default function DummyRoom() {
   const [isEditingRoom, setIsEditingRoom] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -51,6 +53,8 @@ export default function DummyRoom() {
     isPublic: true,
     piece: "Piece ABC",
   };
+
+  usePageTitle(`Room: ${room.title}`);
 
   const users = [
     { id: 1, name: "Alice", initials: "A" },

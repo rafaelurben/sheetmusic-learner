@@ -46,6 +46,8 @@ import {
   UsersIcon,
 } from "lucide-react";
 
+import { usePageTitle } from "@/zustand/pageTitleStore.ts";
+
 export default function DummyPiece() {
   const { id } = useParams();
   const [isEditingPiece, setIsEditingPiece] = useState(false);
@@ -59,6 +61,8 @@ export default function DummyPiece() {
     description: "A beautiful piece of music",
     bpmRange: "60-120 BPM",
   };
+
+  usePageTitle(`Piece: ${piece.title}`);
 
   const permissions = [
     {

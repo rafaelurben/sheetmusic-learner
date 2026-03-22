@@ -9,13 +9,23 @@ import { ResponseError } from "@/api/generated/openapi";
 import type { RoomEventDto } from "@/interfaces/async/EventDto.ts";
 import { toast } from "sonner";
 
+import { usePageTitle } from "@/zustand/pageTitleStore.ts";
+import { useMainStore } from "@/zustand/mainStore.ts";
+
 export default function RoomPageContainer() {
   const { id } = useParams();
   const [notFound, setNotFound] = useState(false);
+  const roomFromMainStore = useMainStore((state) =>
+    id ? state.rooms[id] : undefined,
+  );
   const { setRoom, reset, addChatMessage, initialLoadComplete } =
     useRoomStore();
   const roomsApi = useRoomsApi();
   const navigate = useNavigate();
+
+  const pageTitle = roomFromMainStore?.title ?? (id ? `Room #${id}` : "Room");
+
+  usePageTitle(pageTitle);
 
   useEffect(() => {
     if (id && initialLoadComplete && !notFound) {
