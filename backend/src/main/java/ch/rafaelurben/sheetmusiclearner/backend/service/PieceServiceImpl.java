@@ -97,12 +97,6 @@ public class PieceServiceImpl implements PieceService {
     }
   }
 
-  private String uploadToS3(final UUID pieceId, final UUID scoreSheetId, final MultipartFile file) {
-    String s3Key = String.format("pieces/%s/sheets/%s.png", pieceId, scoreSheetId);
-
-    return s3Service.uploadFile(s3Key, PNG_MEDIA_TYPE, file);
-  }
-
   @Override
   @Transactional(readOnly = true)
   public List<PieceDto> getAllAccessiblePieces(final User user) {
@@ -148,11 +142,19 @@ public class PieceServiceImpl implements PieceService {
   public void deletePiece(final User user, final UUID pieceId) {
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER));
+
+    List<String> scoreSheetS3Keys =
+        piece.getScoreSheets().stream().map(ScoreSheet::getS3Key).toList();
+
     pieceRepository.delete(piece);
 
     messagingService.send(
         Destinations.topicGeneral(), new GeneralPieceNowUnavailableEvent(pieceId).asDto());
     messagingService.send(Destinations.topicPiece(pieceId), new PieceDeletedEvent().asDto());
+
+    for (String scoreSheetS3Key : scoreSheetS3Keys) {
+      s3Service.deleteFile(scoreSheetS3Key);
+    }
   }
 
   @Override
@@ -206,13 +208,15 @@ public class PieceServiceImpl implements PieceService {
                   MultipartFile file = nonEmptyFiles.get(index);
                   UUID uuid = UUID.randomUUID();
                   int position = startPosition + index;
-                  String s3Url = uploadToS3(pieceId, uuid, file);
+
+                  String s3Key = String.format("pieces/%s/sheets/%s.png", pieceId, uuid);
+                  String s3Url = s3Service.uploadFile(s3Key, PNG_MEDIA_TYPE, file);
 
                   return ScoreSheet.builder()
-                      .id(uuid)
                       .piece(piece)
                       .position(position)
                       .title(createScoreSheetTitle(file, position))
+                      .s3Key(s3Key)
                       .imageUrl(s3Url)
                       .build();
                 })

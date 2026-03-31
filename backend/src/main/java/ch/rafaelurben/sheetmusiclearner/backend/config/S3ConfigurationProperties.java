@@ -19,4 +19,5 @@ public class S3ConfigurationProperties {
   private String secretKey;
   private String bucket = "sheetmusic-learner-scores";
   private String endpointOverride;
+  private String publicBaseUrl;
 }

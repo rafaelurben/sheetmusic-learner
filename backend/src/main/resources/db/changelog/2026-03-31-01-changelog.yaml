@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1774991057584-1
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: s3_key
+                  type: VARCHAR(255)
+                  defaultValue: ""
+            tableName: score_sheets
+  - changeSet:
+      id: 1774991057584-2
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addNotNullConstraint:
+            columnName: s3_key
+            tableName: score_sheets

@@ -32,6 +32,7 @@
   - Added breadcrumbs and page titles
 - 2026-03-31:
   - Basic piece features (CRUD) implemented.
+  - Sheet upload using S3 implemented. (Bug: PDF conversion only working for image-based PDFs)
 
 ## Project milestones
 

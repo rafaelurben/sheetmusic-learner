@@ -41,7 +41,7 @@ export default function PieceMetadataCard({
           </CardAction>
         )}
       </CardHeader>
-      <CardContent className="grid grid-cols-1 gap-2 text-sm md:grid-cols-2 xl:grid-cols-3">
+      <CardContent className="grid grid-cols-1 gap-2 text-sm lg:grid-cols-2">
         <div>
           <span className="text-muted-foreground">Title:</span> {piece.title}
         </div>
