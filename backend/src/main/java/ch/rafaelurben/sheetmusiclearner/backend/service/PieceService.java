@@ -4,6 +4,8 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetRemoveRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import java.util.List;
@@ -21,6 +23,10 @@ public interface PieceService {
   void deletePiece(User user, UUID pieceId);
 
   void updatePiece(User user, UUID pieceId, PieceUpdateRequestDto updateRequestDto);
+
+  void updateScoreSheet(User user, UUID pieceId, PieceScoreSheetUpdateRequestDto updateRequestDto);
+
+  void removeScoreSheet(User user, UUID pieceId, PieceScoreSheetRemoveRequestDto removeRequestDto);
 
   List<ScoreSheetDto> uploadScoreSheets(User user, UUID pieceId, List<MultipartFile> files);
 }

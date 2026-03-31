@@ -10,6 +10,8 @@ import ch.rafaelurben.sheetmusiclearner.backend.exceptions.InsufficientPermissio
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.*;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetRemoveRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.PieceMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.ScoreSheetMapper;
@@ -20,7 +22,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.PiecePermissionRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.PieceRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.ScoreSheetRepository;
+import ch.rafaelurben.sheetmusiclearner.backend.repository.SectionRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.utils.Destinations;
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +44,7 @@ public class PieceServiceImpl implements PieceService {
   private final PieceRepository pieceRepository;
   private final PiecePermissionRepository piecePermissionRepository;
   private final ScoreSheetRepository scoreSheetRepository;
+  private final SectionRepository sectionRepository;
   private final PieceMapper pieceMapper;
   private final ScoreSheetMapper scoreSheetMapper;
   private final S3Service s3Service;
@@ -77,6 +82,12 @@ public class PieceServiceImpl implements PieceService {
 
   private int getNextScoreSheetPosition(final UUID pieceId) {
     return scoreSheetRepository.findMaxPositionByPieceId(pieceId).orElse(-1) + 1;
+  }
+
+  private ScoreSheet getScoreSheetEntityById(final UUID pieceId, final UUID scoreSheetId) {
+    return scoreSheetRepository
+        .findByIdAndPieceId(scoreSheetId, pieceId)
+        .orElseThrow(() -> new ObjectNotFoundException("Score sheet not found"));
   }
 
   private String createScoreSheetTitle(final MultipartFile file, final int position) {
@@ -179,6 +190,77 @@ public class PieceServiceImpl implements PieceService {
 
   @Override
   @Transactional
+  public void updateScoreSheet(
+      final User user, final UUID pieceId, final PieceScoreSheetUpdateRequestDto updateRequestDto) {
+    Piece piece = getPieceEntityById(pieceId);
+    ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
+
+    ScoreSheet scoreSheet = getScoreSheetEntityById(pieceId, updateRequestDto.scoreSheetId());
+    UUID scoreSheetId = scoreSheet.getId();
+
+    if (updateRequestDto.title() != null) {
+      if (updateRequestDto.title().isBlank()) {
+        throw new BadRequestException("Score sheet title must not be blank");
+      }
+      scoreSheet.setTitle(updateRequestDto.title());
+    }
+
+    if (updateRequestDto.position() != null) {
+      List<ScoreSheet> orderedScoreSheets =
+          new ArrayList<>(scoreSheetRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
+      int targetPosition = updateRequestDto.position();
+      if (targetPosition < 0 || targetPosition >= orderedScoreSheets.size()) {
+        throw new BadRequestException("Score sheet position is out of bounds");
+      }
+
+      orderedScoreSheets.removeIf(current -> current.getId().equals(scoreSheetId));
+      orderedScoreSheets.add(targetPosition, scoreSheet);
+
+      for (int index = 0; index < orderedScoreSheets.size(); index++) {
+        orderedScoreSheets.get(index).setPosition(index);
+      }
+      scoreSheetRepository.saveAll(orderedScoreSheets);
+    } else {
+      scoreSheetRepository.save(scoreSheet);
+    }
+
+    ScoreSheet updatedScoreSheet = getScoreSheetEntityById(pieceId, scoreSheetId);
+    ScoreSheetDto scoreSheetDto = scoreSheetMapper.toDto(updatedScoreSheet);
+    messagingService.send(
+        Destinations.topicPiece(pieceId),
+        new PieceScoreSheetUpdatedEvent(updatedScoreSheet.getId(), scoreSheetDto).asDto());
+  }
+
+  @Override
+  @Transactional
+  public void removeScoreSheet(
+      final User user, final UUID pieceId, final PieceScoreSheetRemoveRequestDto removeRequestDto) {
+    Piece piece = getPieceEntityById(pieceId);
+    ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
+
+    ScoreSheet scoreSheet = getScoreSheetEntityById(pieceId, removeRequestDto.scoreSheetId());
+
+    sectionRepository.clearScoreSheetReferences(pieceId, scoreSheet.getId());
+
+    List<ScoreSheet> orderedScoreSheets =
+        new ArrayList<>(scoreSheetRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
+    orderedScoreSheets.removeIf(current -> current.getId().equals(scoreSheet.getId()));
+    for (int index = 0; index < orderedScoreSheets.size(); index++) {
+      orderedScoreSheets.get(index).setPosition(index);
+    }
+    scoreSheetRepository.saveAll(orderedScoreSheets);
+
+    scoreSheetRepository.delete(scoreSheet);
+
+    messagingService.send(
+        Destinations.topicPiece(pieceId),
+        new PieceScoreSheetRemovedEvent(scoreSheet.getId()).asDto());
+
+    s3Service.deleteFile(scoreSheet.getS3Key());
+  }
+
+  @Override
+  @Transactional
   public List<ScoreSheetDto> uploadScoreSheets(
       final User user, final UUID pieceId, final List<MultipartFile> files) {
     if (files == null || files.isEmpty()) {
@@ -222,6 +304,15 @@ public class PieceServiceImpl implements PieceService {
                 })
             .toList();
 
-    return scoreSheetMapper.toDtoList(scoreSheetRepository.saveAll(scoreSheets));
+    List<ScoreSheetDto> scoreSheetDtos =
+        scoreSheetMapper.toDtoList(scoreSheetRepository.saveAll(scoreSheets));
+
+    scoreSheetDtos.forEach(
+        scoreSheetDto ->
+            messagingService.send(
+                Destinations.topicPiece(pieceId),
+                new PieceScoreSheetAddedEvent(scoreSheetDto).asDto()));
+
+    return scoreSheetDtos;
   }
 }

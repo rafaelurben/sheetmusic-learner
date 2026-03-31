@@ -15,6 +15,9 @@ import type PermissionUpdatedPayload from "@/interfaces/async/payload/piece/Perm
 import type SectionAddedPayload from "@/interfaces/async/payload/piece/SectionAddedPayload.ts";
 import type SectionRemovedPayload from "@/interfaces/async/payload/piece/SectionRemovedPayload.ts";
 import type SectionUpdatedPayload from "@/interfaces/async/payload/piece/SectionUpdatedPayload.ts";
+import type ScoreSheetAddedPayload from "@/interfaces/async/payload/piece/ScoreSheetAddedPayload.ts";
+import type ScoreSheetRemovedPayload from "@/interfaces/async/payload/piece/ScoreSheetRemovedPayload.ts";
+import type ScoreSheetUpdatedPayload from "@/interfaces/async/payload/piece/ScoreSheetUpdatedPayload.ts";
 import type ChatMessagePayload from "@/interfaces/async/payload/room/ChatMessagePayload.ts";
 import type RoomMetadataChangedPayload from "@/interfaces/async/payload/room/MetadataUpdatedPayload.ts";
 import type PieceChangedPayload from "@/interfaces/async/payload/room/PieceChangedPayload.ts";
@@ -66,6 +69,18 @@ export type PieceEventDto =
   | {
       type: "section-removed";
       payload: SectionRemovedPayload;
+    }
+  | {
+      type: "score-sheet-added";
+      payload: ScoreSheetAddedPayload;
+    }
+  | {
+      type: "score-sheet-updated";
+      payload: ScoreSheetUpdatedPayload;
+    }
+  | {
+      type: "score-sheet-removed";
+      payload: ScoreSheetRemovedPayload;
     }
   | {
       type: "permission-added";

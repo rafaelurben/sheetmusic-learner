@@ -33,7 +33,6 @@ interface UploadScoreSheetsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   pieceId: string;
-  onUploadSuccess: () => Promise<void> | void;
 }
 
 function revokePageUrls(pages: ConvertedPdfPage[]) {
@@ -111,7 +110,6 @@ export default function UploadScoreSheetsDialog({
   open,
   onOpenChange,
   pieceId,
-  onUploadSuccess,
 }: Readonly<UploadScoreSheetsDialogProps>) {
   const piecesApi = usePiecesApi();
 
@@ -253,8 +251,6 @@ export default function UploadScoreSheetsDialog({
         id: pieceId,
         files,
       });
-
-      await onUploadSuccess();
 
       const uploadedPageCount = String(selectedPages.length);
       toast.success(

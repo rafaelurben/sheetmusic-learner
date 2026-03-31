@@ -4,7 +4,18 @@ package ch.rafaelurben.sheetmusiclearner.backend.repository;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Section;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SectionRepository extends JpaRepository<Section, UUID> {}
+public interface SectionRepository extends JpaRepository<Section, UUID> {
+
+  @Modifying
+  @Query(
+      "UPDATE Section s SET s.scoreSheet = null WHERE s.piece.id = :pieceId AND s.scoreSheet.id ="
+          + " :scoreSheetId")
+  void clearScoreSheetReferences(
+      @Param("pieceId") UUID pieceId, @Param("scoreSheetId") UUID scoreSheetId);
+}

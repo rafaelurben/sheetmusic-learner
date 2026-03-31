@@ -6,6 +6,7 @@ import type {
   PermissionType,
   PieceDto,
   PiecePermissionDto,
+  ScoreSheetDto,
   SectionDto,
 } from "@/api/generated/openapi";
 import type PieceUpdateRequestDto from "@/interfaces/async/request/piece/PieceUpdateRequestDto.ts";
@@ -23,6 +24,9 @@ interface PieceStoreState {
   addSection: (section: SectionDto) => void;
   updateSection: (sectionId: string, section: SectionDto) => void;
   removeSection: (sectionId: string) => void;
+  addScoreSheet: (scoreSheet: ScoreSheetDto) => void;
+  updateScoreSheet: (scoreSheetId: string, scoreSheet: ScoreSheetDto) => void;
+  removeScoreSheet: (scoreSheetId: string) => void;
 }
 
 const initialState = {
@@ -101,6 +105,40 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
         sections: state.piece.sections.filter(
           (section) => section.id !== sectionId,
         ),
+      },
+    }));
+  },
+  addScoreSheet: (scoreSheet) => {
+    set((state) => ({
+      piece: {
+        ...state.piece,
+        scoreSheets: [...state.piece.scoreSheets, scoreSheet].sort(
+          (left, right) => left.position - right.position,
+        ),
+      },
+    }));
+  },
+  updateScoreSheet: (scoreSheetId, scoreSheet) => {
+    set((state) => ({
+      piece: {
+        ...state.piece,
+        scoreSheets: state.piece.scoreSheets
+          .map((currentScoreSheet) =>
+            currentScoreSheet.id === scoreSheetId
+              ? scoreSheet
+              : currentScoreSheet,
+          )
+          .sort((left, right) => left.position - right.position),
+      },
+    }));
+  },
+  removeScoreSheet: (scoreSheetId) => {
+    set((state) => ({
+      piece: {
+        ...state.piece,
+        scoreSheets: state.piece.scoreSheets
+          .filter((scoreSheet) => scoreSheet.id !== scoreSheetId)
+          .sort((left, right) => left.position - right.position),
       },
     }));
   },

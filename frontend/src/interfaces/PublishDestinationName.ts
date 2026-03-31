@@ -4,6 +4,8 @@
 
 export type PublishDestinationName =
   | `/app/piece.${string}/update`
+  | `/app/piece.${string}/score-sheet/update`
+  | `/app/piece.${string}/score-sheet/delete`
   | `/app/piece.${string}/sections/add`
   | `/app/piece.${string}/sections/update`
   | `/app/piece.${string}/sections/remove`

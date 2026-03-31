@@ -5,6 +5,8 @@ import ch.rafaelurben.sheetmusiclearner.backend.exceptions.NotImplementedExcepti
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionAddRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionUpdateRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetRemoveRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionAddRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionUpdateRequestDto;
@@ -35,6 +37,22 @@ public class AsyncPieceController {
     User user = userService.getCurrentUserEntity();
     pieceService.updatePiece(user, pieceId, dto);
     log.debug("Updated piece {}: {}", pieceId, dto);
+  }
+
+  @MessageMapping("/piece.{pieceId}/score-sheet/update")
+  public void handleScoreSheetUpdate(
+      @DestinationVariable UUID pieceId, @Validated @Payload PieceScoreSheetUpdateRequestDto dto) {
+    User user = userService.getCurrentUserEntity();
+    pieceService.updateScoreSheet(user, pieceId, dto);
+    log.debug("Updated score sheet for piece {}: {}", pieceId, dto);
+  }
+
+  @MessageMapping("/piece.{pieceId}/score-sheet/delete")
+  public void handleScoreSheetDelete(
+      @DestinationVariable UUID pieceId, @Validated @Payload PieceScoreSheetRemoveRequestDto dto) {
+    User user = userService.getCurrentUserEntity();
+    pieceService.removeScoreSheet(user, pieceId, dto);
+    log.debug("Deleted score sheet for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/section/add")

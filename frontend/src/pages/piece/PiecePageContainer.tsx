@@ -36,6 +36,9 @@ export default function PiecePageContainer() {
     addSection,
     updateSection,
     removeSection,
+    addScoreSheet,
+    updateScoreSheet,
+    removeScoreSheet,
   } = usePieceStore();
 
   const pageTitle = pieceFromMainStore?.title ?? (id ? `Room #${id}` : "Room");
@@ -81,6 +84,18 @@ export default function PiecePageContainer() {
         case "section-removed":
           removeSection(event.payload.sectionId);
           break;
+        case "score-sheet-added":
+          addScoreSheet(event.payload.scoreSheet);
+          break;
+        case "score-sheet-updated":
+          updateScoreSheet(
+            event.payload.scoreSheetId,
+            event.payload.scoreSheet,
+          );
+          break;
+        case "score-sheet-removed":
+          removeScoreSheet(event.payload.scoreSheetId);
+          break;
         case "permission-added":
           addPermission({
             user: event.payload.user,
@@ -119,6 +134,9 @@ export default function PiecePageContainer() {
     addSection,
     updateSection,
     removeSection,
+    addScoreSheet,
+    updateScoreSheet,
+    removeScoreSheet,
     removePiece,
     navigate,
     reset,

@@ -1,4 +1,3 @@
-import { Card } from "@/shadcn/components/ui/card";
 import { Button } from "@/shadcn/components/ui/button";
 import {
   PermissionType,
@@ -8,8 +7,8 @@ import { usePiecesApi } from "@/api/useAuthenticatedApiClient.ts";
 import EditPieceDialog from "@/pages/piece/EditPieceDialog.tsx";
 import PiecePermissions from "@/pages/piece/PiecePermissions.tsx";
 import PieceMetadataCard from "@/pages/piece/PieceMetadataCard.tsx";
+import PieceScoreSheetsCard from "@/pages/piece/PieceScoreSheetsCard.tsx";
 import PieceSectionsCard from "@/pages/piece/PieceSectionsCard.tsx";
-import UploadScoreSheetsDialog from "@/pages/piece/UploadScoreSheetsDialog.tsx";
 import {
   Sheet,
   SheetContent,
@@ -19,7 +18,7 @@ import {
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import { usePageTitle } from "@/zustand/pageTitleStore.ts";
-import { Trash2Icon, UploadIcon, UsersIcon } from "lucide-react";
+import { Trash2Icon, UsersIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -27,13 +26,11 @@ export default function PiecePage() {
   const piece = usePieceStore((state) => state.piece);
   const currentUserId = useMainStore((state) => state.currentUser?.id);
   const removePiece = useMainStore((state) => state.removePiece);
-  const setPiece = usePieceStore((state) => state.setPiece);
   const piecesApi = usePiecesApi();
 
   const [isPermissionsOpen, setIsPermissionsOpen] = useState(false);
   const [isEditingPiece, setIsEditingPiece] = useState(false);
   const [isDeletingPiece, setIsDeletingPiece] = useState(false);
-  const [isUploadScoreSheetsOpen, setIsUploadScoreSheetsOpen] = useState(false);
 
   const currentUserPermission = piece.permissions.find(
     (permission: PiecePermissionDto) => permission.user.id === currentUserId,
@@ -83,18 +80,6 @@ export default function PiecePage() {
     });
   };
 
-  const refreshPiece = async () => {
-    try {
-      const refreshedPiece = await piecesApi.getPiece({ id: piece.id });
-      setPiece(refreshedPiece);
-    } catch (error) {
-      console.error(`Failed to refresh piece ${piece.id}:`, error);
-      toast.error(
-        "Score sheets uploaded, but failed to refresh the piece data.",
-      );
-    }
-  };
-
   usePageTitle(piece.title);
 
   return (
@@ -137,47 +122,10 @@ export default function PiecePage() {
                 setIsEditingPiece(true);
               }}
             />
-            <Card className="flex min-h-0 flex-1 flex-col p-4">
-              <div className="min-h-0 flex-1 overflow-y-auto">
-                {sortedScoreSheets.length === 0 ? (
-                  <div className="flex h-full items-center justify-center rounded-md border-2 border-dashed text-sm text-muted-foreground">
-                    No score sheets uploaded yet.
-                  </div>
-                ) : (
-                  <div className="grid gap-3 pr-1 sm:grid-cols-2">
-                    {sortedScoreSheets.map((scoreSheet) => (
-                      <div
-                        key={scoreSheet.id}
-                        className="space-y-2 rounded-md border p-3"
-                      >
-                        <img
-                          src={scoreSheet.imageUrl}
-                          alt={scoreSheet.title}
-                          className="max-h-72 w-full rounded-md border bg-muted object-contain"
-                        />
-                        <div className="text-sm font-medium">
-                          {scoreSheet.title}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {canEditPiece && (
-                <div className="mt-4 border-t pt-4">
-                  <Button
-                    className="w-full gap-2"
-                    onClick={() => {
-                      setIsUploadScoreSheetsOpen(true);
-                    }}
-                  >
-                    <UploadIcon className="size-4" />
-                    Upload score sheets
-                  </Button>
-                </div>
-              )}
-            </Card>
+            <PieceScoreSheetsCard
+              scoreSheets={sortedScoreSheets}
+              canEdit={canEditPiece}
+            />
           </div>
 
           <div className="flex w-full shrink-0 flex-col gap-4 lg:w-md">
@@ -202,13 +150,6 @@ export default function PiecePage() {
         open={isEditingPiece}
         onOpenChange={setIsEditingPiece}
         piece={piece}
-      />
-
-      <UploadScoreSheetsDialog
-        open={isUploadScoreSheetsOpen}
-        onOpenChange={setIsUploadScoreSheetsOpen}
-        pieceId={piece.id}
-        onUploadSuccess={refreshPiece}
       />
     </div>
   );
