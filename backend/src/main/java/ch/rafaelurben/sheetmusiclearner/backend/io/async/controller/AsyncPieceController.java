@@ -9,6 +9,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectio
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdateRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.model.User;
+import ch.rafaelurben.sheetmusiclearner.backend.service.PieceService;
+import ch.rafaelurben.sheetmusiclearner.backend.service.UserService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +26,15 @@ import org.springframework.validation.annotation.Validated;
 @Slf4j
 public class AsyncPieceController {
 
+  private final PieceService pieceService;
+  private final UserService userService;
+
   @MessageMapping("/piece.{pieceId}/update")
   public void handlePieceUpdate(
       @DestinationVariable UUID pieceId, @Validated @Payload PieceUpdateRequestDto dto) {
-    log.debug("Received piece update for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Piece update is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.updatePiece(user, pieceId, dto);
+    log.debug("Updated piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/section/add")

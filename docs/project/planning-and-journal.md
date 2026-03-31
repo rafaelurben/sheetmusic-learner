@@ -30,6 +30,8 @@
 - 2026-03-21 - 2026-03-22:
   - Implemented room deletion
   - Added breadcrumbs and page titles
+- 2026-03-31:
+  - Basic piece features (CRUD) implemented.
 
 ## Project milestones
 

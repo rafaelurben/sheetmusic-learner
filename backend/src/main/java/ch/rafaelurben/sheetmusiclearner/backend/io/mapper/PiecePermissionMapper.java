@@ -6,10 +6,12 @@ import ch.rafaelurben.sheetmusiclearner.backend.model.PiecePermission;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
+import org.mapstruct.NullValueMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
+    nullValueMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT,
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     uses = {UserMapper.class})
 public interface PiecePermissionMapper {
