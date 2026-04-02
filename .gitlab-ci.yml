@@ -1,0 +1,50 @@
+stages:
+  - checks
+  - docker
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+
+backend::spotless_check:
+  stage: checks
+  image: maven:3.9.11-eclipse-temurin-25
+  cache:
+    key: maven-$CI_COMMIT_REF_SLUG
+    paths:
+      - .m2/repository
+  script:
+    - mvn -B -f backend/pom.xml spotless:check
+
+frontend::lint:
+  stage: checks
+  image: node:25-bookworm
+  cache:
+    key: npm-$CI_COMMIT_REF_SLUG
+    paths:
+      - frontend/.npm
+  script:
+    - cd frontend
+    - npm ci --cache .npm --prefer-offline
+    - npm run generate:openapi
+    - npm run lint
+    - npx tsc -b
+
+backend::docker_image:
+  stage: docker
+  image: docker:27.5.1
+  services:
+    - docker:27.5.1-dind
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - docker build -f backend/Dockerfile -t "$CI_REGISTRY_IMAGE/sheetmusic-learner-backend:$CI_COMMIT_SHA" .
+    - docker push "$CI_REGISTRY_IMAGE/sheetmusic-learner-backend:$CI_COMMIT_SHA"
+
+frontend::docker_image:
+  stage: docker
+  image: docker:27.5.1
+  services:
+    - docker:27.5.1-dind
+  script:
+    - docker build -f frontend/Dockerfile -t "$CI_REGISTRY_IMAGE/sheetmusic-learner-frontend:$CI_COMMIT_SHA" .
+    - docker push "$CI_REGISTRY_IMAGE/sheetmusic-learner-frontend:$CI_COMMIT_SHA"
+
