@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.strict.tsbuildinfo",
+    "paths": {
+      "@/api/generated/*": ["./node_modules/.tmp/generated-types/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["src/api/generated/**/*"],
+  "references": [{ "path": "./tsconfig.generated.json" }]
+}
