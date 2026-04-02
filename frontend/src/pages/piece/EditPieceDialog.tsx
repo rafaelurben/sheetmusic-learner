@@ -76,22 +76,15 @@ export default function EditPieceDialog({
 
     onOpenChange(false);
 
-    try {
-      stompService.publish(`/app/piece.${piece.id}/update`, {
-        title: trimmedValues.title,
-        composer: trimmedValues.composer,
-        year: trimmedValues.year,
-        description: trimmedValues.description,
-        difficulty: trimmedValues.difficulty,
-        bpmRange: trimmedValues.bpmRange,
-        isPublic: trimmedValues.isPublic,
-      } satisfies PieceUpdateRequestDto);
-    } catch (error) {
-      console.error(
-        `Failed to send piece update for piece ${piece.id}:`,
-        error,
-      );
-    }
+    stompService.publish(`/app/piece.${piece.id}/update`, {
+      title: trimmedValues.title,
+      composer: trimmedValues.composer,
+      year: trimmedValues.year,
+      description: trimmedValues.description,
+      difficulty: trimmedValues.difficulty,
+      bpmRange: trimmedValues.bpmRange,
+      isPublic: trimmedValues.isPublic,
+    } satisfies PieceUpdateRequestDto);
   };
 
   const handleCancel = () => {

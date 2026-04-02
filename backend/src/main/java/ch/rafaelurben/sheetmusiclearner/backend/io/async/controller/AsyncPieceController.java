@@ -58,22 +58,25 @@ public class AsyncPieceController {
   @MessageMapping("/piece.{pieceId}/section/add")
   public void handleSectionAdd(
       @DestinationVariable UUID pieceId, @Validated @Payload PieceSectionAddRequestDto dto) {
-    log.debug("Received section add for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Section add is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.addSection(user, pieceId, dto);
+    log.debug("Added section for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/section/update")
   public void handleSectionUpdate(
       @DestinationVariable UUID pieceId, @Validated @Payload PieceSectionUpdateRequestDto dto) {
-    log.debug("Received section update for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Section update is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.updateSection(user, pieceId, dto);
+    log.debug("Updated section for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/section/remove")
   public void handleSectionRemove(
       @DestinationVariable UUID pieceId, @Validated @Payload PieceSectionRemoveRequestDto dto) {
-    log.debug("Received section remove for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Section remove is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.removeSection(user, pieceId, dto);
+    log.debug("Removed section for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/permission/add")

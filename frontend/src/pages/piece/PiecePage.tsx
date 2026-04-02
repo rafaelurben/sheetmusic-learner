@@ -8,7 +8,7 @@ import EditPieceDialog from "@/pages/piece/EditPieceDialog.tsx";
 import PiecePermissions from "@/pages/piece/PiecePermissions.tsx";
 import PieceMetadataCard from "@/pages/piece/PieceMetadataCard.tsx";
 import PieceScoreSheetsCard from "@/pages/piece/PieceScoreSheetsCard.tsx";
-import PieceSectionsCard from "@/pages/piece/PieceSectionsCard.tsx";
+import PieceSectionsCard from "@/pages/piece/sections/PieceSectionsCard.tsx";
 import {
   Sheet,
   SheetContent,
@@ -129,7 +129,10 @@ export default function PiecePage() {
           </div>
 
           <div className="flex w-full shrink-0 flex-col gap-4 lg:w-md">
-            <PieceSectionsCard sections={piece.sections} />
+            <PieceSectionsCard
+              sections={piece.sections}
+              canEdit={canEditPiece}
+            />
           </div>
         </div>
       </div>

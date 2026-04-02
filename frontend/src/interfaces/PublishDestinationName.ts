@@ -6,12 +6,12 @@ export type PublishDestinationName =
   | `/app/piece.${string}/update`
   | `/app/piece.${string}/score-sheet/update`
   | `/app/piece.${string}/score-sheet/delete`
-  | `/app/piece.${string}/sections/add`
-  | `/app/piece.${string}/sections/update`
-  | `/app/piece.${string}/sections/remove`
-  | `/app/piece.${string}/permissions/add`
-  | `/app/piece.${string}/permissions/update`
-  | `/app/piece.${string}/permissions/remove`
+  | `/app/piece.${string}/section/add`
+  | `/app/piece.${string}/section/update`
+  | `/app/piece.${string}/section/remove`
+  | `/app/piece.${string}/permission/add`
+  | `/app/piece.${string}/permission/update`
+  | `/app/piece.${string}/permission/remove`
   | `/app/room.${string}/update`
   | `/app/room.${string}/change-piece`
   | `/app/room.${string}/control/play`

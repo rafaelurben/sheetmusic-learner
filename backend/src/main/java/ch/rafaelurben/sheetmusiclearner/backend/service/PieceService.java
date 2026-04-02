@@ -6,6 +6,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetUpdateRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionAddRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionRemoveRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import java.util.List;
@@ -27,6 +30,12 @@ public interface PieceService {
   void updateScoreSheet(User user, UUID pieceId, PieceScoreSheetUpdateRequestDto updateRequestDto);
 
   void removeScoreSheet(User user, UUID pieceId, PieceScoreSheetRemoveRequestDto removeRequestDto);
+
+  void addSection(User user, UUID pieceId, PieceSectionAddRequestDto addRequestDto);
+
+  void updateSection(User user, UUID pieceId, PieceSectionUpdateRequestDto updateRequestDto);
+
+  void removeSection(User user, UUID pieceId, PieceSectionRemoveRequestDto removeRequestDto);
 
   List<ScoreSheetDto> uploadScoreSheets(User user, UUID pieceId, List<MultipartFile> files);
 }

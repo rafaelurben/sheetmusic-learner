@@ -41,15 +41,10 @@ export default function PieceScoreSheetsCard({
       return;
     }
 
-    try {
-      stompService.publish(`/app/piece.${piece.id}/score-sheet/update`, {
-        scoreSheetId,
-        title: trimmedTitle,
-      });
-    } catch (error) {
-      console.error("Failed to rename score sheet:", error);
-      toast.error("Failed to rename score sheet.");
-    }
+    stompService.publish(`/app/piece.${piece.id}/score-sheet/update`, {
+      scoreSheetId,
+      title: trimmedTitle,
+    });
   };
 
   const handleConfirmDeleteScoreSheet = (scoreSheetId: string) => {
@@ -59,14 +54,9 @@ export default function PieceScoreSheetsCard({
       action: {
         label: "Delete",
         onClick: () => {
-          try {
-            stompService.publish(`/app/piece.${piece.id}/score-sheet/delete`, {
-              scoreSheetId,
-            });
-          } catch (error) {
-            console.error("Failed to delete score sheet:", error);
-            toast.error("Failed to delete score sheet.");
-          }
+          stompService.publish(`/app/piece.${piece.id}/score-sheet/delete`, {
+            scoreSheetId,
+          });
         },
       },
       cancel: {

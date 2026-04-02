@@ -46,13 +46,9 @@ export default function EditRoomDialog({
 
     if (trimmedTitle === trimmedInitialTitle) return;
 
-    try {
-      stompService.publish(`/app/room.${roomId}/update`, {
-        title: trimmedTitle,
-      } satisfies RoomUpdateRequestDto);
-    } catch (error) {
-      console.error(`Failed to send room update for room ${roomId}:`, error);
-    }
+    stompService.publish(`/app/room.${roomId}/update`, {
+      title: trimmedTitle,
+    } satisfies RoomUpdateRequestDto);
   };
 
   const handleCancel = () => {

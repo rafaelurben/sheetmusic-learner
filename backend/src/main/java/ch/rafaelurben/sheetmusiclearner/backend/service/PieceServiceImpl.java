@@ -12,12 +12,17 @@ import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.*;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetUpdateRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionAddRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionRemoveRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.PieceMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.ScoreSheetMapper;
+import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.SectionMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Piece;
 import ch.rafaelurben.sheetmusiclearner.backend.model.PiecePermission;
 import ch.rafaelurben.sheetmusiclearner.backend.model.ScoreSheet;
+import ch.rafaelurben.sheetmusiclearner.backend.model.Section;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.PiecePermissionRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.PieceRepository;
@@ -47,6 +52,7 @@ public class PieceServiceImpl implements PieceService {
   private final SectionRepository sectionRepository;
   private final PieceMapper pieceMapper;
   private final ScoreSheetMapper scoreSheetMapper;
+  private final SectionMapper sectionMapper;
   private final S3Service s3Service;
   private final MessagingService messagingService;
 
@@ -88,6 +94,12 @@ public class PieceServiceImpl implements PieceService {
     return scoreSheetRepository
         .findByIdAndPieceId(scoreSheetId, pieceId)
         .orElseThrow(() -> new ObjectNotFoundException("Score sheet not found"));
+  }
+
+  private Section getSectionEntityById(final UUID pieceId, final UUID sectionId) {
+    return sectionRepository
+        .findByIdAndPieceId(sectionId, pieceId)
+        .orElseThrow(() -> new ObjectNotFoundException("Section not found"));
   }
 
   private String createScoreSheetTitle(final MultipartFile file, final int position) {
@@ -257,6 +269,115 @@ public class PieceServiceImpl implements PieceService {
         new PieceScoreSheetRemovedEvent(scoreSheet.getId()).asDto());
 
     s3Service.deleteFile(scoreSheet.getS3Key());
+  }
+
+  @Override
+  @Transactional
+  public void addSection(
+      final User user, final UUID pieceId, final PieceSectionAddRequestDto addRequestDto) {
+    Piece piece = getPieceEntityById(pieceId);
+    ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
+
+    List<Section> orderedSections =
+        new ArrayList<>(sectionRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
+
+    int targetPosition = addRequestDto.position();
+    if (targetPosition < 0 || targetPosition > orderedSections.size()) {
+      throw new BadRequestException("Section position is out of bounds");
+    }
+
+    Section section = sectionMapper.toEntityFromCreateRequest(addRequestDto);
+    section.setPiece(piece);
+
+    if (addRequestDto.scoreSheetId() != null) {
+      ScoreSheet scoreSheet = getScoreSheetEntityById(pieceId, addRequestDto.scoreSheetId());
+      section.setScoreSheet(scoreSheet);
+    }
+
+    orderedSections.add(targetPosition, section);
+    for (int index = 0; index < orderedSections.size(); index++) {
+      orderedSections.get(index).setPosition(index);
+    }
+
+    List<Section> savedSections = sectionRepository.saveAll(orderedSections);
+    Section createdSection = savedSections.get(targetPosition);
+
+    messagingService.send(
+        Destinations.topicPiece(pieceId),
+        new PieceSectionAddedEvent(sectionMapper.toDto(createdSection)).asDto());
+  }
+
+  @Override
+  @Transactional
+  public void updateSection(
+      final User user, final UUID pieceId, final PieceSectionUpdateRequestDto updateRequestDto) {
+    if (updateRequestDto.sectionId() == null) {
+      throw new BadRequestException("Section id must be provided");
+    }
+
+    Piece piece = getPieceEntityById(pieceId);
+    ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
+
+    Section section = getSectionEntityById(pieceId, updateRequestDto.sectionId());
+
+    List<Section> orderedSections =
+        new ArrayList<>(sectionRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
+    int currentPosition =
+        orderedSections.stream().map(Section::getId).toList().indexOf(section.getId());
+    if (currentPosition < 0) {
+      throw new ObjectNotFoundException("Section not found");
+    }
+
+    int targetPosition = updateRequestDto.position();
+    if (targetPosition < 0 || targetPosition >= orderedSections.size()) {
+      throw new BadRequestException("Section position is out of bounds");
+    }
+
+    sectionMapper.updateEntityFromUpdateRequest(section, updateRequestDto);
+    if (updateRequestDto.scoreSheetId() == null) {
+      section.setScoreSheet(null);
+    } else {
+      ScoreSheet scoreSheet = getScoreSheetEntityById(pieceId, updateRequestDto.scoreSheetId());
+      section.setScoreSheet(scoreSheet);
+    }
+
+    orderedSections.removeIf(current -> current.getId().equals(section.getId()));
+    orderedSections.add(targetPosition, section);
+
+    for (int index = 0; index < orderedSections.size(); index++) {
+      orderedSections.get(index).setPosition(index);
+    }
+
+    sectionRepository.saveAll(orderedSections);
+
+    Section updatedSection = getSectionEntityById(pieceId, section.getId());
+    messagingService.send(
+        Destinations.topicPiece(pieceId),
+        new PieceSectionUpdatedEvent(updatedSection.getId(), sectionMapper.toDto(updatedSection))
+            .asDto());
+  }
+
+  @Override
+  @Transactional
+  public void removeSection(
+      final User user, final UUID pieceId, final PieceSectionRemoveRequestDto removeRequestDto) {
+    Piece piece = getPieceEntityById(pieceId);
+    ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
+
+    Section section = getSectionEntityById(pieceId, removeRequestDto.sectionId());
+
+    List<Section> orderedSections =
+        new ArrayList<>(sectionRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
+    orderedSections.removeIf(current -> current.getId().equals(section.getId()));
+    for (int index = 0; index < orderedSections.size(); index++) {
+      orderedSections.get(index).setPosition(index);
+    }
+    sectionRepository.saveAll(orderedSections);
+
+    sectionRepository.delete(section);
+
+    messagingService.send(
+        Destinations.topicPiece(pieceId), new PieceSectionRemovedEvent(section.getId()).asDto());
   }
 
   @Override

@@ -9,14 +9,32 @@ import type {
   ScoreSheetDto,
   SectionDto,
 } from "@/api/generated/openapi";
+import type { SectionFormState } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
 import type PieceUpdateRequestDto from "@/interfaces/async/request/piece/PieceUpdateRequestDto.ts";
+import type { SetStateAction } from "react";
+
+function normalizeSections(sections: SectionDto[]): SectionDto[] {
+  return [...sections]
+    .sort((left, right) => left.position - right.position)
+    .map((section, index) => ({
+      ...section,
+      position: index,
+    }));
+}
 
 interface PieceStoreState {
   piece: PieceDto;
   initialLoadComplete: boolean;
+  editingSectionId: string | null;
+  sectionForm: SectionFormState | null;
 
   reset: () => void;
   setPiece: (piece: PieceDto) => void;
+  setEditingSectionId: (sectionId: string | null) => void;
+  clearEditingSectionId: () => void;
+  setSectionForm: (
+    sectionForm: SetStateAction<SectionFormState | null>,
+  ) => void;
   updatePieceMetadata: (metadata: PieceUpdateRequestDto) => void;
   addPermission: (permission: PiecePermissionDto) => void;
   updatePermission: (userId: string, permissionType: PermissionType) => void;
@@ -32,6 +50,8 @@ interface PieceStoreState {
 const initialState = {
   piece: {} as PieceDto,
   initialLoadComplete: false,
+  editingSectionId: null,
+  sectionForm: null,
 };
 
 export const usePieceStore = create<PieceStoreState>((set) => ({
@@ -41,6 +61,20 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
   },
   setPiece: (piece) => {
     set({ piece, initialLoadComplete: true });
+  },
+  setEditingSectionId: (editingSectionId) => {
+    set({ editingSectionId });
+  },
+  clearEditingSectionId: () => {
+    set({ editingSectionId: null, sectionForm: null });
+  },
+  setSectionForm: (sectionForm) => {
+    set((state) => ({
+      sectionForm:
+        typeof sectionForm === "function"
+          ? sectionForm(state.sectionForm)
+          : sectionForm,
+    }));
   },
   updatePieceMetadata: (metadata) => {
     set((state) => ({
@@ -84,7 +118,11 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
     set((state) => ({
       piece: {
         ...state.piece,
-        sections: [...state.piece.sections, section],
+        sections: normalizeSections([
+          ...state.piece.sections.slice(0, section.position),
+          section,
+          ...state.piece.sections.slice(section.position),
+        ]),
       },
     }));
   },
@@ -92,18 +130,24 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
     set((state) => ({
       piece: {
         ...state.piece,
-        sections: state.piece.sections.map((currentSection) =>
-          currentSection.id === sectionId ? section : currentSection,
+        sections: normalizeSections(
+          state.piece.sections.map((currentSection) =>
+            currentSection.id === sectionId ? section : currentSection,
+          ),
         ),
       },
     }));
   },
   removeSection: (sectionId) => {
     set((state) => ({
+      editingSectionId:
+        state.editingSectionId === sectionId ? null : state.editingSectionId,
+      sectionForm:
+        state.editingSectionId === sectionId ? null : state.sectionForm,
       piece: {
         ...state.piece,
-        sections: state.piece.sections.filter(
-          (section) => section.id !== sectionId,
+        sections: normalizeSections(
+          state.piece.sections.filter((section) => section.id !== sectionId),
         ),
       },
     }));
@@ -136,6 +180,11 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
     set((state) => ({
       piece: {
         ...state.piece,
+        sections: state.piece.sections.map((section) =>
+          section.scoreSheetId === scoreSheetId
+            ? { ...section, scoreSheetId: null }
+            : section,
+        ),
         scoreSheets: state.piece.scoreSheets
           .filter((scoreSheet) => scoreSheet.id !== scoreSheetId)
           .sort((left, right) => left.position - right.position),

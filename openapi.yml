@@ -390,10 +390,32 @@ components:
         id:
           type: string
           format: uuid
+        position:
+          type: integer
+        timeSignatureNumerator:
+          type: integer
+        timeSignatureDenominator:
+          type: integer
+        barCount:
+          type: integer
+        bpm:
+          type: integer
         scoreSheetId:
           type: string
           format: uuid
-      required: [ id, scoreSheetId ]
+        posX1:
+          type: number
+          format: float
+        posY1:
+          type: number
+          format: float
+        posX2:
+          type: number
+          format: float
+        posY2:
+          type: number
+          format: float
+      required: [ id, position, timeSignatureNumerator, timeSignatureDenominator, barCount, bpm, scoreSheetId, posX1, posY1, posX2, posY2 ]
 
     PiecePermissionDto:
       type: object

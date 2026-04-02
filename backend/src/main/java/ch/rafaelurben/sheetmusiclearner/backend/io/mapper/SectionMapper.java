@@ -2,13 +2,11 @@
 package ch.rafaelurben.sheetmusiclearner.backend.io.mapper;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.SectionDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionAddRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Section;
 import java.util.List;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.NullValueMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
@@ -20,4 +18,9 @@ public interface SectionMapper {
   SectionDto toDto(Section section);
 
   List<SectionDto> toDtoList(List<Section> sections);
+
+  Section toEntityFromCreateRequest(PieceSectionAddRequestDto createRequestDto);
+
+  void updateEntityFromUpdateRequest(
+      @MappingTarget Section section, PieceSectionUpdateRequestDto updateRequestDto);
 }

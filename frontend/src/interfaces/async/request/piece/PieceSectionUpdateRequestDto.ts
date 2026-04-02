@@ -2,8 +2,16 @@
  * (C) 2026. - Rafael Urben
  */
 
-import type { SectionDto } from "@/api/generated/openapi/models/SectionDto.ts";
-
 export default interface PieceSectionUpdateRequestDto {
-  section: SectionDto;
+  sectionId: string;
+  position: number;
+  timeSignatureNumerator: number;
+  timeSignatureDenominator: number;
+  barCount: number;
+  bpm: number;
+  scoreSheetId: string | null;
+  posX1: number | null;
+  posY1: number | null;
+  posX2: number | null;
+  posY2: number | null;
 }
