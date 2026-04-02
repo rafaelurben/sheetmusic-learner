@@ -15,6 +15,14 @@ import { Input } from "@/shadcn/components/ui/input";
 import { useRoomsApi } from "@/api/useAuthenticatedApiClient.ts";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useMainStore } from "@/zustand/mainStore.ts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shadcn/components/ui/select.tsx";
 
 interface CreateRoomDialogProps {
   open: boolean;
@@ -25,11 +33,15 @@ export function CreateRoomDialog({
   open,
   onOpenChange,
 }: Readonly<CreateRoomDialogProps>) {
+  const NO_PIECE_VALUE = "__none__";
   const navigate = useNavigate();
   const roomsApi = useRoomsApi();
+  const piecesById = useMainStore((state) => state.pieces);
+  const pieces = React.useMemo(() => Object.values(piecesById), [piecesById]);
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [roomTitle, setRoomTitle] = React.useState("");
+  const [selectedPieceId, setSelectedPieceId] = React.useState(NO_PIECE_VALUE);
 
   const handleCreateRoom = async () => {
     if (!roomTitle.trim()) return;
@@ -38,11 +50,14 @@ export function CreateRoomDialog({
     try {
       const newRoom = await roomsApi.createRoom({
         roomCreateRequestDto: {
-          title: roomTitle,
+          title: roomTitle.trim(),
+          pieceId:
+            selectedPieceId === NO_PIECE_VALUE ? undefined : selectedPieceId,
         },
       });
       onOpenChange(false);
       setRoomTitle("");
+      setSelectedPieceId(NO_PIECE_VALUE);
       void navigate(`/rooms/${newRoom.id}`);
       toast.success("Successfully created new room!");
     } catch (error) {
@@ -56,6 +71,7 @@ export function CreateRoomDialog({
   const handleCancel = () => {
     onOpenChange(false);
     setRoomTitle("");
+    setSelectedPieceId(NO_PIECE_VALUE);
   };
 
   return (
@@ -81,6 +97,28 @@ export function CreateRoomDialog({
               disabled={isSubmitting}
               placeholder="Enter room title..."
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="room-piece">Piece</Label>
+            <Select
+              value={selectedPieceId}
+              onValueChange={setSelectedPieceId}
+              disabled={isSubmitting}
+            >
+              <SelectTrigger id="room-piece">
+                <SelectValue placeholder="Select a piece" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NO_PIECE_VALUE}>
+                  No piece selected
+                </SelectItem>
+                {pieces.map((piece) => (
+                  <SelectItem key={piece.id} value={piece.id}>
+                    {piece.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <DialogFooter>

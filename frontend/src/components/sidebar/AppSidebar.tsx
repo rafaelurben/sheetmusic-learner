@@ -17,6 +17,7 @@ import { useAuth } from "react-oidc-context";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/shadcn/components/ui/button";
 import { CreateRoomDialog } from "@/components/sidebar/CreateRoomDialog.tsx";
+import { CreatePieceDialog } from "@/components/sidebar/CreatePieceDialog.tsx";
 
 import { useMainStore } from "@/zustand/mainStore.ts";
 
@@ -27,6 +28,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const isConnected = useMainStore((state) => state.connected);
 
   const [isCreatingRoom, setIsCreatingRoom] = React.useState(false);
+  const [isCreatingPiece, setIsCreatingPiece] = React.useState(false);
 
   const pieces = React.useMemo(
     () => Object.values(piecesRecord),
@@ -63,7 +65,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Pieces</SidebarGroupLabel>
+          <SidebarGroupLabel className="flex items-center justify-between">
+            <span>Pieces</span>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-6"
+              onClick={() => {
+                setIsCreatingPiece(true);
+              }}
+            >
+              <PlusIcon className="size-4" />
+            </Button>
+          </SidebarGroupLabel>
           <SidebarMenu className="gap-2">
             {pieces.map((piece) => (
               <SidebarMenuItem key={piece.id}>
@@ -116,6 +130,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <CreateRoomDialog
         open={isCreatingRoom}
         onOpenChange={setIsCreatingRoom}
+      />
+      <CreatePieceDialog
+        open={isCreatingPiece}
+        onOpenChange={setIsCreatingPiece}
       />
     </Sidebar>
   );

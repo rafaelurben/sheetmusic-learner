@@ -326,6 +326,10 @@ components:
           type: string
         composer:
           type: string
+        year:
+          type: string
+        description:
+          type: string
         difficulty:
           type: string
         bpmRange:
@@ -344,7 +348,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SectionDto'
-      required: [ id, title, composer, difficulty, bpmRange, isPublic, permissions, scoreSheets, sections ]
+      required: [ id, title, composer, year, description, difficulty, bpmRange, isPublic, permissions, scoreSheets, sections ]
 
     PieceCreateRequestDto:
       type: object
@@ -353,16 +357,17 @@ components:
           type: string
         composer:
           type: string
+        year:
+          type: string
+        description:
+          type: string
         difficulty:
           type: string
-          default: ""
         bpmRange:
           type: string
-          default: ""
         isPublic:
           type: boolean
-          default: false
-      required: [ title, composer, isPublic ]
+      required: [ title, composer, year, description, difficulty, bpmRange, isPublic ]
 
     ScoreSheetDto:
       type: object
@@ -385,10 +390,32 @@ components:
         id:
           type: string
           format: uuid
+        position:
+          type: integer
+        timeSignatureNumerator:
+          type: integer
+        timeSignatureDenominator:
+          type: integer
+        barCount:
+          type: integer
+        bpm:
+          type: integer
         scoreSheetId:
           type: string
           format: uuid
-      required: [ id, scoreSheetId ]
+        posX1:
+          type: number
+          format: float
+        posY1:
+          type: number
+          format: float
+        posX2:
+          type: number
+          format: float
+        posY2:
+          type: number
+          format: float
+      required: [ id, position, timeSignatureNumerator, timeSignatureDenominator, barCount, bpm, scoreSheetId, posX1, posY1, posX2, posY2 ]
 
     PiecePermissionDto:
       type: object

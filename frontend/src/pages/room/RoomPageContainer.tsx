@@ -37,6 +37,9 @@ export default function RoomPageContainer() {
           case "metadata-updated":
             setRoom(event.payload.room);
             break;
+          case "piece-changed":
+            // TODO
+            break;
           case "chat-message":
             addChatMessage(event.payload);
             if (event.payload.sender.id !== currentUser?.id) {

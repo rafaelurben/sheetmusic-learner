@@ -6,6 +6,8 @@ import type PiecePermissionAddRequestDto from "@/interfaces/async/request/piece/
 import type { PiecePermissionRemoveRequestDto } from "@/interfaces/async/request/piece/PiecePermissionRemoveRequestDto.ts";
 import type { PiecePermissionUpdateRequestDto } from "@/interfaces/async/request/piece/PiecePermissionUpdateRequestDto.ts";
 import type PieceSectionAddRequestDto from "@/interfaces/async/request/piece/PieceSectionAddRequestDto.ts";
+import type PieceScoreSheetRemoveRequestDto from "@/interfaces/async/request/piece/PieceScoreSheetRemoveRequestDto.ts";
+import type PieceScoreSheetUpdateRequestDto from "@/interfaces/async/request/piece/PieceScoreSheetUpdateRequestDto.ts";
 import type { PieceSectionRemoveRequestDto } from "@/interfaces/async/request/piece/PieceSectionRemoveRequestDto.ts";
 import type PieceSectionUpdateRequestDto from "@/interfaces/async/request/piece/PieceSectionUpdateRequestDto.ts";
 import type PieceUpdateRequestDto from "@/interfaces/async/request/piece/PieceUpdateRequestDto.ts";
@@ -16,6 +18,8 @@ import type RoomUpdateRequestDto from "@/interfaces/async/request/room/RoomUpdat
 
 export type RequestDto =
   | PieceUpdateRequestDto
+  | PieceScoreSheetUpdateRequestDto
+  | PieceScoreSheetRemoveRequestDto
   | PieceSectionAddRequestDto
   | PieceSectionUpdateRequestDto
   | PieceSectionRemoveRequestDto

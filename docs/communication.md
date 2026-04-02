@@ -132,6 +132,30 @@ are relevant only for those users.
         "sectionId": "uuid"
       }
       ```
+- `type`: `score-sheet-added`
+    - Description: A new score sheet was added to the piece.
+    - Payload:
+      ```json5
+      {
+        "scoreSheet": {/* ScoreSheetDto */}
+      }
+      ```
+- `type`: `score-sheet-updated`
+    - Description: A score sheet title or position was updated.
+    - Payload:
+      ```json5
+      {
+        "scoreSheet": {/* ScoreSheetDto */}
+      }
+      ```
+- `type`: `score-sheet-removed`
+    - Description: A score sheet was deleted from the piece.
+    - Payload:
+      ```json5
+      {
+        "scoreSheetId": "uuid"
+      }
+      ```
 - `type`: `permission-added`
     - Description: A user permission was added to the piece.
     - Payload:
@@ -241,21 +265,23 @@ relevant for a specific user, such as error messages or notifications about acti
 
 Application destinations are used for sending messages from clients to the server.
 
-| Destination                         | Description                                                   | Payload                  |
-|-------------------------------------|---------------------------------------------------------------|--------------------------|
-| `/app/piece.{id}/update`            | Edit piece metadata                                           | Piece metadata           |
-| `/app/piece.{id}/section/add`       | Add a section to a piece                                      | Section object           |
-| `/app/piece.{id}/section/update`    | Edit/update an existing section                               | Section object           |
-| `/app/piece.{id}/section/remove`    | Remove a section from a piece                                 | Section id               |
-| `/app/piece.{id}/permission/add`    | Add a user permission                                         | User id, permission type |
-| `/app/piece.{id}/permission/update` | Update a user permissions                                     | User id, permission type |
-| `/app/piece.{id}/permission/remove` | Remove a user permissions                                     | User id                  |
-| `/app/room.{id}/update`             | Update room metadata (visibility, title, etc.) (owner action) | Room Metadata            |
-| `/app/room.{id}/change-piece`       | Change selected piece for the room (owner action)             | Piece id                 |
-| `/app/room.{id}/control/play`       | Start playback in the room (owner action)                     |                          |
-| `/app/room.{id}/control/pause`      | Pause playback in the room (owner action)                     |                          |
-| `/app/room.{id}/control/position`   | Change current position / select page (owner action)          | Current position         |
-| `/app/room.{id}/chat`               | Send a chat message to a room                                 | Message                  |
+| Destination                          | Description                                                   | Payload                  |
+|--------------------------------------|---------------------------------------------------------------|--------------------------|
+| `/app/piece.{id}/update`             | Edit piece metadata                                           | Piece metadata           |
+| `/app/piece.{id}/score-sheet/update` | Edit score sheet title and/or position                        | Score sheet id, updates  |
+| `/app/piece.{id}/score-sheet/delete` | Delete a score sheet                                          | Score sheet id           |
+| `/app/piece.{id}/section/add`        | Add a section to a piece                                      | Section object           |
+| `/app/piece.{id}/section/update`     | Edit/update an existing section                               | Section object           |
+| `/app/piece.{id}/section/remove`     | Remove a section from a piece                                 | Section id               |
+| `/app/piece.{id}/permission/add`     | Add a user permission                                         | User id, permission type |
+| `/app/piece.{id}/permission/update`  | Update a user permissions                                     | User id, permission type |
+| `/app/piece.{id}/permission/remove`  | Remove a user permissions                                     | User id                  |
+| `/app/room.{id}/update`              | Update room metadata (visibility, title, etc.) (owner action) | Room Metadata            |
+| `/app/room.{id}/change-piece`        | Change selected piece for the room (owner action)             | Piece id                 |
+| `/app/room.{id}/control/play`        | Start playback in the room (owner action)                     |                          |
+| `/app/room.{id}/control/pause`       | Pause playback in the room (owner action)                     |                          |
+| `/app/room.{id}/control/position`    | Change current position / select page (owner action)          | Current position         |
+| `/app/room.{id}/chat`                | Send a chat message to a room                                 | Message                  |
 
 **Room join** and **leave** actions are handled by subscribing and unsubscribing to the room topic, so there are no
 specific application destinations for that. A session disconnect event is also considered a leave action and handled

@@ -12,3 +12,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${app.oidc.issuer}
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB

@@ -5,10 +5,15 @@ import ch.rafaelurben.sheetmusiclearner.backend.exceptions.NotImplementedExcepti
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionAddRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionUpdateRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetRemoveRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionAddRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdateRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.model.User;
+import ch.rafaelurben.sheetmusiclearner.backend.service.PieceService;
+import ch.rafaelurben.sheetmusiclearner.backend.service.UserService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,32 +28,55 @@ import org.springframework.validation.annotation.Validated;
 @Slf4j
 public class AsyncPieceController {
 
+  private final PieceService pieceService;
+  private final UserService userService;
+
   @MessageMapping("/piece.{pieceId}/update")
   public void handlePieceUpdate(
       @DestinationVariable UUID pieceId, @Validated @Payload PieceUpdateRequestDto dto) {
-    log.debug("Received piece update for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Piece update is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.updatePiece(user, pieceId, dto);
+    log.debug("Updated piece {}: {}", pieceId, dto);
+  }
+
+  @MessageMapping("/piece.{pieceId}/score-sheet/update")
+  public void handleScoreSheetUpdate(
+      @DestinationVariable UUID pieceId, @Validated @Payload PieceScoreSheetUpdateRequestDto dto) {
+    User user = userService.getCurrentUserEntity();
+    pieceService.updateScoreSheet(user, pieceId, dto);
+    log.debug("Updated score sheet for piece {}: {}", pieceId, dto);
+  }
+
+  @MessageMapping("/piece.{pieceId}/score-sheet/delete")
+  public void handleScoreSheetDelete(
+      @DestinationVariable UUID pieceId, @Validated @Payload PieceScoreSheetRemoveRequestDto dto) {
+    User user = userService.getCurrentUserEntity();
+    pieceService.removeScoreSheet(user, pieceId, dto);
+    log.debug("Deleted score sheet for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/section/add")
   public void handleSectionAdd(
       @DestinationVariable UUID pieceId, @Validated @Payload PieceSectionAddRequestDto dto) {
-    log.debug("Received section add for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Section add is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.addSection(user, pieceId, dto);
+    log.debug("Added section for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/section/update")
   public void handleSectionUpdate(
       @DestinationVariable UUID pieceId, @Validated @Payload PieceSectionUpdateRequestDto dto) {
-    log.debug("Received section update for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Section update is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.updateSection(user, pieceId, dto);
+    log.debug("Updated section for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/section/remove")
   public void handleSectionRemove(
       @DestinationVariable UUID pieceId, @Validated @Payload PieceSectionRemoveRequestDto dto) {
-    log.debug("Received section remove for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Section remove is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.removeSection(user, pieceId, dto);
+    log.debug("Removed section for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/permission/add")

@@ -9,13 +9,17 @@ import {
 import { Separator } from "@/shadcn/components/ui/separator.tsx";
 import { AppSidebar } from "@/components/sidebar/AppSidebar.tsx";
 import React, { useEffect } from "react";
-import Piece from "@/pages/Piece.tsx";
+import PiecePageContainer from "@/pages/piece/PiecePageContainer.tsx";
 import DummyPiece from "@/pages/DummyPiece.tsx";
 import DummyRoom from "@/pages/DummyRoom.tsx";
 import DebugStompPage from "@/pages/debug/DebugStompPage.tsx";
 import { stompService } from "@/service/stompService.ts";
 import { useMainStore } from "@/zustand/mainStore.ts";
-import { useRoomsApi, useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
+import {
+  usePiecesApi,
+  useRoomsApi,
+  useUsersApi,
+} from "@/api/useAuthenticatedApiClient.ts";
 import { useAuth } from "react-oidc-context";
 import { toast } from "sonner";
 import AppBreadcrumbs from "@/components/navigation/AppBreadcrumbs.tsx";
@@ -33,44 +37,33 @@ export default function AppAuthenticated() {
     connected,
   } = useMainStore();
   const usersApi = useUsersApi();
+  const piecesApi = usePiecesApi();
   const roomsApi = useRoomsApi();
   const auth = useAuth();
 
-  // Initialize store with dummy data
+  // Initialize store from API
   useEffect(() => {
-    // Add dummy pieces
-    addPiece({
-      id: "1",
-      title: "Piece 1",
-      composer: "",
-      difficulty: "",
-      bpmRange: "",
-      isPublic: false,
-    });
-    addPiece({
-      id: "2",
-      title: "Piece 2",
-      composer: "",
-      difficulty: "",
-      bpmRange: "",
-      isPublic: false,
-    });
-    addPiece({
-      id: "3",
-      title: "Piece 3",
-      composer: "",
-      difficulty: "",
-      bpmRange: "",
-      isPublic: false,
-    });
+    // Add pieces
     addPiece({
       id: "dummy",
       title: "Dummy Piece",
       composer: "",
+      year: "2034",
       difficulty: "",
+      description: "",
       bpmRange: "",
       isPublic: false,
     });
+    piecesApi
+      .getPieces()
+      .then((pieces) => {
+        pieces.forEach((piece) => {
+          addPiece(piece);
+        });
+      })
+      .catch((err: unknown) => {
+        console.error("Failed to fetch pieces:", err);
+      });
 
     // Add rooms
     addRoom({
@@ -88,7 +81,7 @@ export default function AppAuthenticated() {
       .catch((err: unknown) => {
         console.error("Failed to fetch rooms:", err);
       });
-  }, [addPiece, addRoom, roomsApi]);
+  }, [addPiece, addRoom, piecesApi, roomsApi]);
 
   // Global subscriptions
   useEffect(() => {
@@ -233,7 +226,7 @@ export default function AppAuthenticated() {
               <Route path="/rooms/dummy" element={<DummyRoom />} />
               <Route path="/rooms/:id" element={<RoomPageContainer />} />
               <Route path="/pieces/dummy" element={<DummyPiece />} />
-              <Route path="/pieces/:id" element={<Piece />} />
+              <Route path="/pieces/:id" element={<PiecePageContainer />} />
               <Route path="/debug/stomp" element={<DebugStompPage />} />
             </Routes>
           </main>

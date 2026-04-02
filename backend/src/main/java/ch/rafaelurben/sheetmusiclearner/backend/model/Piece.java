@@ -27,6 +27,12 @@ public class Piece extends BaseEntity {
   @Column(name = "composer")
   private String composer;
 
+  @Column(name = "year", nullable = false)
+  private String year;
+
+  @Column(name = "description", nullable = false)
+  private String description;
+
   @Column(name = "difficulty")
   private String difficulty;
 

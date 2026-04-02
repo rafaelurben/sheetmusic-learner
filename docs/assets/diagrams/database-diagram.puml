@@ -40,6 +40,7 @@ entity "ScoreSheet" as scoresheet {
   ..
   position: number
   title: varchar
+  s3_key: varchar
   image_url: varchar
   ..
   timestamp_created: datetime

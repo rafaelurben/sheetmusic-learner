@@ -8,6 +8,12 @@ app:
     client-id: sheetmusic-learner
     issuer: http://localhost:4011
     scope: openid profile email api
+  s3:
+    endpoint-override: http://localhost:9000
+    public-base-url: http://localhost:9000
+    access-key: sheetmusic-access
+    secret-key: sheetmusic-secret
+    bucket: sheetmusic-learner-scores
 
 logging:
   level:

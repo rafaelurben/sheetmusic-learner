@@ -30,6 +30,11 @@
 - 2026-03-21 - 2026-03-22:
   - Implemented room deletion
   - Added breadcrumbs and page titles
+- 2026-03-31 - 2026-04-02:
+  - Basic piece features (CRUD) implemented.
+  - Sheet upload using S3 implemented. (Bug: PDF conversion only working for image-based PDFs)
+  - Add sheet music update/delete and event handling
+  - Add sections add/update/delete handling (without coordinate mapping)
 
 ## Project milestones
 

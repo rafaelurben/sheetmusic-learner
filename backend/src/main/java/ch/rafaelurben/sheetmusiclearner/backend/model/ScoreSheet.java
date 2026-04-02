@@ -28,6 +28,9 @@ public class ScoreSheet extends BaseEntity {
   @Min(0)
   private Integer position;
 
+  @Column(name = "s3_key", nullable = false)
+  private String s3Key;
+
   @Column(name = "image_url")
   private String imageUrl;
 
