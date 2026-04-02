@@ -138,6 +138,7 @@ export default function RoomPageContainer() {
         onOpenChange={setIsEditingRoom}
         roomId={room.id}
         initialTitle={room.title}
+        initialPieceId={room.pieceId}
       />
     </SidebarProvider>
   );

@@ -50,8 +50,11 @@ public class AsyncRoomController {
   @MessageMapping("/room.{roomId}/change-piece")
   public void handleChangePiece(
       @DestinationVariable UUID roomId, @Validated @Payload RoomChangePieceRequestDto dto) {
+    User user = userService.getCurrentUserEntity();
+
     log.debug("Received change-piece for room {}: {}", roomId, dto);
-    throw new NotImplementedException("Room change piece is not implemented yet");
+
+    roomService.changePiece(user, roomId, dto);
   }
 
   @MessageMapping("/room.{roomId}/control/play")

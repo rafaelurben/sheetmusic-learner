@@ -3,6 +3,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
@@ -20,6 +21,8 @@ public interface RoomService {
   void deleteRoom(User user, UUID roomId);
 
   void sendChatMessage(User user, UUID roomId, RoomChatMessageRequestDto dto);
+
+  void changePiece(User user, UUID roomId, RoomChangePieceRequestDto dto);
 
   void updateRoom(User user, UUID roomId, RoomUpdateRequestDto updateRequestDto);
 }

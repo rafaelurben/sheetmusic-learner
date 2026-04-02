@@ -7,12 +7,17 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.InsufficientPermissionException;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.*;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.PieceMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.RoomMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.UserMapper;
+import ch.rafaelurben.sheetmusiclearner.backend.model.Piece;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Room;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
+import ch.rafaelurben.sheetmusiclearner.backend.repository.PiecePermissionRepository;
+import ch.rafaelurben.sheetmusiclearner.backend.repository.PieceRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.RoomRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.utils.Destinations;
 import java.time.Instant;
@@ -27,8 +32,35 @@ public class RoomServiceImpl implements RoomService {
 
   private final MessagingService messagingService;
   private final RoomRepository roomRepository;
+  private final PieceRepository pieceRepository;
+  private final PiecePermissionRepository piecePermissionRepository;
+  private final PieceMapper pieceMapper;
   private final RoomMapper roomMapper;
   private final UserMapper userMapper;
+
+  private Piece getPieceById(final UUID pieceId) {
+    return pieceRepository
+        .findById(pieceId)
+        .orElseThrow(() -> new ObjectNotFoundException("Piece not found"));
+  }
+
+  private void ensurePieceReadableByUser(final User user, final Piece piece) {
+    if (Boolean.TRUE.equals(piece.getIsPublic())) {
+      return;
+    }
+
+    boolean hasPermission =
+        piecePermissionRepository.existsByPieceIdAndUserId(piece.getId(), user.getId());
+    if (!hasPermission) {
+      throw new InsufficientPermissionException("You do not have permission to view this piece");
+    }
+  }
+
+  private Piece getReadablePieceById(final User user, final UUID pieceId) {
+    Piece piece = getPieceById(pieceId);
+    ensurePieceReadableByUser(user, piece);
+    return piece;
+  }
 
   @Override
   public List<RoomDto> getAllAvailableRooms(final User user) {
@@ -39,7 +71,11 @@ public class RoomServiceImpl implements RoomService {
   public RoomDto createRoom(final User user, final RoomCreateRequestDto createRequestDto) {
     Room room = roomMapper.toEntityFromCreateRequest(createRequestDto);
     room.setOwner(user);
-    // TODO: get and set piece if pieceId is provided
+    if (createRequestDto.getPieceId() != null) {
+      Piece piece = getReadablePieceById(user, createRequestDto.getPieceId());
+      room.setPiece(piece);
+    }
+
     room = roomRepository.save(room);
     RoomDto roomDto = roomMapper.toDto(room);
 
@@ -87,6 +123,23 @@ public class RoomServiceImpl implements RoomService {
     messagingService.send(
         Destinations.topicRoom(roomId),
         new RoomChatMessageEvent(UUID.randomUUID(), userDto, dto.message(), Instant.now()).asDto());
+  }
+
+  @Override
+  public void changePiece(User user, UUID roomId, RoomChangePieceRequestDto dto) {
+    Room room = getRoomById(roomId);
+    ensureUserIsOwner(user, room);
+
+    Piece piece = getReadablePieceById(user, dto.pieceId());
+    room.setPiece(piece);
+    room = roomRepository.save(room);
+
+    RoomDto roomDto = roomMapper.toDto(room);
+    messagingService.send(
+        Destinations.topicGeneral(), new GeneralRoomMetadataUpdatedEvent(roomDto).asDto());
+    messagingService.send(
+        Destinations.topicRoom(roomId),
+        new RoomPieceChangedEvent(pieceMapper.toDto(piece)).asDto());
   }
 
   @Override
