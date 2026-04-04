@@ -16,7 +16,9 @@
   "forwardPorts": [
     5173,
     5433,
-    4011
+    4011,
+    9000,
+    9001
   ],
   "containerEnv": {
     "SPRING_PROFILES_ACTIVE": "local",

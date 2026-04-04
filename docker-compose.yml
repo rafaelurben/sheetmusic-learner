@@ -19,7 +19,7 @@ services:
   # https://github.com/Soluto/oidc-server-mock
   oidc-server-mock:
     container_name: oidc-server-mock
-    image: ghcr.io/soluto/oidc-server-mock:0.12.1
+    image: ghcr.io/soluto/oidc-server-mock:0.9.2 # <10 needed for ARM compatibility
     restart: unless-stopped
     ports:
       - "4011:8080"
