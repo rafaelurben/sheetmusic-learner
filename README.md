@@ -33,18 +33,29 @@ The [docker-compose.yml](docker-compose.yml) configuration contains two services
     - **Important**: Does **not** work on ARM
       architectures! ([Issue](https://github.com/Soluto/oidc-server-mock/issues/165))
     - Mock users: (username = password)
-      - `rafael`
-      - `rick`
-      - `bart`
+        - `rafael`
+        - `rick`
+        - `bart`
+3. A local minio instance running on port 9000 for object storage
 
 ### Commands
 
 - **Services**:
-  - Start: `docker compose up -d --wait`
-  - Stop: `docker compose down`
+    - Start: `docker compose up -d --wait`
+    - Stop: `docker compose down`
 - **Backend**:
-  - Install: `cd backend && mvn verify -DskipTests`
-  - Run: `cd backend && mvn spring-boot:start`
+    - Install: `cd backend && mvn verify -DskipTests`
+    - Run: `cd backend && mvn spring-boot:start`
 - **Frontend**:
-  - Install: `cd frontend && npm ci && npm run generate:openapi`
-  - Run: `cd frontend && npm run dev`
+    - Install: `cd frontend && npm ci && npm run generate:openapi`
+    - Run: `cd frontend && npm run dev`
+
+#### Other scripts
+
+**Full local docker setup**: This builds the entire application as docker containers and runs it with all services.
+
+```bash
+cd frontend && npm ci && npm run build && cd ..
+cd backend && mvn verify -DskipTests && cd ..
+docker compose -f docker-compose-full.yml up --build --wait --detach
+```

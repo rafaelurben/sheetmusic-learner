@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgresdb:5432/postgres
+
+app:
+  oidc:
+    issuer: http://host.docker.internal:4011
+  s3:
+    endpoint-override: http://minio:9000
