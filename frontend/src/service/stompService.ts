@@ -1,4 +1,9 @@
-import { Client, StompConfig, type StompSubscription } from "@stomp/stompjs";
+import {
+  Client,
+  ReconnectionTimeMode,
+  StompConfig,
+  type StompSubscription,
+} from "@stomp/stompjs";
 import type { EventDto } from "@/interfaces/async/EventDto.ts";
 import type { SubscribeDestinationName } from "@/interfaces/SubscribeDestinationName.ts";
 import type { PublishDestinationName } from "@/interfaces/PublishDestinationName.ts";
@@ -35,7 +40,14 @@ class StompService {
       connectHeaders: {
         Authorization: `Bearer ${token}`,
       },
-      reconnectDelay: 5000,
+      // Reconnection
+      reconnectDelay: 1000,
+      reconnectTimeMode: ReconnectionTimeMode.EXPONENTIAL,
+      maxReconnectDelay: 30_000,
+      // Heartbeat, should match WebSocketConfig in the backend
+      heartbeatOutgoing: 25_000,
+      heartbeatIncoming: 25_000,
+      // Methods
       debug: (str) => {
         console.debug("STOMP DEBUG:", str);
       },

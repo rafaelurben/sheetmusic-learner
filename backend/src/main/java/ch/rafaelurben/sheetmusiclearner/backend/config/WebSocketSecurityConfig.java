@@ -27,7 +27,7 @@ public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer
     messages
         // CONNECT and DISCONNECT must be first to ensure they pass through
         // The WebSocketAuthChannelInterceptor will handle actual authentication for CONNECT
-        .simpTypeMatchers(CONNECT, DISCONNECT, UNSUBSCRIBE)
+        .simpTypeMatchers(CONNECT, DISCONNECT, UNSUBSCRIBE, HEARTBEAT)
         .permitAll()
         // MESSAGE to application destinations
         .simpMessageDestMatchers("/app/**")
