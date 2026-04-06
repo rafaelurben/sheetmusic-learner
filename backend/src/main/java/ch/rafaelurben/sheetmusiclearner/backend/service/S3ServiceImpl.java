@@ -32,7 +32,7 @@ public class S3ServiceImpl implements S3Service {
   public String uploadFile(final String key, final String mediaType, final MultipartFile file) {
     try {
       s3Client.putObject(
-          d -> d.bucket(s3Properties.getBucket()).key(key).contentType(mediaType).grantRead("*"),
+          d -> d.bucket(s3Properties.getBucket()).key(key).contentType(mediaType),
           RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
       log.debug("Uploaded score sheet to S3: s3://{}/{}", s3Properties.getBucket(), key);
