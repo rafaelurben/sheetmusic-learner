@@ -81,7 +81,7 @@ async function convertPdfToPages(file: File): Promise<ConvertedPdfPage[]> {
       canvasContext,
       viewport,
       canvas,
-      background: "#ff0000",
+      background: "#ffffff",
       intent: "print",
     }).promise;
 
