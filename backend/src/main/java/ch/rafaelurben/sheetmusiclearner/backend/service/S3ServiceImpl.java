@@ -37,8 +37,7 @@ public class S3ServiceImpl implements S3Service {
 
       log.debug("Uploaded score sheet to S3: s3://{}/{}", s3Properties.getBucket(), key);
 
-      return String.format(
-          "%s/%s/%s", resolvePublicBaseUrl(), s3Properties.getBucket(), trimLeadingSlash(key));
+      return String.format("%s/%s", resolvePublicBaseUrl(), trimLeadingSlash(key));
     } catch (IOException e) {
       throw new BadRequestException("Failed to read file content: " + e.getMessage());
     }
