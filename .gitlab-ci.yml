@@ -73,9 +73,9 @@ build::frontend:
       {"auths":{"$CI_REGISTRY":{"username":"$CI_REGISTRY_USER","password":"$CI_REGISTRY_PASSWORD"}}}
       EOF
       if [ "$CI_COMMIT_BRANCH" = "main" ]; then
-        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/backend/Dockerfile" --destination "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHA" --destination "$CI_REGISTRY_IMAGE/$IMAGE_NAME:latest"
+        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/$FOLDER_NAME/Dockerfile" --destination "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHA" --destination "$CI_REGISTRY_IMAGE/$IMAGE_NAME:latest"
       else
-        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/backend/Dockerfile" --destination "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHA"
+        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/$FOLDER_NAME/Dockerfile" --destination "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHA"
       fi
 
 docker::backend:
@@ -85,11 +85,13 @@ docker::backend:
       artifacts: true
   variables:
     IMAGE_NAME: sheetmusic-learner/sheetmusic-learner-backend
+    FOLDER_NAME: backend
 
-frontend::docker_image:
+docker::frontend:
   extends: .docker::preset
   needs:
     - job: build::frontend
       artifacts: true
   variables:
     IMAGE_NAME: sheetmusic-learner/sheetmusic-learner-frontend
+    FOLDER_NAME: frontend
