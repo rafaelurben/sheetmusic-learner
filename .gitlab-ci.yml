@@ -6,7 +6,7 @@ stages:
 variables:
   KANIKO_IMAGE: gcr.io/kaniko-project/executor:v1.23.2-debug
 
-backend::spotless_check:
+checks::backend:
   stage: checks
   image: maven:3.9.11-eclipse-temurin-25
   cache:
@@ -16,7 +16,7 @@ backend::spotless_check:
   script:
     - mvn -B -f backend/pom.xml spotless:check
 
-frontend::lint:
+checks::frontend:
   stage: checks
   image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
   cache:
@@ -30,7 +30,7 @@ frontend::lint:
     - npm run lint
     - npx tsc -b
 
-backend::build_artifact:
+build::backend:
   stage: build
   image: maven:3.9.11-eclipse-temurin-25
   cache:
@@ -44,7 +44,7 @@ backend::build_artifact:
       - backend/target/backend-*.jar
     expire_in: 1 day
 
-frontend::build_artifact:
+build::frontend:
   stage: build
   image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
   cache:
@@ -61,42 +61,35 @@ frontend::build_artifact:
       - frontend/nginx.conf
     expire_in: 1 day
 
-backend::docker_image:
+.docker::preset:
   stage: docker
   image:
     name: $KANIKO_IMAGE
     entrypoint: [ "" ]
+  script:
+    - |
+      mkdir -p /kaniko/.docker
+      cat > /kaniko/.docker/config.json <<EOF
+      {"auths":{"$CI_REGISTRY":{"username":"$CI_REGISTRY_USER","password":"$CI_REGISTRY_PASSWORD"}}}
+      EOF
+      if [ "$CI_COMMIT_BRANCH" = "main" ]; then
+        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/backend/Dockerfile" --destination "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHA" --destination "$CI_REGISTRY_IMAGE/$IMAGE_NAME:latest"
+      else
+        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/backend/Dockerfile" --destination "$CI_REGISTRY_IMAGE/$IMAGE_NAME:$CI_COMMIT_SHA"
+      fi
+
+docker::backend:
+  extends: .docker::preset
   needs:
     - job: backend::build_artifact
       artifacts: true
-  script:
-    - |
-      mkdir -p /kaniko/.docker
-      cat > /kaniko/.docker/config.json <<EOF
-      {"auths":{"$CI_REGISTRY":{"username":"$CI_REGISTRY_USER","password":"$CI_REGISTRY_PASSWORD"}}}
-      EOF
-      if [ "$CI_COMMIT_BRANCH" = "main" ]; then
-        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/backend/Dockerfile" --destination "$CI_REGISTRY_IMAGE/sheetmusic-learner-backend:$CI_COMMIT_SHA" --destination "$CI_REGISTRY_IMAGE/sheetmusic-learner-backend:latest"
-      else
-        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/backend/Dockerfile" --destination "$CI_REGISTRY_IMAGE/sheetmusic-learner-backend:$CI_COMMIT_SHA"
-      fi
+  variables:
+    IMAGE_NAME: sheetmusic-learner/sheetmusic-learner-backend
 
 frontend::docker_image:
-  stage: docker
-  image:
-    name: $KANIKO_IMAGE
-    entrypoint: [ "" ]
+  extends: .docker::preset
   needs:
     - job: frontend::build_artifact
       artifacts: true
-  script:
-    - |
-      mkdir -p /kaniko/.docker
-      cat > /kaniko/.docker/config.json <<EOF
-      {"auths":{"$CI_REGISTRY":{"username":"$CI_REGISTRY_USER","password":"$CI_REGISTRY_PASSWORD"}}}
-      EOF
-      if [ "$CI_COMMIT_BRANCH" = "main" ]; then
-        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/frontend/Dockerfile" --destination "$CI_REGISTRY_IMAGE/sheetmusic-learner-frontend:$CI_COMMIT_SHA" --destination "$CI_REGISTRY_IMAGE/sheetmusic-learner-frontend:latest"
-      else
-        /kaniko/executor --context "$CI_PROJECT_DIR" --dockerfile "$CI_PROJECT_DIR/frontend/Dockerfile" --destination "$CI_REGISTRY_IMAGE/sheetmusic-learner-frontend:$CI_COMMIT_SHA"
-      fi
+  variables:
+    IMAGE_NAME: sheetmusic-learner/sheetmusic-learner-frontend
