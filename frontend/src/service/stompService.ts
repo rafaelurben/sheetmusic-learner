@@ -25,7 +25,10 @@ class StompService {
 
   connect(token: string, config?: Partial<StompConfig>) {
     if (this.client?.connected) {
-      throw new Error("StompService already connected");
+      console.warn(
+        "Connecting even though a connection already exists. Deactivating old connection!",
+      );
+      void this.client.deactivate();
     }
 
     console.log(
