@@ -81,7 +81,7 @@ build::frontend:
 docker::backend:
   extends: .docker::preset
   needs:
-    - job: backend::build_artifact
+    - job: build::backend
       artifacts: true
   variables:
     IMAGE_NAME: sheetmusic-learner/sheetmusic-learner-backend
@@ -89,7 +89,7 @@ docker::backend:
 frontend::docker_image:
   extends: .docker::preset
   needs:
-    - job: frontend::build_artifact
+    - job: build::frontend
       artifacts: true
   variables:
     IMAGE_NAME: sheetmusic-learner/sheetmusic-learner-frontend
