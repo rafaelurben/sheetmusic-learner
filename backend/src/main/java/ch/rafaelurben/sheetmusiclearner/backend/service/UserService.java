@@ -3,6 +3,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
+import org.springframework.security.core.Authentication;
 
 public interface UserService {
 
@@ -18,6 +19,12 @@ public interface UserService {
    */
   default User getCurrentUserEntity() {
     return getCurrentUserEntity(false);
+  }
+
+  User getUserEntity(Authentication authentication, boolean update);
+
+  default User getUserEntity(Authentication authentication) {
+    return getUserEntity(authentication, false);
   }
 
   /**

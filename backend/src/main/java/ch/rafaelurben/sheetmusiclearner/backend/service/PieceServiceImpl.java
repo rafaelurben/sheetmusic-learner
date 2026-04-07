@@ -169,6 +169,14 @@ public class PieceServiceImpl implements PieceService {
   }
 
   @Override
+  @Transactional(readOnly = true)
+  public void ensureReadableByUser(UUID userId, UUID pieceId) {
+    User user = getUserEntityById(userId);
+    Piece piece = getPieceEntityById(pieceId);
+    ensureReadableByUser(user, piece);
+  }
+
+  @Override
   @Transactional
   public PieceDto createPiece(final User user, final PieceCreateRequestDto createRequestDto) {
     Piece piece = pieceMapper.toEntityFromCreateRequest(createRequestDto);

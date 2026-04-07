@@ -33,6 +33,7 @@ public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer
         .simpMessageDestMatchers("/app/**")
         .authenticated()
         // SUBSCRIBE to user and topic destinations
+        // Authorization happens in WebSocketAuthChannelInterceptor
         .simpSubscribeDestMatchers("/user/**", "/topic/**")
         .authenticated()
         // Everything else is denied

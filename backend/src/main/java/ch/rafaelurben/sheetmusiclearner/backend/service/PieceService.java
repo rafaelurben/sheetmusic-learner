@@ -22,6 +22,8 @@ public interface PieceService {
 
   List<PieceDto> getAllAccessiblePieces(User user);
 
+  void ensureReadableByUser(UUID userId, UUID pieceId);
+
   PieceDto createPiece(User user, PieceCreateRequestDto createRequestDto);
 
   PieceDto getPieceById(User user, UUID pieceId);

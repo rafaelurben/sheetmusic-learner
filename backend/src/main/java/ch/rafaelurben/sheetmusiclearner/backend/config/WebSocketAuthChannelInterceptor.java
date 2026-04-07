@@ -1,9 +1,16 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.config;
 
+import ch.rafaelurben.sheetmusiclearner.backend.model.User;
+import ch.rafaelurben.sheetmusiclearner.backend.service.PieceService;
+import ch.rafaelurben.sheetmusiclearner.backend.service.UserService;
+import ch.rafaelurben.sheetmusiclearner.backend.utils.Destinations;
+import java.util.Optional;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -29,6 +36,19 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
   private final JwtDecoder jwtDecoder;
   private final JwtAuthenticationConverter jwtAuthenticationConverter =
       new JwtAuthenticationConverter();
+
+  @Lazy private final PieceService pieceService;
+  @Lazy private final UserService userService;
+
+  private void authorizeSubscribe(StompHeaderAccessor accessor, Authentication authentication) {
+    String destination = accessor.getDestination();
+    Optional<UUID> optionalPieceId =
+        Destinations.extractPieceIdFromTopicPieceDestination(destination);
+    if (optionalPieceId.isPresent()) {
+      User user = userService.getUserEntity(authentication);
+      pieceService.ensureReadableByUser(user.getId(), optionalPieceId.get());
+    }
+  }
 
   @Override
   public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
@@ -75,6 +95,11 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
         log.error("Failed to authenticate WebSocket CONNECT!", e);
         throw new BadCredentialsException("Invalid token", e);
       }
+    } else if (StompCommand.SUBSCRIBE.equals(command)) {
+      if (!(accessor.getUser() instanceof Authentication authentication)) {
+        throw new BadCredentialsException("Missing authentication for STOMP frame");
+      }
+      authorizeSubscribe(accessor, authentication);
     }
 
     return message;

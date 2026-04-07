@@ -26,8 +26,7 @@ public class UserServiceImpl implements UserService {
   private final UserMapper userMapper;
   private final UserRepository userRepository;
 
-  private Jwt getPrincipal() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+  private Jwt getJwtPrincipal(Authentication authentication) {
     if (authentication == null) {
       throw new AuthenticationServiceException("No authentication found");
     }
@@ -38,10 +37,7 @@ public class UserServiceImpl implements UserService {
     return principal;
   }
 
-  @Override
-  @Transactional
-  public User getCurrentUserEntity(boolean update) {
-    Jwt principal = getPrincipal();
+  private User getOrCreateUserEntity(Jwt principal, boolean update) {
     UUID uuid = UUID.fromString(principal.getSubject());
 
     Optional<User> userOptional = userRepository.findById(uuid);
@@ -57,6 +53,20 @@ public class UserServiceImpl implements UserService {
     user.setAvatarUrl(principal.getClaimAsString("picture"));
 
     return userRepository.save(user);
+  }
+
+  @Override
+  @Transactional
+  public User getUserEntity(Authentication authentication, boolean update) {
+    Jwt principal = getJwtPrincipal(authentication);
+    return getOrCreateUserEntity(principal, update);
+  }
+
+  @Override
+  @Transactional
+  public User getCurrentUserEntity(boolean update) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return getUserEntity(authentication, update);
   }
 
   @Override

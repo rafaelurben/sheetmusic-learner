@@ -203,3 +203,4 @@ class StompService {
 }
 
 export const stompService = new StompService();
+console.log("STOMPPPP:", stompService);
