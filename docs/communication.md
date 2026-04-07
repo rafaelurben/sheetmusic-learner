@@ -83,7 +83,7 @@ Messages sent to topics are sent in JSON and have the following format:
     - Payload:
       ```json5
       {
-        "room": {/* RoomMetadata */}
+        "room": {/* RoomMetadataDto */}
       }
       ```
 - `type`: `room-metadata-updated`
@@ -91,7 +91,7 @@ Messages sent to topics are sent in JSON and have the following format:
     - Payload:
       ```json5
       {
-        "room": {/* RoomMetadata */}
+        "room": {/* RoomMetadataDto */}
       }
       ```
 - `type`: `room-now-unavailable`
@@ -197,7 +197,7 @@ users.
     - Payload:
       ```json5
       {
-        "room": {/* RoomMetadata */}
+        "room": {/* RoomMetadataDto */}
       }
       ```
 - `type`: `piece-changed`
@@ -254,11 +254,11 @@ relevant for a specific user, such as error messages or notifications about acti
       ```
 - `type`: `room-joined`
     - Description: The user successfully joined a room. The payload contains the room's metadata and the current state
-      of the room (selected piece, playback position, etc.).
+      of the room (selected piece, playback position, connected users, etc.).
     - Payload:
       ```json5
       {
-        "room": {/* Room including Piece */},
+        "room": {/* RoomDto */},
       }
       ```
 

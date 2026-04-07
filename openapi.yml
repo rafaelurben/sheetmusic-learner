@@ -83,7 +83,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/PieceDto'
+                  $ref: '#/components/schemas/PieceMetadataDto'
         '401':
           $ref: '#/components/responses/Unauthorized'
     post:
@@ -199,7 +199,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RoomDto'
+                  $ref: '#/components/schemas/RoomMetadataDto'
         '401':
           $ref: '#/components/responses/Unauthorized'
     post:
@@ -343,6 +343,28 @@ components:
           format: uri
       required: [ id, firstName, lastName, email ]
 
+    PieceMetadataDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        composer:
+          type: string
+        year:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: string
+        bpmRange:
+          type: string
+        isPublic:
+          type: boolean
+      required: [ id, title, composer, year, description, difficulty, bpmRange, isPublic ]
+
     PieceDto:
       type: object
       properties:
@@ -455,6 +477,40 @@ components:
           $ref: '#/components/schemas/PermissionType'
       required: [ user, permissionType ]
 
+    RoomMetadataDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        ownerId:
+          type: string
+          format: uuid
+        pieceId:
+          type:
+            - string
+            - 'null'
+          format: uuid
+        playing:
+          type: boolean
+          default: false
+        lastPlaySectionPosition:
+          type:
+            - integer
+            - 'null'
+        lastPlayTimestamp:
+          type:
+            - string
+            - 'null'
+          format: timestamp
+        tempoMultiplier:
+          type: number
+          format: float
+          default: 1.0
+      required: [ id, title, ownerId ]
+
     RoomDto:
       type: object
       properties:
@@ -487,6 +543,10 @@ components:
           type: number
           format: float
           default: 1.0
+        roomUsers:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserDto'
       required: [ id, title, ownerId ]
 
     RoomCreateRequestDto:

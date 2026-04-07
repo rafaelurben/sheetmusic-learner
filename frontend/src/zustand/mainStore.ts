@@ -2,23 +2,25 @@
  * (C) 2026. - Rafael Urben
  */
 import { create } from "zustand";
-import type RoomMetadata from "@/interfaces/RoomMetadata.ts";
-import type PieceMetadata from "@/interfaces/PieceMetadata.ts";
-import type { UserDto } from "@/api/generated/openapi";
+import type {
+  PieceMetadataDto,
+  RoomMetadataDto,
+  UserDto,
+} from "@/api/generated/openapi";
 
 export interface MainStoreState {
   connected: boolean | null;
-  rooms: Record<string, RoomMetadata>;
-  pieces: Record<string, PieceMetadata>;
+  rooms: Record<string, RoomMetadataDto>;
+  pieces: Record<string, PieceMetadataDto>;
   currentUser: UserDto | null;
 
   setConnected: (value: boolean) => void;
   setCurrentUser: (user: UserDto) => void;
-  addRoom: (room: RoomMetadata) => void;
-  updateRoom: (roomId: string, room: RoomMetadata) => void;
+  addRoom: (room: RoomMetadataDto) => void;
+  updateRoom: (roomId: string, room: RoomMetadataDto) => void;
   removeRoom: (roomId: string) => void;
-  addPiece: (piece: PieceMetadata) => void;
-  updatePiece: (pieceId: string, piece: PieceMetadata) => void;
+  addPiece: (piece: PieceMetadataDto) => void;
+  updatePiece: (pieceId: string, piece: PieceMetadataDto) => void;
   removePiece: (pieceId: string) => void;
 }
 
@@ -33,7 +35,7 @@ export const useMainStore = create<MainStoreState>((set) => ({
   setCurrentUser: (user) => {
     set({ currentUser: user });
   },
-  addRoom: (room: RoomMetadata) => {
+  addRoom: (room: RoomMetadataDto) => {
     set((state) => ({
       rooms: {
         ...state.rooms,
@@ -41,7 +43,7 @@ export const useMainStore = create<MainStoreState>((set) => ({
       },
     }));
   },
-  updateRoom: (roomId: string, room: RoomMetadata) => {
+  updateRoom: (roomId: string, room: RoomMetadataDto) => {
     set((state) => ({
       rooms: {
         ...state.rooms,
@@ -56,7 +58,7 @@ export const useMainStore = create<MainStoreState>((set) => ({
       return { rooms: remainingRooms };
     });
   },
-  addPiece: (piece: PieceMetadata) => {
+  addPiece: (piece: PieceMetadataDto) => {
     set((state) => ({
       pieces: {
         ...state.pieces,
@@ -64,7 +66,7 @@ export const useMainStore = create<MainStoreState>((set) => ({
       },
     }));
   },
-  updatePiece: (pieceId: string, piece: PieceMetadata) => {
+  updatePiece: (pieceId: string, piece: PieceMetadataDto) => {
     set((state) => ({
       pieces: {
         ...state.pieces,

@@ -4,6 +4,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.io.sync.controller;
 import ch.rafaelurben.sheetmusiclearner.backend.api.controller.RoomsApi;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import ch.rafaelurben.sheetmusiclearner.backend.service.RoomService;
 import ch.rafaelurben.sheetmusiclearner.backend.service.UserService;
@@ -22,7 +23,7 @@ public class RoomsController implements RoomsApi {
   private final UserService userService;
 
   @Override
-  public List<RoomDto> getRooms() {
+  public List<RoomMetadataDto> getRooms() {
     User user = userService.getCurrentUserEntity();
     return roomService.getAllAvailableRooms(user);
   }

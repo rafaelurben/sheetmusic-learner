@@ -3,6 +3,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.InsufficientPermissionException;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
@@ -63,8 +64,8 @@ public class RoomServiceImpl implements RoomService {
   }
 
   @Override
-  public List<RoomDto> getAllAvailableRooms(final User user) {
-    return roomMapper.toDtoList(roomRepository.findAll());
+  public List<RoomMetadataDto> getAllAvailableRooms(final User user) {
+    return roomMapper.toMetadataDtoList(roomRepository.findAll());
   }
 
   @Override
@@ -77,10 +78,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     room = roomRepository.save(room);
-    RoomDto roomDto = roomMapper.toDto(room);
+    RoomMetadataDto roomMetadataDto = roomMapper.toMetadataDto(room);
 
     messagingService.send(
-        Destinations.topicGeneral(), new GeneralRoomNowAvailableEvent(roomDto).asDto());
+        Destinations.topicGeneral(), new GeneralRoomNowAvailableEvent(roomMetadataDto).asDto());
 
     return roomMapper.toDto(room);
   }
@@ -134,9 +135,9 @@ public class RoomServiceImpl implements RoomService {
     room.setPiece(piece);
     room = roomRepository.save(room);
 
-    RoomDto roomDto = roomMapper.toDto(room);
+    RoomMetadataDto roomMetadataDto = roomMapper.toMetadataDto(room);
     messagingService.send(
-        Destinations.topicGeneral(), new GeneralRoomMetadataUpdatedEvent(roomDto).asDto());
+        Destinations.topicGeneral(), new GeneralRoomMetadataUpdatedEvent(roomMetadataDto).asDto());
     messagingService.send(
         Destinations.topicRoom(roomId),
         new RoomPieceChangedEvent(pieceMapper.toDto(piece)).asDto());
@@ -150,10 +151,10 @@ public class RoomServiceImpl implements RoomService {
     roomMapper.updateEntityFromUpdateRequest(room, updateRequestDto);
     room = roomRepository.save(room);
 
-    RoomDto roomDto = roomMapper.toDto(room);
+    RoomMetadataDto roomMetadataDto = roomMapper.toMetadataDto(room);
     messagingService.send(
-        Destinations.topicGeneral(), new GeneralRoomMetadataUpdatedEvent(roomDto).asDto());
+        Destinations.topicGeneral(), new GeneralRoomMetadataUpdatedEvent(roomMetadataDto).asDto());
     messagingService.send(
-        Destinations.topicRoom(roomId), new RoomMetadataUpdatedEvent(roomDto).asDto());
+        Destinations.topicRoom(roomId), new RoomMetadataUpdatedEvent(roomMetadataDto).asDto());
   }
 }

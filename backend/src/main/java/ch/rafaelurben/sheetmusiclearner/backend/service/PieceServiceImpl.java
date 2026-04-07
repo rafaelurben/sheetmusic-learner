@@ -4,11 +4,11 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PermissionType;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.BadRequestException;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.InsufficientPermissionException;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.*;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionAddRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionRemoveRequestDto;
@@ -164,8 +164,8 @@ public class PieceServiceImpl implements PieceService {
 
   @Override
   @Transactional(readOnly = true)
-  public List<PieceDto> getAllAccessiblePieces(final User user) {
-    return pieceMapper.toDtoList(pieceRepository.findAccessibleByUserId(user.getId()));
+  public List<PieceMetadataDto> getAllAccessiblePieces(final User user) {
+    return pieceMapper.toMetadataDtoList(pieceRepository.findAccessibleByUserId(user.getId()));
   }
 
   @Override

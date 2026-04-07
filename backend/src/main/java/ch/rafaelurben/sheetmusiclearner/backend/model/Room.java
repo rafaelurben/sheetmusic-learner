@@ -4,6 +4,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import lombok.*;
 
@@ -51,4 +52,7 @@ public class Room extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "piece_id")
   private Piece piece;
+
+  @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<RoomUser> roomUsers;
 }

@@ -3,6 +3,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
@@ -12,7 +13,7 @@ import java.util.UUID;
 
 public interface RoomService {
 
-  List<RoomDto> getAllAvailableRooms(User user);
+  List<RoomMetadataDto> getAllAvailableRooms(User user);
 
   RoomDto createRoom(User user, RoomCreateRequestDto createRequestDto);
 

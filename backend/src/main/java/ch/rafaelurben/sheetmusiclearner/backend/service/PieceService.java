@@ -3,6 +3,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionAddRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionRemoveRequestDto;
@@ -20,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface PieceService {
 
-  List<PieceDto> getAllAccessiblePieces(User user);
+  List<PieceMetadataDto> getAllAccessiblePieces(User user);
 
   void ensureReadableByUser(UUID userId, UUID pieceId);
 

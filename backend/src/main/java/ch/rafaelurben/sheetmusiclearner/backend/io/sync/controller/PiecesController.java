@@ -4,6 +4,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.io.sync.controller;
 import ch.rafaelurben.sheetmusiclearner.backend.api.controller.PiecesApi;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import ch.rafaelurben.sheetmusiclearner.backend.service.PieceService;
@@ -24,7 +25,7 @@ public class PiecesController implements PiecesApi {
   private final UserService userService;
 
   @Override
-  public List<PieceDto> getPieces() {
+  public List<PieceMetadataDto> getPieces() {
     User user = userService.getCurrentUserEntity();
     return pieceService.getAllAccessiblePieces(user);
   }

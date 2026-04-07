@@ -3,7 +3,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.io.mapper;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.PieceMetadataDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Piece;
 import java.util.List;
@@ -24,7 +24,7 @@ public interface PieceMapper {
 
   PieceMetadataDto toMetadataDto(Piece piece);
 
-  List<PieceDto> toDtoList(List<Piece> pieces);
+  List<PieceMetadataDto> toMetadataDtoList(List<Piece> pieces);
 
   Piece toEntityFromCreateRequest(PieceCreateRequestDto createRequestDto);
 
