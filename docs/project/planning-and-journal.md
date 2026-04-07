@@ -35,6 +35,10 @@
   - Sheet upload using S3 implemented. (Bug: PDF conversion only working for image-based PDFs)
   - Add sheet music update/delete and event handling
   - Add sections add/update/delete handling (without coordinate mapping)
+- 2026-04-07:
+  - Add permission management for pieces
+  - Add authorization to async piece topic
+  - Store and list connected room users
 
 ## Project milestones
 
