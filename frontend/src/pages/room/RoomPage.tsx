@@ -10,13 +10,15 @@ import {
   UsersIcon,
 } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
-import { Card } from "@/shadcn/components/ui/card.tsx";
+import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import React, { useState } from "react";
 import ChatSidebar from "@/pages/room/ChatSidebar.tsx";
 import EditRoomDialog from "@/pages/room/EditRoomDialog.tsx";
+import RoomScoreSheetPanel from "@/pages/room/RoomScoreSheetPanel.tsx";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { useRoomsApi } from "@/api/useAuthenticatedApiClient.ts";
 import { toast } from "sonner";
+import { usePieceStore } from "@/zustand/pieceStore.ts";
 import {
   Avatar,
   AvatarFallback,
@@ -30,6 +32,7 @@ import {
 
 export default function RoomPageContainer() {
   const { room } = useRoomStore();
+  const piece = usePieceStore((state) => state.piece);
   const userId = useMainStore((state) => state.currentUser?.id);
   const removeRoom = useMainStore((state) => state.removeRoom);
   const roomsApi = useRoomsApi();
@@ -152,9 +155,19 @@ export default function RoomPageContainer() {
           <div className="flex min-h-0 flex-1 gap-4">
             {/* Main content area - Sheet music and controls */}
             <div className="flex min-h-0 flex-1 flex-col gap-4">
-              <Card className="flex min-h-0 flex-1 flex-col p-4">
-                Placeholder
-              </Card>
+              {piece.id ? (
+                <RoomScoreSheetPanel
+                  room={room}
+                  canEditRoom={canEditRoom}
+                  piece={piece}
+                />
+              ) : (
+                <Card className="flex min-h-0 flex-1 flex-col">
+                  <CardContent className="flex min-h-0 flex-1 items-center justify-center text-center text-muted-foreground">
+                    No piece loaded for this room.
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         </div>

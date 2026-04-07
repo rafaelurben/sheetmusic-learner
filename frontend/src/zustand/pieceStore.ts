@@ -2,15 +2,9 @@
  * (C) 2026. - Rafael Urben
  */
 import { create } from "zustand";
-import type {
-  PermissionType,
-  PieceDto,
-  PiecePermissionDto,
-  ScoreSheetDto,
-  SectionDto,
-} from "@/api/generated/openapi";
+import type { PieceDto, SectionDto } from "@/api/generated/openapi";
+import type { PieceEventDto } from "@/interfaces/async/EventDto.ts";
 import type { SectionFormState } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
-import type PieceUpdateRequestDto from "@/interfaces/async/request/piece/PieceUpdateRequestDto.ts";
 import type { SetStateAction } from "react";
 
 function normalizeSections(sections: SectionDto[]): SectionDto[] {
@@ -35,16 +29,8 @@ interface PieceStoreState {
   setSectionForm: (
     sectionForm: SetStateAction<SectionFormState | null>,
   ) => void;
-  updatePieceMetadata: (metadata: PieceUpdateRequestDto) => void;
-  addPermission: (permission: PiecePermissionDto) => void;
-  updatePermission: (userId: string, permissionType: PermissionType) => void;
-  removePermission: (userId: string) => void;
-  addSection: (section: SectionDto) => void;
-  updateSection: (sectionId: string, section: SectionDto) => void;
-  removeSection: (sectionId: string) => void;
-  addScoreSheet: (scoreSheet: ScoreSheetDto) => void;
-  updateScoreSheet: (scoreSheetId: string, scoreSheet: ScoreSheetDto) => void;
-  removeScoreSheet: (scoreSheetId: string) => void;
+
+  applyPieceEvent: (event: PieceEventDto) => void;
 }
 
 const initialState = {
@@ -76,119 +62,146 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
           : sectionForm,
     }));
   },
-  updatePieceMetadata: (metadata) => {
-    set((state) => ({
-      piece: {
-        ...state.piece,
-        ...metadata,
-      },
-    }));
-  },
-  addPermission: (permission) => {
-    set((state) => ({
-      piece: {
-        ...state.piece,
-        permissions: [...state.piece.permissions, permission],
-      },
-    }));
-  },
-  updatePermission: (userId, permissionType) => {
-    set((state) => ({
-      piece: {
-        ...state.piece,
-        permissions: state.piece.permissions.map((permission) =>
-          permission.user.id === userId
-            ? { ...permission, permissionType }
-            : permission,
-        ),
-      },
-    }));
-  },
-  removePermission: (userId) => {
-    set((state) => ({
-      piece: {
-        ...state.piece,
-        permissions: state.piece.permissions.filter(
-          (permission) => permission.user.id !== userId,
-        ),
-      },
-    }));
-  },
-  addSection: (section) => {
-    set((state) => ({
-      piece: {
-        ...state.piece,
-        sections: normalizeSections([
-          ...state.piece.sections.slice(0, section.position),
-          section,
-          ...state.piece.sections.slice(section.position),
-        ]),
-      },
-    }));
-  },
-  updateSection: (sectionId, section) => {
-    set((state) => ({
-      piece: {
-        ...state.piece,
-        sections: normalizeSections(
-          state.piece.sections.map((currentSection) =>
-            currentSection.id === sectionId ? section : currentSection,
-          ),
-        ),
-      },
-    }));
-  },
-  removeSection: (sectionId) => {
-    set((state) => ({
-      editingSectionId:
-        state.editingSectionId === sectionId ? null : state.editingSectionId,
-      sectionForm:
-        state.editingSectionId === sectionId ? null : state.sectionForm,
-      piece: {
-        ...state.piece,
-        sections: normalizeSections(
-          state.piece.sections.filter((section) => section.id !== sectionId),
-        ),
-      },
-    }));
-  },
-  addScoreSheet: (scoreSheet) => {
-    set((state) => ({
-      piece: {
-        ...state.piece,
-        scoreSheets: [...state.piece.scoreSheets, scoreSheet].sort(
-          (left, right) => left.position - right.position,
-        ),
-      },
-    }));
-  },
-  updateScoreSheet: (scoreSheetId, scoreSheet) => {
-    set((state) => ({
-      piece: {
-        ...state.piece,
-        scoreSheets: state.piece.scoreSheets
-          .map((currentScoreSheet) =>
-            currentScoreSheet.id === scoreSheetId
-              ? scoreSheet
-              : currentScoreSheet,
-          )
-          .sort((left, right) => left.position - right.position),
-      },
-    }));
-  },
-  removeScoreSheet: (scoreSheetId) => {
-    set((state) => ({
-      piece: {
-        ...state.piece,
-        sections: state.piece.sections.map((section) =>
-          section.scoreSheetId === scoreSheetId
-            ? { ...section, scoreSheetId: null }
-            : section,
-        ),
-        scoreSheets: state.piece.scoreSheets
-          .filter((scoreSheet) => scoreSheet.id !== scoreSheetId)
-          .sort((left, right) => left.position - right.position),
-      },
-    }));
+  applyPieceEvent: (event) => {
+    switch (event.type) {
+      case "metadata-updated": {
+        set((state) => ({
+          piece: {
+            ...state.piece,
+            ...event.payload.piece,
+          },
+        }));
+        return;
+      }
+      case "permission-added":
+        set((state) => ({
+          piece: {
+            ...state.piece,
+            permissions: [
+              ...state.piece.permissions,
+              {
+                user: event.payload.user,
+                permissionType: event.payload.permissionType,
+              },
+            ],
+          },
+        }));
+        return;
+      case "permission-updated":
+        set((state) => ({
+          piece: {
+            ...state.piece,
+            permissions: state.piece.permissions.map((permission) =>
+              permission.user.id === event.payload.userId
+                ? {
+                    ...permission,
+                    permissionType: event.payload.permissionType,
+                  }
+                : permission,
+            ),
+          },
+        }));
+        return;
+      case "permission-removed":
+        set((state) => ({
+          piece: {
+            ...state.piece,
+            permissions: state.piece.permissions.filter(
+              (permission) => permission.user.id !== event.payload.userId,
+            ),
+          },
+        }));
+        return;
+      case "section-added": {
+        const section = event.payload.section;
+        set((state) => ({
+          piece: {
+            ...state.piece,
+            sections: normalizeSections([
+              ...state.piece.sections.slice(0, section.position),
+              section,
+              ...state.piece.sections.slice(section.position),
+            ]),
+          },
+        }));
+        return;
+      }
+      case "section-updated":
+        set((state) => ({
+          piece: {
+            ...state.piece,
+            sections: normalizeSections(
+              state.piece.sections.map((currentSection) =>
+                currentSection.id === event.payload.sectionId
+                  ? event.payload.section
+                  : currentSection,
+              ),
+            ),
+          },
+        }));
+        return;
+      case "section-removed":
+        set((state) => ({
+          editingSectionId:
+            state.editingSectionId === event.payload.sectionId
+              ? null
+              : state.editingSectionId,
+          sectionForm:
+            state.editingSectionId === event.payload.sectionId
+              ? null
+              : state.sectionForm,
+          piece: {
+            ...state.piece,
+            sections: normalizeSections(
+              state.piece.sections.filter(
+                (section) => section.id !== event.payload.sectionId,
+              ),
+            ),
+          },
+        }));
+        return;
+      case "score-sheet-added":
+        set((state) => ({
+          piece: {
+            ...state.piece,
+            scoreSheets: [
+              ...state.piece.scoreSheets,
+              event.payload.scoreSheet,
+            ].sort((left, right) => left.position - right.position),
+          },
+        }));
+        return;
+      case "score-sheet-updated":
+        set((state) => ({
+          piece: {
+            ...state.piece,
+            scoreSheets: state.piece.scoreSheets
+              .map((currentScoreSheet) =>
+                currentScoreSheet.id === event.payload.scoreSheetId
+                  ? event.payload.scoreSheet
+                  : currentScoreSheet,
+              )
+              .sort((left, right) => left.position - right.position),
+          },
+        }));
+        return;
+      case "score-sheet-removed":
+        set((state) => ({
+          piece: {
+            ...state.piece,
+            sections: state.piece.sections.map((section) =>
+              section.scoreSheetId === event.payload.scoreSheetId
+                ? { ...section, scoreSheetId: null }
+                : section,
+            ),
+            scoreSheets: state.piece.scoreSheets
+              .filter(
+                (scoreSheet) => scoreSheet.id !== event.payload.scoreSheetId,
+              )
+              .sort((left, right) => left.position - right.position),
+          },
+        }));
+        return;
+    }
   },
 }));

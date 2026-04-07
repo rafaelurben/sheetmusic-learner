@@ -2,15 +2,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { stompService } from "@/service/stompService.ts";
 import { useRoomStore } from "@/zustand/roomStore.ts";
-import { useRoomsApi } from "@/api/useAuthenticatedApiClient.ts";
+import { usePieceStore } from "@/zustand/pieceStore.ts";
+import { usePiecesApi, useRoomsApi } from "@/api/useAuthenticatedApiClient.ts";
 import RoomPage from "./RoomPage";
 import { Spinner } from "@/shadcn/components/ui/spinner.tsx";
 import { ResponseError } from "@/api/generated/openapi";
-import type { RoomEventDto } from "@/interfaces/async/EventDto.ts";
+import type {
+  PieceEventDto,
+  RoomEventDto,
+} from "@/interfaces/async/EventDto.ts";
 import { toast } from "sonner";
 
 import { usePageTitle } from "@/zustand/pageTitleStore.ts";
 import { useMainStore } from "@/zustand/mainStore.ts";
+import type { SubscribeDestinationName } from "@/interfaces/SubscribeDestinationName.ts";
 
 export default function RoomPageContainer() {
   const { id } = useParams();
@@ -18,89 +23,88 @@ export default function RoomPageContainer() {
   const roomFromMainStore = useMainStore((state) =>
     id ? state.rooms[id] : undefined,
   );
-  const currentUser = useMainStore((state) => state.currentUser);
+  const currentUserId = useMainStore((state) => state.currentUser?.id);
   const {
+    room,
     setRoom,
-    updateRoom,
-    reset,
-    addChatMessage,
-    addJoinedUser,
-    removeJoinedUser,
+    reset: resetRoomStore,
     initialLoadComplete,
+    applyRoomEvent,
   } = useRoomStore();
+  const { setPiece, reset: resetPieceStore, applyPieceEvent } = usePieceStore();
   const roomsApi = useRoomsApi();
+  const piecesApi = usePiecesApi();
   const navigate = useNavigate();
 
   const pageTitle = roomFromMainStore?.title ?? (id ? `Room #${id}` : "Room");
 
   usePageTitle(pageTitle);
 
+  // Async room store sub
   useEffect(() => {
     if (id && initialLoadComplete && !notFound) {
       const subId = stompService.addSubscription(`/topic/room.${id}`, (evt) => {
         const event = evt as RoomEventDto;
         console.log(`Event for room ${id}:`, event);
-        switch (event.type) {
-          case "metadata-updated":
-            updateRoom(event.payload.room);
-            break;
-          case "piece-changed":
-            // TODO
-            break;
+
+        const handlingResult = applyRoomEvent(event);
+        if (!handlingResult) {
+          return;
+        }
+
+        switch (handlingResult.type) {
           case "chat-message":
-            addChatMessage(event.payload);
-            if (event.payload.sender.id !== currentUser?.id) {
+            if (handlingResult.senderId !== currentUserId) {
               toast.message("New chat message!", {
                 duration: 1500,
               });
             }
             break;
           case "user-joined":
-            addJoinedUser(event.payload.user);
             toast.info(
-              `${event.payload.user.firstName || ""} ${event.payload.user.lastName || ""} joined the room.`,
+              `${handlingResult.userFullName || "A user"} joined the room.`,
             );
             break;
-          case "user-left": {
-            const user = removeJoinedUser(event.payload.userId);
+          case "user-left":
             toast.info(
-              `${user?.firstName ?? ""} ${user?.lastName ?? ""} left the room.`,
+              `${handlingResult.userFullName || "A user"} left the room.`,
             );
             break;
-          }
           case "room-deleted":
             void navigate("/");
             toast.info("The room you were in has been deleted.");
             break;
           default:
             console.warn(`Unhandled event type ${event.type} for room ${id}`);
+            break;
         }
       });
 
       return () => {
         stompService.removeSubscription(`/topic/room.${id}`, subId);
-        reset();
+        resetRoomStore();
+        resetPieceStore();
       };
     }
   }, [
     id,
-    addChatMessage,
-    reset,
     initialLoadComplete,
     notFound,
+    currentUserId,
     navigate,
-    currentUser?.id,
-    updateRoom,
-    addJoinedUser,
-    removeJoinedUser,
+    resetRoomStore,
+    resetPieceStore,
+    applyRoomEvent,
   ]);
 
+  // Sync room API
   useEffect(() => {
     if (id) {
       roomsApi
         .getRoom({ id })
         .then((room) => {
           setRoom(room);
+          setNotFound(false);
         })
         .catch((err: unknown) => {
           console.error(`Failed to fetch room ${id}:`, err);
@@ -111,7 +115,70 @@ export default function RoomPageContainer() {
           }
         });
     }
-  }, [id, setRoom, roomsApi, setNotFound]);
+  }, [id, setRoom, roomsApi]);
+
+  // Sync Piece API
+  useEffect(() => {
+    if (!initialLoadComplete || notFound) {
+      return;
+    }
+
+    if (!room.pieceId) {
+      resetPieceStore();
+      return;
+    }
+
+    const pieceId = room.pieceId;
+
+    piecesApi
+      .getPiece({ id: pieceId })
+      .then((piece) => {
+        setPiece(piece);
+      })
+      .catch((err: unknown) => {
+        console.error(`Failed to fetch piece ${pieceId}:`, err);
+        resetPieceStore();
+      });
+  }, [
+    initialLoadComplete,
+    notFound,
+    room.pieceId,
+    piecesApi,
+    setPiece,
+    resetPieceStore,
+  ]);
+
+  // Async piece store sub
+  useEffect(() => {
+    if (!initialLoadComplete || notFound || !room.pieceId) {
+      return;
+    }
+
+    const pieceId = room.pieceId;
+    const pieceTopic =
+      `/topic/piece.${pieceId}` satisfies SubscribeDestinationName;
+    const subId = stompService.addSubscription(pieceTopic, (evt) => {
+      const event = evt as PieceEventDto;
+      console.log(`Event for piece ${pieceId}:`, event);
+
+      applyPieceEvent(event);
+
+      if (event.type === "piece-deleted") {
+        toast.info("The piece shown in this room has been deleted.");
+      }
+    });
+
+    return () => {
+      stompService.removeSubscription(pieceTopic, subId);
+      resetPieceStore();
+    };
+  }, [
+    initialLoadComplete,
+    notFound,
+    room.pieceId,
+    applyPieceEvent,
+    resetPieceStore,
+  ]);
 
   if (notFound) {
     return <div>Room not found</div>;

@@ -39,6 +39,7 @@
   - Add permission management for pieces
   - Add authorization to async piece topic
   - Store and list connected room users
+  - Load piece on room page load and on piece update
 
 ## Project milestones
 

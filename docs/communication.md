@@ -205,7 +205,7 @@ users.
     - Payload:
       ```json5
       {
-        "piece": {/* PieceDto */}
+        "pieceId": "uuid"
       }
       ```
 - `type`: `user-joined`

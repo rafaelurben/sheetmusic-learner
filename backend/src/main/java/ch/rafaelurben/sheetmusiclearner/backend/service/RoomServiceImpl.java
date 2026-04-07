@@ -11,7 +11,6 @@ import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.*;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.PieceMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.RoomMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.UserMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Piece;
@@ -35,7 +34,6 @@ public class RoomServiceImpl implements RoomService {
   private final RoomRepository roomRepository;
   private final PieceRepository pieceRepository;
   private final PiecePermissionRepository piecePermissionRepository;
-  private final PieceMapper pieceMapper;
   private final RoomMapper roomMapper;
   private final UserMapper userMapper;
 
@@ -139,8 +137,7 @@ public class RoomServiceImpl implements RoomService {
     messagingService.send(
         Destinations.topicGeneral(), new GeneralRoomMetadataUpdatedEvent(roomMetadataDto).asDto());
     messagingService.send(
-        Destinations.topicRoom(roomId),
-        new RoomPieceChangedEvent(pieceMapper.toDto(piece)).asDto());
+        Destinations.topicRoom(roomId), new RoomPieceChangedEvent(piece.getId()).asDto());
   }
 
   @Override

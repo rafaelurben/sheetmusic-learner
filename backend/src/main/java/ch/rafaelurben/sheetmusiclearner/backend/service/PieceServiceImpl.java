@@ -30,6 +30,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.model.Section;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.PiecePermissionRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.PieceRepository;
+import ch.rafaelurben.sheetmusiclearner.backend.repository.RoomUserRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.ScoreSheetRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.SectionRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.UserRepository;
@@ -55,6 +56,7 @@ public class PieceServiceImpl implements PieceService {
   private final PiecePermissionRepository piecePermissionRepository;
   private final ScoreSheetRepository scoreSheetRepository;
   private final SectionRepository sectionRepository;
+  private final RoomUserRepository roomUserRepository;
   private final PieceMapper pieceMapper;
   private final ScoreSheetMapper scoreSheetMapper;
   private final SectionMapper sectionMapper;
@@ -76,9 +78,8 @@ public class PieceServiceImpl implements PieceService {
       return;
     }
 
-    boolean hasPermission =
-        piecePermissionRepository.existsByPieceIdAndUserId(piece.getId(), user.getId());
-    if (!hasPermission) {
+    if (!piecePermissionRepository.existsByPieceIdAndUserId(piece.getId(), user.getId())
+        && !roomUserRepository.existsByUserIdAndRoomPieceId(user.getId(), piece.getId())) {
       throw new InsufficientPermissionException("You do not have permission to view this piece");
     }
   }
