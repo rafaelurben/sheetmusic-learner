@@ -17,4 +17,9 @@ public class UsersController implements UsersApi {
   public UserDto getCurrentUser() {
     return userService.getCurrentUserDto(true);
   }
+
+  @Override
+  public UserDto getUserByEmail(String email) {
+    return userService.getUserByEmailDto(email);
+  }
 }

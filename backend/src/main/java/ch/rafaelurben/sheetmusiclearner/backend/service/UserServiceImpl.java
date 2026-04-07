@@ -2,6 +2,8 @@
 package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
+import ch.rafaelurben.sheetmusiclearner.backend.exceptions.BadRequestException;
+import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.UserMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.UserRepository;
@@ -61,5 +63,20 @@ public class UserServiceImpl implements UserService {
   @Transactional
   public UserDto getCurrentUserDto(boolean update) {
     return userMapper.toDto(getCurrentUserEntity(update));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public UserDto getUserByEmailDto(String email) {
+    if (email == null || email.isBlank()) {
+      throw new BadRequestException("Email must not be blank");
+    }
+
+    User user =
+        userRepository
+            .findByEmailIgnoreCase(email.trim())
+            .orElseThrow(() -> new ObjectNotFoundException("User not found"));
+
+    return userMapper.toDto(user);
   }
 }

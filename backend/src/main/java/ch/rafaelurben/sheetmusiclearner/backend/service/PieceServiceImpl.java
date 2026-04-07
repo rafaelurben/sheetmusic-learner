@@ -10,6 +10,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.exceptions.InsufficientPermissio
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.*;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionAddRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionRemoveRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionAddRequestDto;
@@ -19,6 +22,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdate
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.PieceMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.ScoreSheetMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.SectionMapper;
+import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.UserMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Piece;
 import ch.rafaelurben.sheetmusiclearner.backend.model.PiecePermission;
 import ch.rafaelurben.sheetmusiclearner.backend.model.ScoreSheet;
@@ -28,6 +32,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.repository.PiecePermissionReposi
 import ch.rafaelurben.sheetmusiclearner.backend.repository.PieceRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.ScoreSheetRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.SectionRepository;
+import ch.rafaelurben.sheetmusiclearner.backend.repository.UserRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.utils.Destinations;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -53,6 +58,8 @@ public class PieceServiceImpl implements PieceService {
   private final PieceMapper pieceMapper;
   private final ScoreSheetMapper scoreSheetMapper;
   private final SectionMapper sectionMapper;
+  private final UserMapper userMapper;
+  private final UserRepository userRepository;
   private final S3Service s3Service;
   private final MessagingService messagingService;
 
@@ -100,6 +107,41 @@ public class PieceServiceImpl implements PieceService {
     return sectionRepository
         .findByIdAndPieceId(sectionId, pieceId)
         .orElseThrow(() -> new ObjectNotFoundException("Section not found"));
+  }
+
+  private PiecePermission getPiecePermissionEntityByUserId(final UUID pieceId, final UUID userId) {
+    return piecePermissionRepository
+        .findByPieceIdAndUserId(pieceId, userId)
+        .orElseThrow(() -> new ObjectNotFoundException("Piece permission not found"));
+  }
+
+  private User getUserEntityById(final UUID userId) {
+    return userRepository
+        .findById(userId)
+        .orElseThrow(() -> new ObjectNotFoundException("User not found"));
+  }
+
+  private void ensureNotSelfPermissionChange(final User actor, final UUID targetUserId) {
+    if (actor.getId().equals(targetUserId)) {
+      throw new BadRequestException("You cannot modify your own permission");
+    }
+  }
+
+  private void ensureOwnerWouldRemain(
+      final UUID pieceId,
+      final PermissionType currentPermissionType,
+      final PermissionType nextPermissionType) {
+    boolean losingOwnerRole =
+        currentPermissionType == PermissionType.OWNER && nextPermissionType != PermissionType.OWNER;
+    if (!losingOwnerRole) {
+      return;
+    }
+
+    long ownerCount =
+        piecePermissionRepository.countByPieceIdAndPermissionType(pieceId, PermissionType.OWNER);
+    if (ownerCount <= 1) {
+      throw new BadRequestException("Piece must always have at least one owner");
+    }
   }
 
   private String createScoreSheetTitle(final MultipartFile file, final int position) {
@@ -305,6 +347,88 @@ public class PieceServiceImpl implements PieceService {
     messagingService.send(
         Destinations.topicPiece(pieceId),
         new PieceSectionAddedEvent(sectionMapper.toDto(createdSection)).asDto());
+  }
+
+  private void ensurePermissionModificationAllowed(
+      User user, UUID pieceId, UUID uuid, PermissionType permissionType) {
+    if (uuid == null) {
+      throw new BadRequestException("User id must be provided");
+    }
+    if (permissionType == null) {
+      throw new BadRequestException("Permission type must be provided");
+    }
+
+    Piece piece = getPieceEntityById(pieceId);
+    ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER));
+    ensureNotSelfPermissionChange(user, uuid);
+  }
+
+  @Override
+  @Transactional
+  public void addPermission(
+      final User user, final UUID pieceId, final PiecePermissionAddRequestDto addRequestDto) {
+    ensurePermissionModificationAllowed(
+        user, pieceId, addRequestDto.userId(), addRequestDto.permissionType());
+    Piece piece = getPieceEntityById(pieceId);
+
+    User targetUser = getUserEntityById(addRequestDto.userId());
+    boolean hasPermissionAlready =
+        piecePermissionRepository.existsByPieceIdAndUserId(pieceId, targetUser.getId());
+    if (hasPermissionAlready) {
+      throw new BadRequestException("User already has permission for this piece");
+    }
+
+    PiecePermission permission =
+        PiecePermission.builder()
+            .piece(piece)
+            .user(targetUser)
+            .permissionType(addRequestDto.permissionType())
+            .build();
+    piecePermissionRepository.save(permission);
+
+    messagingService.send(
+        Destinations.topicPiece(pieceId),
+        new PiecePermissionAddedEvent(userMapper.toDto(targetUser), addRequestDto.permissionType())
+            .asDto());
+  }
+
+  @Override
+  @Transactional
+  public void updatePermission(
+      final User user, final UUID pieceId, final PiecePermissionUpdateRequestDto updateRequestDto) {
+    ensurePermissionModificationAllowed(
+        user, pieceId, updateRequestDto.userId(), updateRequestDto.permissionType());
+
+    PiecePermission permission =
+        getPiecePermissionEntityByUserId(pieceId, updateRequestDto.userId());
+    ensureOwnerWouldRemain(
+        pieceId, permission.getPermissionType(), updateRequestDto.permissionType());
+
+    permission.setPermissionType(updateRequestDto.permissionType());
+    piecePermissionRepository.save(permission);
+
+    messagingService.send(
+        Destinations.topicPiece(pieceId),
+        new PiecePermissionUpdatedEvent(
+                updateRequestDto.userId(), updateRequestDto.permissionType())
+            .asDto());
+  }
+
+  @Override
+  @Transactional
+  public void removePermission(
+      final User user, final UUID pieceId, final PiecePermissionRemoveRequestDto removeRequestDto) {
+    ensurePermissionModificationAllowed(
+        user, pieceId, removeRequestDto.userId(), PermissionType.READER);
+
+    PiecePermission permission =
+        getPiecePermissionEntityByUserId(pieceId, removeRequestDto.userId());
+    ensureOwnerWouldRemain(pieceId, permission.getPermissionType(), null);
+    piecePermissionRepository.delete(permission);
+
+    messagingService.send(
+        Destinations.topicPiece(pieceId),
+        new PiecePermissionRemovedEvent(removeRequestDto.userId()).asDto());
   }
 
   @Override

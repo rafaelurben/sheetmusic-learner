@@ -11,6 +11,7 @@ Endpoint base: `/api/v1/`
 | Method | Endpoint                   | Description                |
 |--------|----------------------------|----------------------------|
 | GET    | `users/me`                 | Get the current user.      |
+| GET    | `users/by-email?email=...` | Get a user by email.       |
 | GET    | `pieces`                   | Get all accessible pieces. |
 | POST   | `pieces`                   | Create a new piece.        |
 | GET    | `pieces/{id}`              | Get a specific piece.      |

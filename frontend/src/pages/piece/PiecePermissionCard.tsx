@@ -18,10 +18,17 @@ import {
   SelectValue,
 } from "@/shadcn/components/ui/select.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
+import { Button } from "@/shadcn/components/ui/button.tsx";
+import { Trash2Icon } from "lucide-react";
 
-interface PiecePermissionsCardProps {
+interface PiecePermissionCardProps {
   permission: PiecePermissionDto;
   editable: boolean;
+  onPermissionTypeChange?: (
+    userId: string,
+    permissionType: PermissionType,
+  ) => void;
+  onRemove?: (userId: string) => void;
 }
 
 const getInitials = (firstName?: string, lastName?: string) => {
@@ -31,7 +38,9 @@ const getInitials = (firstName?: string, lastName?: string) => {
 export default function PiecePermissionCard({
   permission,
   editable,
-}: Readonly<PiecePermissionsCardProps>) {
+  onPermissionTypeChange,
+  onRemove,
+}: Readonly<PiecePermissionCardProps>) {
   return (
     <Card key={permission.user.id} className="border-2">
       <CardContent className="flex items-center gap-3">
@@ -47,7 +56,16 @@ export default function PiecePermissionCard({
           </div>
           <div className="text-muted-foreground">{permission.user.email}</div>
         </div>
-        <Select defaultValue={permission.permissionType} disabled={!editable}>
+        <Select
+          value={permission.permissionType}
+          disabled={!editable}
+          onValueChange={(value) => {
+            onPermissionTypeChange?.(
+              permission.user.id,
+              value as PermissionType,
+            );
+          }}
+        >
           <SelectTrigger className="w-32">
             <SelectValue />
           </SelectTrigger>
@@ -57,6 +75,18 @@ export default function PiecePermissionCard({
             <SelectItem value={PermissionType.Reader}>Reader</SelectItem>
           </SelectContent>
         </Select>
+        {editable && (
+          <Button
+            type="button"
+            size="icon"
+            variant="outline"
+            onClick={() => {
+              onRemove?.(permission.user.id);
+            }}
+          >
+            <Trash2Icon className="size-4" />
+          </Button>
+        )}
       </CardContent>
     </Card>
   );

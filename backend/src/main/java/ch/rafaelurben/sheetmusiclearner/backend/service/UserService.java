@@ -31,4 +31,6 @@ public interface UserService {
   default UserDto getCurrentUserDto() {
     return getCurrentUserDto(false);
   }
+
+  UserDto getUserByEmailDto(String email);
 }

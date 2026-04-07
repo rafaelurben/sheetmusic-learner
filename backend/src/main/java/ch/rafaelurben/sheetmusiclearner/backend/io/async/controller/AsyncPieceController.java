@@ -1,7 +1,6 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.io.async.controller;
 
-import ch.rafaelurben.sheetmusiclearner.backend.exceptions.NotImplementedException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionAddRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionUpdateRequestDto;
@@ -82,21 +81,24 @@ public class AsyncPieceController {
   @MessageMapping("/piece.{pieceId}/permission/add")
   public void handlePermissionAdd(
       @DestinationVariable UUID pieceId, @Validated @Payload PiecePermissionAddRequestDto dto) {
-    log.debug("Received permission add for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Permission add is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.addPermission(user, pieceId, dto);
+    log.debug("Added permission for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/permission/update")
   public void handlePermissionUpdate(
       @DestinationVariable UUID pieceId, @Validated @Payload PiecePermissionUpdateRequestDto dto) {
-    log.debug("Received permission update for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Permission update is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.updatePermission(user, pieceId, dto);
+    log.debug("Updated permission for piece {}: {}", pieceId, dto);
   }
 
   @MessageMapping("/piece.{pieceId}/permission/remove")
   public void handlePermissionRemove(
       @DestinationVariable UUID pieceId, @Validated @Payload PiecePermissionRemoveRequestDto dto) {
-    log.debug("Received permission remove for piece {}: {}", pieceId, dto);
-    throw new NotImplementedException("Permission remove is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+    pieceService.removePermission(user, pieceId, dto);
+    log.debug("Removed permission for piece {}: {}", pieceId, dto);
   }
 }

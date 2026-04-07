@@ -4,6 +4,9 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionAddRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionRemoveRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetRemoveRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionAddRequestDto;
@@ -36,6 +39,12 @@ public interface PieceService {
   void updateSection(User user, UUID pieceId, PieceSectionUpdateRequestDto updateRequestDto);
 
   void removeSection(User user, UUID pieceId, PieceSectionRemoveRequestDto removeRequestDto);
+
+  void addPermission(User user, UUID pieceId, PiecePermissionAddRequestDto addRequestDto);
+
+  void updatePermission(User user, UUID pieceId, PiecePermissionUpdateRequestDto updateRequestDto);
+
+  void removePermission(User user, UUID pieceId, PiecePermissionRemoveRequestDto removeRequestDto);
 
   List<ScoreSheetDto> uploadScoreSheets(User user, UUID pieceId, List<MultipartFile> files);
 }
