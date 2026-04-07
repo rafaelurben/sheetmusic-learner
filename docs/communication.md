@@ -208,6 +208,22 @@ users.
         "piece": {/* PieceDto */}
       }
       ```
+- `type`: `user-joined`
+    - Description: A user joined the room topic/session.
+    - Payload:
+      ```json5
+      {
+        "user": {/* UserDto */}
+      }
+      ```
+- `type`: `user-left`
+    - Description: A user left the room topic/session.
+    - Payload:
+      ```json5
+      {
+        "userId": "uuid"
+      }
+      ```
 - `type`: `playback-started`
     - Description: Playback in the room was started.
     - Payload: *none*

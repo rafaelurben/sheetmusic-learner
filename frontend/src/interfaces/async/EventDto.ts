@@ -24,6 +24,8 @@ import type PieceChangedPayload from "@/interfaces/async/payload/room/PieceChang
 import type { PlaybackPausedPayload } from "@/interfaces/async/payload/room/PlaybackPausedPayload.ts";
 import type { PlaybackStartedPayload } from "@/interfaces/async/payload/room/PlaybackStartedPayload.ts";
 import type PositionChangedPayload from "@/interfaces/async/payload/room/PositionChangedPayload.ts";
+import type UserJoinedPayload from "@/interfaces/async/payload/room/UserJoinedPayload.ts";
+import type UserLeftPayload from "@/interfaces/async/payload/room/UserLeftPayload.ts";
 import type ErrorPayload from "@/interfaces/async/payload/user/ErrorPayload.ts";
 import type RoomJoinedPayload from "@/interfaces/async/payload/user/RoomJoinedPayload.ts";
 
@@ -106,6 +108,14 @@ export type RoomEventDto =
   | {
       type: "piece-changed";
       payload: PieceChangedPayload;
+    }
+  | {
+      type: "user-joined";
+      payload: UserJoinedPayload;
+    }
+  | {
+      type: "user-left";
+      payload: UserLeftPayload;
     }
   | {
       type: "playback-started";

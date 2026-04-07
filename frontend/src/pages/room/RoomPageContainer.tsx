@@ -19,8 +19,15 @@ export default function RoomPageContainer() {
     id ? state.rooms[id] : undefined,
   );
   const currentUser = useMainStore((state) => state.currentUser);
-  const { setRoom, reset, addChatMessage, initialLoadComplete } =
-    useRoomStore();
+  const {
+    setRoom,
+    updateRoom,
+    reset,
+    addChatMessage,
+    addJoinedUser,
+    removeJoinedUser,
+    initialLoadComplete,
+  } = useRoomStore();
   const roomsApi = useRoomsApi();
   const navigate = useNavigate();
 
@@ -35,7 +42,7 @@ export default function RoomPageContainer() {
         console.log(`Event for room ${id}:`, event);
         switch (event.type) {
           case "metadata-updated":
-            setRoom(event.payload.room);
+            updateRoom(event.payload.room);
             break;
           case "piece-changed":
             // TODO
@@ -48,6 +55,19 @@ export default function RoomPageContainer() {
               });
             }
             break;
+          case "user-joined":
+            addJoinedUser(event.payload.user);
+            toast.info(
+              `${event.payload.user.firstName || ""} ${event.payload.user.lastName || ""} joined the room.`,
+            );
+            break;
+          case "user-left": {
+            const user = removeJoinedUser(event.payload.userId);
+            toast.info(
+              `${user?.firstName ?? ""} ${user?.lastName ?? ""} left the room.`,
+            );
+            break;
+          }
           case "room-deleted":
             void navigate("/");
             toast.info("The room you were in has been deleted.");
@@ -66,11 +86,13 @@ export default function RoomPageContainer() {
     id,
     addChatMessage,
     reset,
-    setRoom,
     initialLoadComplete,
     notFound,
     navigate,
     currentUser?.id,
+    updateRoom,
+    addJoinedUser,
+    removeJoinedUser,
   ]);
 
   useEffect(() => {

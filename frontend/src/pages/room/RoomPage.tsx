@@ -17,6 +17,16 @@ import EditRoomDialog from "@/pages/room/EditRoomDialog.tsx";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { useRoomsApi } from "@/api/useAuthenticatedApiClient.ts";
 import { toast } from "sonner";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/shadcn/components/ui/avatar.tsx";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/shadcn/components/ui/tooltip.tsx";
 
 export default function RoomPageContainer() {
   const { room } = useRoomStore();
@@ -86,7 +96,27 @@ export default function RoomPageContainer() {
               {/* Users */}
               <div className="flex items-center gap-2">
                 <UsersIcon className="size-5 text-muted-foreground" />
-                <div className="flex -space-x-2">{/* TODO: Users */}</div>
+                <div className="flex -space-x-2">
+                  {room.roomUsers.map((user) => (
+                    <Tooltip key={user.id}>
+                      <TooltipTrigger asChild>
+                        <Avatar className="size-8 border-2 border-background">
+                          <AvatarImage
+                            src={user.avatarUrl}
+                            alt={`${user.firstName} ${user.lastName}`}
+                          />
+                          <AvatarFallback className="text-xs">
+                            {(user.firstName ? user.firstName[0] : "?") +
+                              (user.lastName ? user.lastName[0] : "?")}
+                          </AvatarFallback>
+                        </Avatar>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" align="center">
+                        {user.firstName} {user.lastName}
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
               </div>
               {/* Chat */}
               <SidebarTrigger>
