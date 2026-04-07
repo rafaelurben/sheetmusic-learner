@@ -1,14 +1,6 @@
 import { useRoomStore } from "@/zustand/roomStore.ts";
-import {
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/shadcn/components/ui/sidebar.tsx";
-import {
-  MessageSquareIcon,
-  SettingsIcon,
-  Trash2Icon,
-  UsersIcon,
-} from "lucide-react";
+import { SidebarProvider } from "@/shadcn/components/ui/sidebar.tsx";
+import { SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import React, { useState } from "react";
@@ -29,6 +21,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/shadcn/components/ui/tooltip.tsx";
+import ChatToggle from "@/pages/room/ChatToggle.tsx";
 
 export default function RoomPageContainer() {
   const { room } = useRoomStore();
@@ -122,11 +115,7 @@ export default function RoomPageContainer() {
                 </div>
               </div>
               {/* Chat */}
-              <SidebarTrigger>
-                <Button variant="outline" size="icon">
-                  <MessageSquareIcon />
-                </Button>
-              </SidebarTrigger>
+              <ChatToggle />
               {/* Edit */}
               {canEditRoom && (
                 <>
