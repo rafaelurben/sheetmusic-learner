@@ -27,7 +27,6 @@ import type PositionChangedPayload from "@/interfaces/async/payload/room/Positio
 import type UserJoinedPayload from "@/interfaces/async/payload/room/UserJoinedPayload.ts";
 import type UserLeftPayload from "@/interfaces/async/payload/room/UserLeftPayload.ts";
 import type ErrorPayload from "@/interfaces/async/payload/user/ErrorPayload.ts";
-import type RoomJoinedPayload from "@/interfaces/async/payload/user/RoomJoinedPayload.ts";
 
 export type GeneralEventDto =
   | {
@@ -137,15 +136,10 @@ export type RoomEventDto =
       type: "room-deleted";
     };
 
-export type UserEventDto =
-  | {
-      type: "error";
-      payload: ErrorPayload;
-    }
-  | {
-      type: "room-joined";
-      payload: RoomJoinedPayload;
-    };
+export interface UserEventDto {
+  type: "error";
+  payload: ErrorPayload;
+}
 
 export type EventDto =
   | GeneralEventDto

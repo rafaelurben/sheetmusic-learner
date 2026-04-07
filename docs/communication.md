@@ -268,15 +268,6 @@ relevant for a specific user, such as error messages or notifications about acti
         "message": "Human-readable error message",
       }
       ```
-- `type`: `room-joined`
-    - Description: The user successfully joined a room. The payload contains the room's metadata and the current state
-      of the room (selected piece, playback position, connected users, etc.).
-    - Payload:
-      ```json5
-      {
-        "room": {/* RoomDto */},
-      }
-      ```
 
 ### Application destinations
 

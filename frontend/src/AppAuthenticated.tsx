@@ -128,10 +128,6 @@ export default function AppAuthenticated() {
               description: event.payload.message,
             });
             break;
-          case "room-joined":
-            console.log("Successfully joined room:", event.payload.room);
-            // TODO: Navigate to room or update room state
-            break;
         }
       },
     );
