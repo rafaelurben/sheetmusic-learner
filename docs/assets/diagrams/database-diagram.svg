@@ -6,106 +6,109 @@
     <g><!--class user-->
         <g class="entity" data-entity="user" data-source-line="8" data-uid="ent0002" id="entity_user">
             <rect fill="#F1F1F1" height="164.375" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
-                  width="225.0967" x="165.97" y="642.87"/>
+                  width="225.0967" x="16.97" y="642.87"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31.9102"
-                  x="262.5633" y="660.8651">User
+                  x="113.5633" y="660.8651">User
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="166.97" x2="390.0667" y1="669.1669" y2="669.1669"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="17.97" x2="241.0667" y1="669.1669" y2="669.1669"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="52.4658"
-                  x="171.97" y="686.162">id: uuid
+                  x="22.97" y="686.162">id: uuid
             </text>
-            <line style="stroke:#181818;stroke-width:1;" x1="166.97" x2="390.0667" y1="693.4638" y2="693.4638"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="17.97" x2="241.0667" y1="693.4638" y2="693.4638"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="136.7529"
-                  x="171.97" y="710.4589">first_name: varchar
+                  x="22.97" y="710.4589">first_name: varchar
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="134.6475"
-                  x="171.97" y="726.7557">last_name: varchar
+                  x="22.97" y="726.7557">last_name: varchar
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="101.3018"
-                  x="171.97" y="743.0526">email: varchar
+                  x="22.97" y="743.0526">email: varchar
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="133.4785"
-                  x="171.97" y="759.3495">avatar_url: varchar
+                  x="22.97" y="759.3495">avatar_url: varchar
             </text>
-            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="166.97" x2="390.0667" y1="766.6513"
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="17.97" x2="241.0667" y1="766.6513"
                   y2="766.6513"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="208.5166"
-                  x="171.97" y="783.6464">timestamp_created: datetime
+                  x="22.97" y="783.6464">timestamp_created: datetime
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="213.0967"
-                  x="171.97" y="799.9432">timestamp_updated: datetime
+                  x="22.97" y="799.9432">timestamp_updated: datetime
             </text>
         </g><!--class piece-->
         <g class="entity" data-entity="piece" data-source-line="21" data-uid="ent0003" id="entity_piece">
             <rect fill="#F1F1F1" height="180.6719" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
-                  width="225.0967" x="438.97" y="634.72"/>
+                  width="225.0967" x="440.97" y="634.72"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="37.2559"
-                  x="532.8904" y="652.7151">Piece
+                  x="534.8904" y="652.7151">Piece
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="439.97" x2="663.0667" y1="661.0169" y2="661.0169"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="441.97" x2="665.0667" y1="661.0169" y2="661.0169"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="52.4658"
-                  x="444.97" y="678.012">id: uuid
+                  x="446.97" y="678.012">id: uuid
             </text>
-            <line style="stroke:#181818;stroke-width:1;" x1="439.97" x2="663.0667" y1="685.3138" y2="685.3138"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="441.97" x2="665.0667" y1="685.3138" y2="685.3138"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="90.0635"
-                  x="444.97" y="702.3089">title: varchar
+                  x="446.97" y="702.3089">title: varchar
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="131.708"
-                  x="444.97" y="718.6057">composer: varchar
+                  x="446.97" y="718.6057">composer: varchar
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="123.4502"
-                  x="444.97" y="734.9026">difficulty: varchar
+                  x="446.97" y="734.9026">difficulty: varchar
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="141.8115"
-                  x="444.97" y="751.1995">bpm_range: varchar
+                  x="446.97" y="751.1995">bpm_range: varchar
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="125.4463"
-                  x="444.97" y="767.4964">is_public: boolean
+                  x="446.97" y="767.4964">is_public: boolean
             </text>
-            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="439.97" x2="663.0667" y1="774.7981"
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="441.97" x2="665.0667" y1="774.7981"
                   y2="774.7981"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="208.5166"
-                  x="444.97" y="791.7932">timestamp_created: datetime
+                  x="446.97" y="791.7932">timestamp_created: datetime
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="213.0967"
-                  x="444.97" y="808.0901">timestamp_updated: datetime
+                  x="446.97" y="808.0901">timestamp_updated: datetime
             </text>
         </g><!--class scoresheet-->
         <g class="entity" data-entity="scoresheet" data-source-line="35" data-uid="ent0004" id="entity_scoresheet">
-            <rect fill="#F1F1F1" height="172.375" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
-                  width="225.0967" x="578.97" y="377.9"/>
+            <rect fill="#F1F1F1" height="188.6719" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="225.0967" x="578.97" y="369.75"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="79.9941"
-                  x="651.5213" y="395.8951">ScoreSheet
+                  x="651.5213" y="387.7451">ScoreSheet
             </text>
-            <line style="stroke:#181818;stroke-width:0.5;" x1="579.97" x2="803.0667" y1="404.1969" y2="404.1969"/>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="579.97" x2="803.0667" y1="396.0469" y2="396.0469"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="52.4658"
-                  x="584.97" y="421.192">id: uuid
+                  x="584.97" y="413.042">id: uuid
             </text>
-            <line style="stroke:#181818;stroke-width:1;" x1="579.97" x2="803.0667" y1="428.4938" y2="428.4938"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="579.97" x2="803.0667" y1="420.3438" y2="420.3438"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="97.166"
-                  x="584.97" y="445.4889">piece_id: uuid
+                  x="584.97" y="437.3389">piece_id: uuid
             </text>
-            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="579.97" x2="803.0667" y1="452.7906"
-                  y2="452.7906"/>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="579.97" x2="803.0667" y1="444.6406"
+                  y2="444.6406"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="119.2598"
-                  x="584.97" y="469.7857">position: number
+                  x="584.97" y="461.6357">position: number
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="90.0635"
-                  x="584.97" y="486.0826">title: varchar
+                  x="584.97" y="477.9326">title: varchar
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110.8994"
+                  x="584.97" y="494.2295">s3_key: varchar
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="131.8174"
-                  x="584.97" y="502.3795">image_url: varchar
+                  x="584.97" y="510.5264">image_url: varchar
             </text>
-            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="579.97" x2="803.0667" y1="509.6813"
-                  y2="509.6813"/>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:1,2;" x1="579.97" x2="803.0667" y1="517.8281"
+                  y2="517.8281"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="208.5166"
-                  x="584.97" y="526.6764">timestamp_created: datetime
+                  x="584.97" y="534.8232">timestamp_created: datetime
             </text>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="213.0967"
-                  x="584.97" y="542.9732">timestamp_updated: datetime
+                  x="584.97" y="551.1201">timestamp_updated: datetime
             </text>
         </g><!--class section-->
-        <g class="entity" data-entity="section" data-source-line="49" data-uid="ent0005" id="entity_section">
+        <g class="entity" data-entity="section" data-source-line="50" data-uid="ent0005" id="entity_section">
             <rect fill="#F1F1F1" height="286.4531" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
                   width="277.4189" x="635.81" y="7"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="52.0146"
@@ -160,7 +163,7 @@
                   x="641.81" y="286.1514">timestamp_updated: datetime
             </text>
         </g><!--class piecepermission-->
-        <g class="entity" data-entity="piecepermission" data-source-line="70" data-uid="ent0006"
+        <g class="entity" data-entity="piecepermission" data-source-line="71" data-uid="ent0006"
            id="entity_piecepermission">
             <rect fill="#F1F1F1" height="131.7813" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
                   width="245.0371" x="7" y="398.19"/>
@@ -187,7 +190,7 @@
                   x="13" y="522.6695">timestamp_updated: datetime
             </text>
         </g><!--class room-->
-        <g class="entity" data-entity="room" data-source-line="81" data-uid="ent0007" id="entity_room">
+        <g class="entity" data-entity="room" data-source-line="82" data-uid="ent0007" id="entity_room">
             <rect fill="#F1F1F1" height="221.2656" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
                   width="257.5742" x="286.73" y="353.45"/>
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="40.4961"
@@ -229,91 +232,138 @@
             <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="213.0967"
                   x="292.73" y="567.4139">timestamp_updated: datetime
             </text>
+        </g><!--class roomuser-->
+        <g class="entity" data-entity="roomuser" data-source-line="99" data-uid="ent0008" id="entity_roomuser">
+            <rect fill="#F1F1F1" height="107.4844" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="225.0967" x="149.97" y="96.48"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="72.4063"
+                  x="226.3152" y="114.4751">RoomUser
+            </text>
+            <line style="stroke:#181818;stroke-width:0.5;" x1="150.97" x2="374.0667" y1="122.7769" y2="122.7769"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="95.9902"
+                  x="155.97" y="139.772">room_id: uuid
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="90.002"
+                  x="155.97" y="156.0689">user_id: uuid
+            </text>
+            <line style="stroke:#181818;stroke-width:1;" x1="150.97" x2="374.0667" y1="163.3706" y2="163.3706"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="208.5166"
+                  x="155.97" y="180.3657">timestamp_created: datetime
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="213.0967"
+                  x="155.97" y="196.6626">timestamp_updated: datetime
+            </text>
         </g><!--link scoresheet to piece-->
-        <g class="link" data-entity-1="scoresheet" data-entity-2="piece" data-source-line="98" data-uid="lnk8"
+        <g class="link" data-entity-1="scoresheet" data-entity-2="piece" data-source-line="108" data-uid="lnk9"
            id="link_scoresheet_piece">
-            <path codeLine="98" d="M621.52,568.62 C621.52,595.48 621.52,599.14 621.52,626.28" fill="none"
+            <path codeLine="108" d="M622.52,576.67 C622.52,601.32 622.52,601.83 622.52,626.28" fill="none"
                   id="scoresheet-piece" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="621.52" x2="615.52" y1="558.62" y2="550.62"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="621.52" x2="627.52" y1="558.62" y2="550.62"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="621.52" x2="621.52" y1="558.62" y2="550.62"/>
-            <ellipse cx="621.52" cy="564.62" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="625.52" x2="617.52" y1="630.28" y2="630.28"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="625.52" x2="617.52" y1="627.28" y2="627.28"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="621.52" x2="621.52" y1="626.28" y2="634.28"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="622.52" x2="616.52" y1="566.67" y2="558.67"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="622.52" x2="628.52" y1="566.67" y2="558.67"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="622.52" x2="622.52" y1="566.67" y2="558.67"/>
+            <ellipse cx="622.52" cy="572.67" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="626.52" x2="618.52" y1="630.28" y2="630.28"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="626.52" x2="618.52" y1="627.28" y2="627.28"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="622.52" x2="622.52" y1="626.28" y2="634.28"/>
         </g><!--link section to piece-->
-        <g class="link" data-entity-1="section" data-entity-2="piece" data-source-line="99" data-uid="lnk9"
+        <g class="link" data-entity-1="section" data-entity-2="piece" data-source-line="109" data-uid="lnk10"
            id="link_section_piece">
-            <path codeLine="99"
-                  d="M617.5,150.39 C577.1,150.39 561.64,150.39 561.64,150.39 C561.64,150.39 561.64,464.38 561.64,626.31"
+            <path codeLine="109"
+                  d="M617.5,248.39 C577.1,248.39 561.64,248.39 561.64,248.39 C561.64,248.39 561.64,487.98 561.64,626.28"
                   fill="none" id="section-piece" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="627.5" x2="635.5" y1="150.39" y2="144.39"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="627.5" x2="635.5" y1="150.39" y2="156.39"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="627.5" x2="635.5" y1="150.39" y2="150.39"/>
-            <ellipse cx="621.5" cy="150.39" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="565.64" x2="557.64" y1="630.31" y2="630.31"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="565.64" x2="557.64" y1="627.31" y2="627.31"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="561.64" x2="561.64" y1="626.31" y2="634.31"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="627.5" x2="635.5" y1="248.39" y2="242.39"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="627.5" x2="635.5" y1="248.39" y2="254.39"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="627.5" x2="635.5" y1="248.39" y2="248.39"/>
+            <ellipse cx="621.5" cy="248.39" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="565.64" x2="557.64" y1="630.28" y2="630.28"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="565.64" x2="557.64" y1="627.28" y2="627.28"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="561.64" x2="561.64" y1="626.28" y2="634.28"/>
         </g><!--link section to scoresheet-->
-        <g class="link" data-entity-1="section" data-entity-2="scoresheet" data-source-line="100" data-uid="lnk10"
+        <g class="link" data-entity-1="section" data-entity-2="scoresheet" data-source-line="110" data-uid="lnk11"
            id="link_section_scoresheet">
-            <path codeLine="100" d="M719.94,311.84 C719.94,340.41 719.94,343.57 719.94,369.5" fill="none"
+            <path codeLine="110" d="M719.94,311.84 C719.94,337.5 719.94,337.64 719.94,361.49" fill="none"
                   id="section-scoresheet" style="stroke:#181818;stroke-width:1;"/>
             <line style="stroke:#181818;stroke-width:1;" x1="719.94" x2="713.94" y1="301.84" y2="293.84"/>
             <line style="stroke:#181818;stroke-width:1;" x1="719.94" x2="725.94" y1="301.84" y2="293.84"/>
             <line style="stroke:#181818;stroke-width:1;" x1="719.94" x2="719.94" y1="301.84" y2="293.84"/>
             <ellipse cx="719.94" cy="307.84" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="723.94" x2="715.94" y1="373.5" y2="373.5"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="723.94" x2="715.94" y1="370.5" y2="370.5"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="719.94" x2="719.94" y1="369.5" y2="377.5"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="723.94" x2="715.94" y1="365.49" y2="365.49"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="723.94" x2="715.94" y1="362.49" y2="362.49"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="719.94" x2="719.94" y1="361.49" y2="369.49"/>
         </g><!--link piecepermission to user-->
-        <g class="link" data-entity-1="piecepermission" data-entity-2="user" data-source-line="101" data-uid="lnk11"
+        <g class="link" data-entity-1="piecepermission" data-entity-2="user" data-source-line="111" data-uid="lnk12"
            id="link_piecepermission_user">
-            <path codeLine="101" d="M194.66,548.28 C194.66,582.4 194.66,598.35 194.66,634.57" fill="none"
-                  id="piecepermission-user" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="194.66" x2="188.66" y1="538.28" y2="530.28"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="194.66" x2="200.66" y1="538.28" y2="530.28"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="194.66" x2="194.66" y1="538.28" y2="530.28"/>
-            <ellipse cx="194.66" cy="544.28" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="198.66" x2="190.66" y1="638.57" y2="638.57"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="198.66" x2="190.66" y1="635.57" y2="635.57"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="194.66" x2="194.66" y1="634.57" y2="642.57"/>
-        </g><!--link piecepermission to piece-->
-        <g class="link" data-entity-1="piecepermission" data-entity-2="piece" data-source-line="102" data-uid="lnk12"
-           id="link_piecepermission_piece">
-            <path codeLine="102"
-                  d="M223.35,537.98 C223.35,587.34 223.35,638.39 223.35,638.39 C223.35,638.39 335.65,638.39 430.58,638.39"
-                  fill="none" id="piecepermission-piece" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="223.35" x2="215.35" y1="537.98" y2="529.98"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="223.35" x2="231.35" y1="537.98" y2="529.98"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="223.35" x2="223.35" y1="537.98" y2="529.98"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="434.58" x2="434.58" y1="634.39" y2="642.39"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="431.58" x2="431.58" y1="634.39" y2="642.39"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="430.58" x2="438.58" y1="638.39" y2="638.39"/>
-        </g><!--link room to user-->
-        <g class="link" data-entity-1="room" data-entity-2="user" data-source-line="103" data-uid="lnk13"
-           id="link_room_user">
-            <path codeLine="103" d="M338.9,593.14 C338.9,615.75 338.9,613.16 338.9,634.57" fill="none" id="room-user"
+            <path codeLine="111" d="M92,548.28 C92,582.4 92,598.35 92,634.57" fill="none" id="piecepermission-user"
                   style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="338.9" x2="332.9" y1="583.14" y2="575.14"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="338.9" x2="344.9" y1="583.14" y2="575.14"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="338.9" x2="338.9" y1="583.14" y2="575.14"/>
-            <ellipse cx="338.9" cy="589.14" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="342.9" x2="334.9" y1="638.57" y2="638.57"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="342.9" x2="334.9" y1="635.57" y2="635.57"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="338.9" x2="338.9" y1="634.57" y2="642.57"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="92" x2="86" y1="538.28" y2="530.28"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="92" x2="98" y1="538.28" y2="530.28"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="92" x2="92" y1="538.28" y2="530.28"/>
+            <ellipse cx="92" cy="544.28" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="96" x2="88" y1="638.57" y2="638.57"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="96" x2="88" y1="635.57" y2="635.57"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="92" x2="92" y1="634.57" y2="642.57"/>
+        </g><!--link piecepermission to piece-->
+        <g class="link" data-entity-1="piecepermission" data-entity-2="piece" data-source-line="112" data-uid="lnk13"
+           id="link_piecepermission_piece">
+            <path codeLine="112"
+                  d="M247.05,537.98 C247.05,587.34 247.05,638.39 247.05,638.39 C247.05,638.39 345.32,638.39 432.71,638.39"
+                  fill="none" id="piecepermission-piece" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="247.05" x2="239.05" y1="537.98" y2="529.98"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="247.05" x2="255.05" y1="537.98" y2="529.98"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="247.05" x2="247.05" y1="537.98" y2="529.98"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="436.71" x2="436.71" y1="634.39" y2="642.39"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="433.71" x2="433.71" y1="634.39" y2="642.39"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="432.71" x2="440.71" y1="638.39" y2="638.39"/>
+        </g><!--link room to user-->
+        <g class="link" data-entity-1="room" data-entity-2="user" data-source-line="113" data-uid="lnk14"
+           id="link_room_user">
+            <path codeLine="113"
+                  d="M268.55,552.39 C208.04,552.39 167.03,552.39 167.03,552.39 C167.03,552.39 167.03,590.12 167.03,634.51"
+                  fill="none" id="room-user" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="278.55" x2="286.55" y1="552.39" y2="546.39"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="278.55" x2="286.55" y1="552.39" y2="558.39"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="278.55" x2="286.55" y1="552.39" y2="552.39"/>
+            <ellipse cx="272.55" cy="552.39" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="171.03" x2="163.03" y1="638.51" y2="638.51"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="171.03" x2="163.03" y1="635.51" y2="635.51"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="167.03" x2="167.03" y1="634.51" y2="642.51"/>
         </g><!--link room to piece-->
-        <g class="link" data-entity-1="room" data-entity-2="piece" data-source-line="104" data-uid="lnk14"
+        <g class="link" data-entity-1="room" data-entity-2="piece" data-source-line="114" data-uid="lnk15"
            id="link_room_piece">
-            <path codeLine="104" d="M491.64,593.14 C491.64,612.98 491.64,607.43 491.64,626.6" fill="none"
+            <path codeLine="114" d="M492.64,593.14 C492.64,612.98 492.64,607.43 492.64,626.6" fill="none"
                   id="room-piece" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="491.64" x2="485.64" y1="583.14" y2="575.14"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="491.64" x2="497.64" y1="583.14" y2="575.14"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="491.64" x2="491.64" y1="583.14" y2="575.14"/>
-            <ellipse cx="491.64" cy="589.14" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="495.64" x2="487.64" y1="630.6" y2="630.6"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="495.64" x2="487.64" y1="627.6" y2="627.6"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="491.64" x2="491.64" y1="626.6" y2="634.6"/>
-        </g><!--SRC=[jLLDRzim3BtxLmYzT3iamNRqhoWQx2p8CcqJqnVqqTLe-zz7ALaYEzxGGtQnpSV7Y8yYcSSfHXVQmy4fOMBIQY-jFaWbGjZrA4OlTDCyCcdDW6Fo8g8rpOGzC8bUAcZ2JpHE48qfD11d1ypwEDaSzIE0Pzhse1em4UFC7ZBqm4HWAVlU6iQmRrbAsDFdRaUF0Ns8t0WDBNiHNax24qe9tOAW1QeQ42yY2i-JNw3xFJqYQWXHQCUb1n61JktfbU65Dxb-vVt8KfuG9Aoq5Ao8SSMxfOQOQf4pbTTPqbvZFGu3ogJYNAETqzmBCox2CN2NEeMoPPsr2eIvay2Zj1wE4q1SgRmwYjIGpL1uMtfB9NY5bjn8CUREQPb9kWE_LHZKOeJ_SNL7aFdijQmJUj9qPdnAK2a0BnNud4vDR1oDY8dY20UQ8kl_Jkd1M8rcHUgehwLD9jQOqvL5X_FNRoqRb1NnRCyh-_Nxob_PTnkJ9_0QGxYj-Sfx7HrtZNZRgdbU5lpcPYv1FA-TIzkmBq0r-NedHS_MwfMC39NSVVPjDOtzPPO9Ru_5pGpG4fxHZFLibyMNSNxkKhxHP5VIHSzI9T3IuPes33g5UVdSyzAVGPN_XJ2X2qsr83xiRlV-VXBV_1coVu7Ns6RT5sT6xeHRN_MBvKvgSWqKocy0]-->
+            <line style="stroke:#181818;stroke-width:1;" x1="492.64" x2="486.64" y1="583.14" y2="575.14"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="492.64" x2="498.64" y1="583.14" y2="575.14"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="492.64" x2="492.64" y1="583.14" y2="575.14"/>
+            <ellipse cx="492.64" cy="589.14" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="496.64" x2="488.64" y1="630.6" y2="630.6"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="496.64" x2="488.64" y1="627.6" y2="627.6"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="492.64" x2="492.64" y1="626.6" y2="634.6"/>
+        </g><!--link roomuser to room-->
+        <g class="link" data-entity-1="roomuser" data-entity-2="room" data-source-line="115" data-uid="lnk16"
+           id="link_roomuser_room">
+            <path codeLine="115" d="M330.9,222.18 C330.9,263.02 330.9,294.51 330.9,345.05" fill="none"
+                  id="roomuser-room" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="330.9" x2="324.9" y1="212.18" y2="204.18"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="330.9" x2="336.9" y1="212.18" y2="204.18"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="330.9" x2="330.9" y1="212.18" y2="204.18"/>
+            <ellipse cx="330.9" cy="218.18" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="334.9" x2="326.9" y1="349.05" y2="349.05"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="334.9" x2="326.9" y1="346.05" y2="346.05"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="330.9" x2="330.9" y1="345.05" y2="353.05"/>
+        </g><!--link roomuser to user-->
+        <g class="link" data-entity-1="roomuser" data-entity-2="user" data-source-line="116" data-uid="lnk17"
+           id="link_roomuser_user">
+            <path codeLine="116"
+                  d="M269.38,222.34 C269.38,365.52 269.38,725.39 269.38,725.39 C269.38,725.39 266.32,725.39 250.42,725.39"
+                  fill="none" id="roomuser-user" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="269.38" x2="263.38" y1="212.34" y2="204.34"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="269.38" x2="275.38" y1="212.34" y2="204.34"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="269.38" x2="269.38" y1="212.34" y2="204.34"/>
+            <ellipse cx="269.38" cy="218.34" fill="none" rx="4" ry="4" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="246.42" x2="246.42" y1="729.39" y2="721.39"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="249.42" x2="249.42" y1="729.39" y2="721.39"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="250.42" x2="242.42" y1="725.39" y2="725.39"/>
+        </g><!--SRC=[jLNRRjim37ttLmXzwVQG1DlU_1N5WZqBYipOH7M3Bbs3jly-IabZ-RAjmB8NspmaRPuZahuVOdIXtUsS4YOchRRIwfrK8eHDXwBtGZVDFPFM7B5FNaIqfXcm0oRHImLDU4JZ18KnXGRYoG6pFWusP_q8u9cs7QW6JCHuOdSPkcCYi9HzBmrZsBKi9UpeSREXon5zYDm83Irx4buEmXDA1Ir1q09L3OWd4ONdoK_GxPOk4JM4ABJZqeE8G5_jw9RXYJUvRkPzorGU42JCk1Iia775kyQ68jMaPfBNMU9UOnqUZoYJYgSQFJZDlJ3z91q3T-cWKBRiOAq2OMv4S2-jX_q046SiHqUX6h8PIjmQtw84hz1I6p76t3ajCqaVmAy94xxnHvW8W5hqy3yESmyoLpCdUaRFB2yH7w9O9E55auynrnIDlH4nKHxXG7Db_Uz3EZ1Meva57QZJfKqcrfZJbKKVvyzVMdPKLiIBVPhPprzd_ig-sU0yWDSOmbBpcNSS9ZTclAnfdjS7NvpCDOddHNHj6_O9I9FFDsBqtLezev6XKhlFlhMciJ_DjE3rGLbC1Qtb4vg-dlQo2ZFEBrtALvfi3BhocR84MaDSqyv1fp2leriUUjPZPVc_mrUfhZ-1RFprUF-rA53bznK6TA6fzjYRtMnUNyydqhnF_f_0CRUPD-ib8jU_z5LlB8rI1zV06584kg3PNe3v-HS0]-->
     </g>
 </svg>

@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1775576632827-1
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_room_users
+                  name: room_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_created
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp_updated
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_room_users
+                  name: user_id
+                  type: UUID
+            tableName: room_users
+  - changeSet:
+      id: 1775576632827-2
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: room_id
+            baseTableName: room_users
+            constraintName: FK_ROOM_USERS_ON_ROOM
+            referencedColumnNames: id
+            referencedTableName: rooms
+  - changeSet:
+      id: 1775576632827-3
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: room_users
+            constraintName: FK_ROOM_USERS_ON_USER
+            referencedColumnNames: id
+            referencedTableName: users

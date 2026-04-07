@@ -96,6 +96,15 @@ entity "Room" as room {
   timestamp_updated: datetime
 }
 
+' RoomUser model
+entity "RoomUser" as roomuser {
+  room_id: uuid
+  user_id: uuid
+  --
+  timestamp_created: datetime
+  timestamp_updated: datetime
+}
+
 ' Relationships
 scoresheet }o--|| piece
 section }o--|| piece
@@ -104,5 +113,7 @@ piecepermission }o--|| user
 piecepermission }--|| piece
 room }o--|| user
 room }o--|| piece
+roomuser }o--|| room
+roomuser }o--|| user
 
 @enduml

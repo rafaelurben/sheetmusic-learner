@@ -14,7 +14,12 @@ public class Destinations {
 
   private static final Pattern TOPIC_PIECE_DESTINATION_PATTERN =
       Pattern.compile(
-          "^/topic/piece\\.(?<pieceId>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+          "^/topic/piece\\.(?<id>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
+              + "[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$");
+
+  private static final Pattern TOPIC_ROOM_DESTINATION_PATTERN =
+      Pattern.compile(
+          "^/topic/room\\.(?<id>[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-"
               + "[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$");
 
   private Destinations() {
@@ -33,16 +38,24 @@ public class Destinations {
     return new Destination("/topic/piece.%s".formatted(pieceId.toString()));
   }
 
-  public static Optional<UUID> extractPieceIdFromTopicPieceDestination(String destination) {
+  private static Optional<UUID> extractIdFromDestination(String destination, Pattern pattern) {
     if (destination == null || destination.isBlank()) {
       return Optional.empty();
     }
 
-    Matcher matcher = TOPIC_PIECE_DESTINATION_PATTERN.matcher(destination);
+    Matcher matcher = pattern.matcher(destination);
     if (!matcher.matches()) {
       return Optional.empty();
     }
 
-    return Optional.of(UUID.fromString(matcher.group("pieceId")));
+    return Optional.of(UUID.fromString(matcher.group("id")));
+  }
+
+  public static Optional<UUID> extractPieceIdFromTopicPieceDestination(String destination) {
+    return extractIdFromDestination(destination, TOPIC_PIECE_DESTINATION_PATTERN);
+  }
+
+  public static Optional<UUID> extractRoomIdFromTopicRoomDestination(String destination) {
+    return extractIdFromDestination(destination, TOPIC_ROOM_DESTINATION_PATTERN);
   }
 }

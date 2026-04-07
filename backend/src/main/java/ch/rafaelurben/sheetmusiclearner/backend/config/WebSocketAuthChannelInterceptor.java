@@ -1,12 +1,16 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.config;
 
+import ch.rafaelurben.sheetmusiclearner.backend.model.RoomUser;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import ch.rafaelurben.sheetmusiclearner.backend.service.PieceService;
+import ch.rafaelurben.sheetmusiclearner.backend.service.RoomUserService;
 import ch.rafaelurben.sheetmusiclearner.backend.service.UserService;
 import ch.rafaelurben.sheetmusiclearner.backend.utils.Destinations;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
@@ -38,16 +42,61 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
       new JwtAuthenticationConverter();
 
   @Lazy private final PieceService pieceService;
+  @Lazy private final RoomUserService roomUserService;
   @Lazy private final UserService userService;
 
-  private void authorizeSubscribe(StompHeaderAccessor accessor, Authentication authentication) {
+  private final ConcurrentMap<String, RoomUser.RoomUserId> roomUserIdsBySubscription =
+      new ConcurrentHashMap<>();
+
+  private Optional<String> getSubscriptionKey(StompHeaderAccessor accessor) {
+    String sessionId = accessor.getSessionId();
+    String subscriptionId = accessor.getSubscriptionId();
+    if (sessionId == null || subscriptionId == null) {
+      return Optional.empty();
+    }
+    return Optional.of(sessionId + ":" + subscriptionId);
+  }
+
+  private void handleRoomJoin(User user, UUID roomId, StompHeaderAccessor accessor) {
+    roomUserService.createRoomUser(roomId, user);
+    getSubscriptionKey(accessor)
+        .ifPresent(
+            key ->
+                roomUserIdsBySubscription.put(key, new RoomUser.RoomUserId(roomId, user.getId())));
+  }
+
+  private void handleRoomLeave(RoomUser.RoomUserId roomUserId) {
+    roomUserService.deleteRoomUser(roomUserId);
+  }
+
+  private void handleSubscribe(StompHeaderAccessor accessor) {
+    if (!(accessor.getUser() instanceof Authentication authentication)) {
+      throw new BadCredentialsException("Missing authentication for STOMP frame");
+    }
     String destination = accessor.getDestination();
+
+    // Authorize /topic/piece.xxxx
     Optional<UUID> optionalPieceId =
         Destinations.extractPieceIdFromTopicPieceDestination(destination);
     if (optionalPieceId.isPresent()) {
       User user = userService.getUserEntity(authentication);
       pieceService.ensureReadableByUser(user.getId(), optionalPieceId.get());
+      return;
     }
+
+    // Handle /topic/room.xxx
+    Optional<UUID> optionalRoomId = Destinations.extractRoomIdFromTopicRoomDestination(destination);
+    if (optionalRoomId.isPresent()) {
+      User user = userService.getUserEntity(authentication);
+      handleRoomJoin(user, optionalRoomId.get(), accessor);
+    }
+  }
+
+  private void handleUnsubscribe(StompHeaderAccessor accessor) {
+    // Handle /topic/room.xxx
+    getSubscriptionKey(accessor)
+        .map(roomUserIdsBySubscription::remove)
+        .ifPresent(this::handleRoomLeave);
   }
 
   @Override
@@ -96,10 +145,9 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
         throw new BadCredentialsException("Invalid token", e);
       }
     } else if (StompCommand.SUBSCRIBE.equals(command)) {
-      if (!(accessor.getUser() instanceof Authentication authentication)) {
-        throw new BadCredentialsException("Missing authentication for STOMP frame");
-      }
-      authorizeSubscribe(accessor, authentication);
+      handleSubscribe(accessor);
+    } else if (StompCommand.UNSUBSCRIBE.equals(command)) {
+      handleUnsubscribe(accessor);
     }
 
     return message;

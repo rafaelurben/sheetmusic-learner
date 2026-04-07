@@ -5,3 +5,5 @@ databaseChangeLog:
       file: db/changelog/2026-03-31-piece-year-description.yaml
   - include:
       file: db/changelog/2026-03-31-01-changelog.yaml
+  - include:
+      file: db/changelog/2026-04-07-room-user.yaml
