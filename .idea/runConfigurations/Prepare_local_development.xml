@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Prepare local development" type="CompoundRunConfigurationType">
+    <toRun name="docker-compose.yml: Compose Deployment" type="docker-deploy" />
     <toRun name="backend [mvn clean install -DskipTests]" type="MavenRunConfiguration" />
     <toRun name="frontend: generate:openapi" type="js.build_tools.npm" />
     <toRun name="frontend: install" type="js.build_tools.npm" />
