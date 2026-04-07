@@ -63,7 +63,10 @@ export const useRoomStore = create<RoomStoreState>((set, get) => ({
         set((state) => ({
           room: {
             ...state.room,
-            roomUsers: [...state.room.roomUsers, user],
+            roomUsers: [
+              ...state.room.roomUsers.filter((u) => u.id !== user.id),
+              user,
+            ],
           },
         }));
         return {
