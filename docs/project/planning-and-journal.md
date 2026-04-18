@@ -44,6 +44,7 @@
   - Create home page with list of rooms and pieces
   - Multiple bug fixes
   - Some code cleanup
+  - Implemented playback state synchronization with basic section-based page turning
 
 ## Project milestones
 

@@ -10,6 +10,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundExcepti
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.*;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPositionRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.RoomMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.UserMapper;
@@ -154,5 +155,43 @@ public class RoomServiceImpl implements RoomService {
         Destinations.topicGeneral(), new GeneralRoomMetadataUpdatedEvent(roomMetadataDto).asDto());
     messagingService.send(
         Destinations.topicRoom(roomId), new RoomMetadataUpdatedEvent(roomMetadataDto).asDto());
+  }
+
+  @Override
+  public void controlPlay(User user, UUID roomId) {
+    Room room = getRoomById(roomId);
+    ensureUserIsOwner(user, room);
+
+    room.setPlaying(true);
+    room.setLastPlayTimestamp(Instant.now());
+    room = roomRepository.save(room);
+
+    messagingService.send(
+        Destinations.topicRoom(roomId), RoomPlaybackStateChangedEvent.fromRoom(room).asDto());
+  }
+
+  @Override
+  public void controlPause(User user, UUID roomId) {
+    Room room = getRoomById(roomId);
+    ensureUserIsOwner(user, room);
+
+    room.setPlaying(false);
+    room = roomRepository.save(room);
+
+    messagingService.send(
+        Destinations.topicRoom(roomId), RoomPlaybackStateChangedEvent.fromRoom(room).asDto());
+  }
+
+  @Override
+  public void controlPosition(User user, UUID roomId, RoomControlPositionRequestDto dto) {
+    Room room = getRoomById(roomId);
+    ensureUserIsOwner(user, room);
+
+    room.setLastPlaySectionPosition(dto.currentSectionPosition());
+    room.setLastPlayTimestamp(Instant.now());
+    room = roomRepository.save(room);
+
+    messagingService.send(
+        Destinations.topicRoom(roomId), RoomPlaybackStateChangedEvent.fromRoom(room).asDto());
   }
 }

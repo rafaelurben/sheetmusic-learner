@@ -1,7 +1,6 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.io.async.controller;
 
-import ch.rafaelurben.sheetmusiclearner.backend.exceptions.NotImplementedException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPositionRequestDto;
@@ -60,19 +59,25 @@ public class AsyncRoomController {
   @MessageMapping("/room.{roomId}/control/play")
   public void handleControlPlay(@DestinationVariable UUID roomId) {
     log.debug("Received control/play for room {}", roomId);
-    throw new NotImplementedException("Room control/play is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+
+    roomService.controlPlay(user, roomId);
   }
 
   @MessageMapping("/room.{roomId}/control/pause")
   public void handleControlPause(@DestinationVariable UUID roomId) {
     log.debug("Received control/pause for room {}", roomId);
-    throw new NotImplementedException("Room control/pause is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+
+    roomService.controlPause(user, roomId);
   }
 
   @MessageMapping("/room.{roomId}/control/position")
   public void handleControlPosition(
       @DestinationVariable UUID roomId, @Validated @Payload RoomControlPositionRequestDto dto) {
     log.debug("Received control/position for room {}: {}", roomId, dto);
-    throw new NotImplementedException("Room control/position is not implemented yet");
+    User user = userService.getCurrentUserEntity();
+
+    roomService.controlPosition(user, roomId, dto);
   }
 }

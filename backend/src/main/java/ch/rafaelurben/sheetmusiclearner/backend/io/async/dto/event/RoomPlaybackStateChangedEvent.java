@@ -10,7 +10,7 @@ public record RoomPlaybackStateChangedEvent(
     Instant lastPlayTimestamp,
     float tempoMultiplier) {
 
-  static RoomPlaybackStateChangedEvent fromRoom(Room room) {
+  public static RoomPlaybackStateChangedEvent fromRoom(Room room) {
     return new RoomPlaybackStateChangedEvent(
         room.getPlaying(),
         room.getLastPlaySectionPosition(),

@@ -6,6 +6,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPositionRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import java.util.List;
@@ -26,4 +27,10 @@ public interface RoomService {
   void changePiece(User user, UUID roomId, RoomChangePieceRequestDto dto);
 
   void updateRoom(User user, UUID roomId, RoomUpdateRequestDto updateRequestDto);
+
+  void controlPlay(User user, UUID roomId);
+
+  void controlPause(User user, UUID roomId);
+
+  void controlPosition(User user, UUID roomId, RoomControlPositionRequestDto dto);
 }
