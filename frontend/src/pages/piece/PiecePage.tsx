@@ -2,6 +2,7 @@ import { Button } from "@/shadcn/components/ui/button";
 import {
   PermissionType,
   type PiecePermissionDto,
+  ResponseError,
 } from "@/api/generated/openapi";
 import { usePiecesApi } from "@/api/useAuthenticatedApiClient.ts";
 import EditPieceDialog from "@/pages/piece/EditPieceDialog.tsx";
@@ -55,7 +56,9 @@ export default function PiecePage() {
       toast.success("Piece deleted.");
     } catch (error) {
       console.error("Failed to delete piece:", error);
-      toast.error("Failed to delete piece.");
+      if (error instanceof ResponseError) {
+        toast.error("Failed to delete piece: " + (await error.response.text()));
+      }
     } finally {
       setIsDeletingPiece(false);
     }

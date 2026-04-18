@@ -35,14 +35,12 @@ import ch.rafaelurben.sheetmusiclearner.backend.repository.ScoreSheetRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.SectionRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.UserRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.utils.Destinations;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -64,6 +62,8 @@ public class PieceServiceImpl implements PieceService {
   private final UserRepository userRepository;
   private final S3Service s3Service;
   private final MessagingService messagingService;
+
+  @Lazy private final PieceServiceImpl thisProxy;
 
   private static final String PNG_MEDIA_TYPE = "image/png";
 
@@ -211,9 +211,14 @@ public class PieceServiceImpl implements PieceService {
     return pieceMapper.toDto(piece);
   }
 
-  @Override
-  @Transactional
-  public void deletePiece(final User user, final UUID pieceId) {
+  /**
+   * Delete a piece and return the S3 keys of all score sheets that were associated with the piece
+   * before deletion.
+   *
+   * @return a list of S3 object keys
+   */
+  @Transactional(rollbackFor = Exception.class)
+  protected Collection<String> deletePieceTransaction(final User user, final UUID pieceId) {
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER));
 
@@ -221,6 +226,24 @@ public class PieceServiceImpl implements PieceService {
         piece.getScoreSheets().stream().map(ScoreSheet::getS3Key).toList();
 
     pieceRepository.delete(piece);
+    pieceRepository.flush();
+
+    return scoreSheetS3Keys;
+  }
+
+  @Override
+  public void deletePiece(final User user, final UUID pieceId) {
+    Collection<String> scoreSheetS3Keys;
+    try {
+      scoreSheetS3Keys = thisProxy.deletePieceTransaction(user, pieceId);
+    } catch (DataIntegrityViolationException e) {
+      log.warn(
+          "Failed to delete piece with id {} due to data integrity violation: {}",
+          pieceId,
+          e.getMessage());
+      throw new BadRequestException(
+          "Cannot delete piece because it is still used in at least one room.");
+    }
 
     messagingService.send(
         Destinations.topicGeneral(), new GeneralPieceNowUnavailableEvent(pieceId).asDto());
