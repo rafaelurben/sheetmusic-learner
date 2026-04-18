@@ -21,9 +21,7 @@ import type ScoreSheetUpdatedPayload from "@/interfaces/async/payload/piece/Scor
 import type ChatMessagePayload from "@/interfaces/async/payload/room/ChatMessagePayload.ts";
 import type RoomMetadataChangedPayload from "@/interfaces/async/payload/room/MetadataUpdatedPayload.ts";
 import type PieceChangedPayload from "@/interfaces/async/payload/room/PieceChangedPayload.ts";
-import type { PlaybackPausedPayload } from "@/interfaces/async/payload/room/PlaybackPausedPayload.ts";
-import type { PlaybackStartedPayload } from "@/interfaces/async/payload/room/PlaybackStartedPayload.ts";
-import type PositionChangedPayload from "@/interfaces/async/payload/room/PositionChangedPayload.ts";
+import type PlaybackStateChangedPayload from "@/interfaces/async/payload/room/PlaybackStateChangedPayload.ts";
 import type UserJoinedPayload from "@/interfaces/async/payload/room/UserJoinedPayload.ts";
 import type UserLeftPayload from "@/interfaces/async/payload/room/UserLeftPayload.ts";
 import type ErrorPayload from "@/interfaces/async/payload/user/ErrorPayload.ts";
@@ -117,16 +115,8 @@ export type RoomEventDto =
       payload: UserLeftPayload;
     }
   | {
-      type: "playback-started";
-      payload: PlaybackStartedPayload;
-    }
-  | {
-      type: "playback-paused";
-      payload: PlaybackPausedPayload;
-    }
-  | {
-      type: "position-changed";
-      payload: PositionChangedPayload;
+      type: "playback-state-changed";
+      payload: PlaybackStateChangedPayload;
     }
   | {
       type: "chat-message";

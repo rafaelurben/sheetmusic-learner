@@ -224,18 +224,15 @@ users.
         "userId": "uuid"
       }
       ```
-- `type`: `playback-started`
-    - Description: Playback in the room was started.
-    - Payload: *none*
-- `type`: `playback-paused`
-    - Description: Playback in the room was paused.
-    - Payload: *none*
-- `type`: `position-changed`
-    - Description: The current playback position or selected page was changed.
+- `type`: `playback-state-changed`
+    - Description: The playback state in the room was changed (started, paused, or position changed).
     - Payload:
       ```json5
       {
-        "currentSectionPosition": 5
+        "playing": true,
+        "lastPlaySectionPosition": 5,
+        "lastPlayTimestamp": "2026-06-20T12:45:00Z",
+        "tempoMultiplier": 1.0
       }
       ```
 - `type`: `chat-message`

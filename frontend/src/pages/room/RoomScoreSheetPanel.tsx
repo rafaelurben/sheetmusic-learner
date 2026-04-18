@@ -7,7 +7,7 @@ import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import { useMemo } from "react";
 import { stompService } from "@/service/stompService.ts";
-import type { RoomControlPositionRequestDto } from "@/interfaces/async/request/room/RoomControlPositionRequestDto.ts";
+import type RoomControlPositionRequestDto from "@/interfaces/async/request/room/RoomControlPositionRequestDto.ts";
 import type { PieceDto, RoomDto } from "@/api/generated/openapi";
 
 interface RoomScoreSheetPanelProps {

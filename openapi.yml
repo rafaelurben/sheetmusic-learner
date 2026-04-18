@@ -493,22 +493,6 @@ components:
             - string
             - 'null'
           format: uuid
-        playing:
-          type: boolean
-          default: false
-        lastPlaySectionPosition:
-          type:
-            - integer
-            - 'null'
-        lastPlayTimestamp:
-          type:
-            - string
-            - 'null'
-          format: timestamp
-        tempoMultiplier:
-          type: number
-          format: float
-          default: 1.0
       required: [ id, title, ownerId ]
 
     RoomDto:

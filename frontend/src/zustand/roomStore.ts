@@ -95,6 +95,14 @@ export const useRoomStore = create<RoomStoreState>((set, get) => ({
       }
       case "room-deleted":
         return { type: "room-deleted" };
+      case "playback-state-changed":
+        set((state) => ({
+          room: {
+            ...state.room,
+            ...event.payload,
+          },
+        }));
+        return null;
       default:
         return null;
     }
