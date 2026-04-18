@@ -2,6 +2,7 @@
  * (C) 2026. - Rafael Urben
  */
 import * as React from "react";
+import { useMemo, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import {
@@ -39,11 +40,11 @@ export default function SearchableObjectList<T extends SearchableObject>({
   toPath,
   headerAction,
 }: Readonly<SearchableObjectListProps<T>>) {
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   const normalizedSearchTerm = searchTerm.trim().toLowerCase();
 
-  const filteredObjects = React.useMemo(() => {
+  const filteredObjects = useMemo(() => {
     if (!normalizedSearchTerm) {
       return objects;
     }

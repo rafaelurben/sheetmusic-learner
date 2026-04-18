@@ -1,7 +1,7 @@
 /*
  * (C) 2026. - Rafael Urben
  */
-import * as React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import {
   Dialog,
@@ -40,14 +40,15 @@ export default function EditRoomDialog({
 }: Readonly<EditRoomDialogProps>) {
   const NO_PIECE_VALUE = "__none__";
   const piecesById = useMainStore((state) => state.pieces);
-  const pieces = React.useMemo(() => Object.values(piecesById), [piecesById]);
-  const [roomTitle, setRoomTitle] = React.useState(initialTitle);
-  const [selectedPieceId, setSelectedPieceId] = React.useState(
+  const pieces = useMemo(() => Object.values(piecesById), [piecesById]);
+  const [roomTitle, setRoomTitle] = useState(initialTitle);
+  const [selectedPieceId, setSelectedPieceId] = useState(
     initialPieceId ?? NO_PIECE_VALUE,
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRoomTitle(initialTitle);
       setSelectedPieceId(initialPieceId ?? NO_PIECE_VALUE);
     }

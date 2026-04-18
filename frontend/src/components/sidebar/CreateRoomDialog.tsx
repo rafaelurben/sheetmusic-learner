@@ -1,7 +1,7 @@
 /*
  * (C) 2026. - Rafael Urben
  */
-import * as React from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/shadcn/components/ui/button";
 import {
   Dialog,
@@ -37,11 +37,11 @@ export function CreateRoomDialog({
   const navigate = useNavigate();
   const roomsApi = useRoomsApi();
   const piecesById = useMainStore((state) => state.pieces);
-  const pieces = React.useMemo(() => Object.values(piecesById), [piecesById]);
+  const pieces = useMemo(() => Object.values(piecesById), [piecesById]);
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [roomTitle, setRoomTitle] = React.useState("");
-  const [selectedPieceId, setSelectedPieceId] = React.useState(NO_PIECE_VALUE);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [roomTitle, setRoomTitle] = useState("");
+  const [selectedPieceId, setSelectedPieceId] = useState(NO_PIECE_VALUE);
 
   const handleCreateRoom = async () => {
     if (!roomTitle.trim()) return;

@@ -1,7 +1,7 @@
 /*
  * (C) 2026. - Rafael Urben
  */
-import * as React from "react";
+import { useState } from "react";
 import { Button } from "@/shadcn/components/ui/button";
 import {
   Dialog,
@@ -38,8 +38,8 @@ export function CreatePieceDialog({
   const navigate = useNavigate();
   const piecesApi = usePiecesApi();
 
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [values, setValues] = React.useState(initialValues);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [values, setValues] = useState(initialValues);
 
   const canCreate =
     values.title.trim() &&

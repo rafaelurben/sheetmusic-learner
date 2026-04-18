@@ -2,6 +2,7 @@
  * (C) 2026. - Rafael Urben
  */
 import * as React from "react";
+import { useState } from "react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import {
   Card,
@@ -20,10 +21,8 @@ import { toast } from "sonner";
 import { usePageTitle } from "@/zustand/pageTitleStore.ts";
 
 export default function DebugStompPage() {
-  const [destination, setDestination] = React.useState("/app/room.dummy/chat");
-  const [payload, setPayload] = React.useState(
-    '{"message":"Hello from debug"}',
-  );
+  const [destination, setDestination] = useState("/app/room.dummy/chat");
+  const [payload, setPayload] = useState('{"message":"Hello from debug"}');
 
   usePageTitle("STOMP Debug");
 
