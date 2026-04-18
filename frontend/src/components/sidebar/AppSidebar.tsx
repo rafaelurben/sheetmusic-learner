@@ -1,5 +1,4 @@
-import * as React from "react";
-import { Music2Icon, PlusIcon } from "lucide-react";
+import { MoreHorizontal, Music2Icon, PlusIcon } from "lucide-react";
 
 import {
   Sidebar,
@@ -20,21 +19,40 @@ import { CreateRoomDialog } from "@/components/sidebar/CreateRoomDialog.tsx";
 import { CreatePieceDialog } from "@/components/sidebar/CreatePieceDialog.tsx";
 
 import { useMainStore } from "@/zustand/mainStore.ts";
+import { type ComponentProps, useMemo, useState } from "react";
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+const MAX_SIDEBAR_ITEMS = 5;
+
+function sort<T extends { title: string }>(objects: T[]): T[] {
+  return objects.toSorted((a, b) => a.title.localeCompare(b.title));
+}
+
+export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const auth = useAuth();
   const piecesRecord = useMainStore((state) => state.pieces);
   const roomsRecord = useMainStore((state) => state.rooms);
   const isConnected = useMainStore((state) => state.connected);
 
-  const [isCreatingRoom, setIsCreatingRoom] = React.useState(false);
-  const [isCreatingPiece, setIsCreatingPiece] = React.useState(false);
+  const [isCreatingRoom, setIsCreatingRoom] = useState(false);
+  const [isCreatingPiece, setIsCreatingPiece] = useState(false);
 
-  const pieces = React.useMemo(
-    () => Object.values(piecesRecord),
+  const pieces = useMemo(
+    () => sort(Object.values(piecesRecord)),
     [piecesRecord],
   );
-  const rooms = React.useMemo(() => Object.values(roomsRecord), [roomsRecord]);
+  const rooms = useMemo(() => sort(Object.values(roomsRecord)), [roomsRecord]);
+
+  const visiblePieces = useMemo(
+    () => pieces.slice(0, MAX_SIDEBAR_ITEMS),
+    [pieces],
+  );
+  const visibleRooms = useMemo(
+    () => rooms.slice(0, MAX_SIDEBAR_ITEMS),
+    [rooms],
+  );
+
+  const hasMorePieces = pieces.length > MAX_SIDEBAR_ITEMS;
+  const hasMoreRooms = rooms.length > MAX_SIDEBAR_ITEMS;
 
   return (
     <Sidebar variant="sidebar" {...props}>
@@ -79,7 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </Button>
           </SidebarGroupLabel>
           <SidebarMenu className="gap-2">
-            {pieces.map((piece) => (
+            {visiblePieces.map((piece) => (
               <SidebarMenuItem key={piece.id}>
                 <SidebarMenuButton asChild>
                   <NavLink to={`/pieces/${piece.id}`} className="font-medium">
@@ -88,6 +106,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+            {hasMorePieces ? (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  className="text-sidebar-foreground/70"
+                >
+                  <Link to="/">
+                    <MoreHorizontal className="size-4" />
+                    <span>More</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ) : null}
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup>
@@ -105,7 +136,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </Button>
           </SidebarGroupLabel>
           <SidebarMenu className="gap-2">
-            {rooms.map((room) => (
+            {visibleRooms.map((room) => (
               <SidebarMenuItem key={room.id}>
                 <SidebarMenuButton asChild>
                   <NavLink to={`/rooms/${room.id}`} className="font-medium">
@@ -114,6 +145,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
+            {hasMoreRooms ? (
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  className="text-sidebar-foreground/70"
+                >
+                  <Link to="/">
+                    <MoreHorizontal className="size-4" />
+                    <span>More</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ) : null}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
