@@ -11,11 +11,15 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.resilience.annotation.Retryable;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
@@ -25,6 +29,8 @@ public class UserServiceImpl implements UserService {
 
   private final UserMapper userMapper;
   private final UserRepository userRepository;
+
+  @Lazy private final UserServiceImpl thisProxy;
 
   private Jwt getJwtPrincipal(Authentication authentication) {
     if (authentication == null) {
@@ -37,7 +43,18 @@ public class UserServiceImpl implements UserService {
     return principal;
   }
 
-  private User getOrCreateUserEntity(Jwt principal, boolean update) {
+  /**
+   * Get or create a user entity from the given token.
+   *
+   * @param principal the token that is used as a source for the user data
+   * @param update enforce updating the data even if the user already exists.
+   * @return the user
+   */
+  @Transactional(isolation = Isolation.READ_COMMITTED)
+  @Retryable(
+      includes = {DataIntegrityViolationException.class},
+      maxRetries = 3)
+  protected User getOrCreateUserEntity(Jwt principal, boolean update) {
     UUID uuid = UUID.fromString(principal.getSubject());
 
     Optional<User> userOptional = userRepository.findById(uuid);
@@ -52,18 +69,16 @@ public class UserServiceImpl implements UserService {
     user.setEmail(principal.getClaimAsString("email"));
     user.setAvatarUrl(principal.getClaimAsString("picture"));
 
-    return userRepository.save(user);
+    return userRepository.saveAndFlush(user);
   }
 
   @Override
-  @Transactional
   public User getUserEntity(Authentication authentication, boolean update) {
     Jwt principal = getJwtPrincipal(authentication);
-    return getOrCreateUserEntity(principal, update);
+    return thisProxy.getOrCreateUserEntity(principal, update);
   }
 
   @Override
-  @Transactional
   public User getCurrentUserEntity(boolean update) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     return getUserEntity(authentication, update);
