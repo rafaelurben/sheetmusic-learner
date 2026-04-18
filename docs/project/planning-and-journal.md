@@ -40,6 +40,8 @@
   - Add authorization to async piece topic
   - Store and list connected room users
   - Load piece on room page load and on piece update
+- 2026-04-18:
+  - Create home page with list of rooms and pieces
 
 ## Project milestones
 
