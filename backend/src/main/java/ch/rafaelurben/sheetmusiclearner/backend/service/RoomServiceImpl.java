@@ -70,6 +70,7 @@ public class RoomServiceImpl implements RoomService {
   public RoomDto createRoom(final User user, final RoomCreateRequestDto createRequestDto) {
     Room room = roomMapper.toEntityFromCreateRequest(createRequestDto);
     room.setOwner(user);
+    room.setRoomUsers(List.of()); // Ensures roomUsers is not null in DTO
     if (createRequestDto.getPieceId() != null) {
       Piece piece = getReadablePieceById(user, createRequestDto.getPieceId());
       room.setPiece(piece);
