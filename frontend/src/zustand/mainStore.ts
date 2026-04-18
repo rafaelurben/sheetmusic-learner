@@ -7,6 +7,7 @@ import type {
   RoomMetadataDto,
   UserDto,
 } from "@/api/generated/openapi";
+import type { GeneralEventDto } from "@/interfaces/async/EventDto.ts";
 
 export interface MainStoreState {
   connected: boolean | null;
@@ -16,12 +17,13 @@ export interface MainStoreState {
 
   setConnected: (value: boolean) => void;
   setCurrentUser: (user: UserDto) => void;
+
   addRoom: (room: RoomMetadataDto) => void;
-  updateRoom: (roomId: string, room: RoomMetadataDto) => void;
   removeRoom: (roomId: string) => void;
   addPiece: (piece: PieceMetadataDto) => void;
-  updatePiece: (pieceId: string, piece: PieceMetadataDto) => void;
   removePiece: (pieceId: string) => void;
+
+  applyGeneralEvent: (event: GeneralEventDto) => void;
 }
 
 export const useMainStore = create<MainStoreState>((set) => ({
@@ -43,14 +45,6 @@ export const useMainStore = create<MainStoreState>((set) => ({
       },
     }));
   },
-  updateRoom: (roomId: string, room: RoomMetadataDto) => {
-    set((state) => ({
-      rooms: {
-        ...state.rooms,
-        [roomId]: room,
-      },
-    }));
-  },
   removeRoom: (roomId: string) => {
     set((state) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -66,19 +60,48 @@ export const useMainStore = create<MainStoreState>((set) => ({
       },
     }));
   },
-  updatePiece: (pieceId: string, piece: PieceMetadataDto) => {
-    set((state) => ({
-      pieces: {
-        ...state.pieces,
-        [pieceId]: piece,
-      },
-    }));
-  },
   removePiece: (pieceId: string) => {
     set((state) => {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [pieceId]: _, ...remainingPieces } = state.pieces;
       return { pieces: remainingPieces };
     });
+  },
+  applyGeneralEvent: (event) => {
+    switch (event.type) {
+      case "piece-now-available":
+      case "piece-metadata-updated":
+        set((state) => ({
+          pieces: {
+            ...state.pieces,
+            [event.payload.piece.id]: event.payload.piece,
+          },
+        }));
+        return;
+      case "piece-now-unavailable":
+        set((state) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [event.payload.pieceId]: _, ...remainingPieces } =
+            state.pieces;
+          return { pieces: remainingPieces };
+        });
+        return;
+      case "room-now-available":
+      case "room-metadata-updated":
+        set((state) => ({
+          rooms: {
+            ...state.rooms,
+            [event.payload.room.id]: event.payload.room,
+          },
+        }));
+        return;
+      case "room-now-unavailable":
+        set((state) => {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { [event.payload.roomId]: _, ...remainingRooms } = state.rooms;
+          return { rooms: remainingRooms };
+        });
+        return;
+    }
   },
 }));

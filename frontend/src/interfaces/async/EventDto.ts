@@ -126,10 +126,12 @@ export type RoomEventDto =
       type: "room-deleted";
     };
 
-export interface UserEventDto {
-  type: "error";
-  payload: ErrorPayload;
-}
+export type UserEventDto =
+  | {
+      type: "error";
+      payload: ErrorPayload;
+    }
+  | GeneralEventDto;
 
 export type EventDto =
   | GeneralEventDto

@@ -23,17 +23,18 @@ import {
 import { useAuth } from "react-oidc-context";
 import { toast } from "sonner";
 import AppBreadcrumbs from "@/components/navigation/AppBreadcrumbs.tsx";
+import type {
+  GeneralEventDto,
+  UserEventDto,
+} from "@/interfaces/async/EventDto.ts";
 
 export default function AppAuthenticated() {
   const {
     setConnected,
     setCurrentUser,
     addPiece,
-    updatePiece,
-    removePiece,
     addRoom,
-    updateRoom,
-    removeRoom,
+    applyGeneralEvent,
     connected,
   } = useMainStore();
   const usersApi = useUsersApi();
@@ -89,26 +90,7 @@ export default function AppAuthenticated() {
       "/topic/general",
       (event) => {
         console.log("General event:", event);
-        switch (event.type) {
-          case "piece-now-available":
-            addPiece(event.payload.piece);
-            break;
-          case "piece-metadata-updated":
-            updatePiece(event.payload.piece.id, event.payload.piece);
-            break;
-          case "piece-now-unavailable":
-            removePiece(event.payload.pieceId);
-            break;
-          case "room-now-available":
-            addRoom(event.payload.room);
-            break;
-          case "room-metadata-updated":
-            updateRoom(event.payload.room.id, event.payload.room);
-            break;
-          case "room-now-unavailable":
-            removeRoom(event.payload.roomId);
-            break;
-        }
+        applyGeneralEvent(event as GeneralEventDto);
       },
     );
 
@@ -116,18 +98,19 @@ export default function AppAuthenticated() {
       "/user/queue/notifications",
       (event) => {
         console.log("User notification:", event);
+        event = event as UserEventDto;
 
-        switch (event.type) {
-          case "error":
-            console.error(
-              "Received error event:",
-              event.payload.error,
-              event.payload.message,
-            );
-            toast.error("Error: " + event.payload.error, {
-              description: event.payload.message,
-            });
-            break;
+        if (event.type === "error") {
+          console.error(
+            "Received error event:",
+            event.payload.error,
+            event.payload.message,
+          );
+          toast.error("Error: " + event.payload.error, {
+            description: event.payload.message,
+          });
+        } else {
+          applyGeneralEvent(event);
         }
       },
     );
@@ -140,7 +123,7 @@ export default function AppAuthenticated() {
         userNotificationHandlerId,
       );
     };
-  }, [addPiece, updatePiece, removePiece, addRoom, updateRoom, removeRoom]);
+  }, [addRoom, addPiece, applyGeneralEvent]);
 
   // Connect to WebSocket when authenticated
   useEffect(() => {

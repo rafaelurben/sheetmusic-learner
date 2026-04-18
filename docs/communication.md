@@ -265,6 +265,7 @@ relevant for a specific user, such as error messages or notifications about acti
         "message": "Human-readable error message",
       }
       ```
+- Plus all message types from the general topic.
 
 ### Application destinations
 
