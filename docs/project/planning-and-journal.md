@@ -40,11 +40,12 @@
   - Add authorization to async piece topic
   - Store and list connected room users
   - Load piece on room page load and on piece update
-- 2026-04-18:
+- 2026-04-18 - 2026-04-19:
   - Create home page with list of rooms and pieces
   - Multiple bug fixes
   - Some code cleanup
   - Implemented playback state synchronization with basic section-based page turning
+  - Added specific user-targeted events for piece availability
 
 ## Project milestones
 

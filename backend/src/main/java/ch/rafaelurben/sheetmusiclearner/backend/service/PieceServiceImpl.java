@@ -1,6 +1,8 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.service;
 
+import static org.hibernate.Hibernate.initialize;
+
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PermissionType;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
@@ -74,7 +76,7 @@ public class PieceServiceImpl implements PieceService {
   }
 
   private void ensureReadableByUser(final User user, final Piece piece) {
-    if (Boolean.TRUE.equals(piece.getIsPublic())) {
+    if (piece.isPublic()) {
       return;
     }
 
@@ -163,6 +165,10 @@ public class PieceServiceImpl implements PieceService {
     }
   }
 
+  private Iterable<UUID> getPermittedUserIds(Piece piece) {
+    return piece.getPermissions().stream().map(PiecePermission::getUser).map(User::getId).toList();
+  }
+
   @Override
   @Transactional(readOnly = true)
   public List<PieceMetadataDto> getAllAccessiblePieces(final User user) {
@@ -194,11 +200,12 @@ public class PieceServiceImpl implements PieceService {
     piece = getPieceEntityById(piece.getId()); // Reload to include permissions
 
     PieceMetadataDto pieceMetadataDto = pieceMapper.toMetadataDto(piece);
-    if (piece.getIsPublic()) {
-      messagingService.send(
-          Destinations.topicGeneral(), new GeneralPieceNowAvailableEvent(pieceMetadataDto).asDto());
+    var dto = new GeneralPieceNowAvailableEvent(pieceMetadataDto).asDto();
+    if (piece.isPublic()) {
+      messagingService.send(Destinations.topicGeneral(), dto);
+    } else {
+      messagingService.sendToUser(user.getId(), dto);
     }
-    // TODO: else send message to user
 
     return pieceMapper.toDto(piece);
   }
@@ -215,27 +222,28 @@ public class PieceServiceImpl implements PieceService {
    * Delete a piece and return the S3 keys of all score sheets that were associated with the piece
    * before deletion.
    *
-   * @return a list of S3 object keys
+   * @return a pair with list of S3 object keys to be deleted and a list of users that were
+   *     permitted.
    */
   @Transactional(rollbackFor = Exception.class)
-  protected Collection<String> deletePieceTransaction(final User user, final UUID pieceId) {
+  protected Piece deletePieceTransaction(final User user, final UUID pieceId) {
     Piece piece = getPieceEntityById(pieceId);
-    ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER));
+    initialize(piece.getScoreSheets()); // Ensure collection is loaded
+    initialize(piece.getPermissions()); // Ensure collection is loaded
 
-    List<String> scoreSheetS3Keys =
-        piece.getScoreSheets().stream().map(ScoreSheet::getS3Key).toList();
+    ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER));
 
     pieceRepository.delete(piece);
     pieceRepository.flush();
 
-    return scoreSheetS3Keys;
+    return piece;
   }
 
   @Override
   public void deletePiece(final User user, final UUID pieceId) {
-    Collection<String> scoreSheetS3Keys;
+    Piece deletedPiece;
     try {
-      scoreSheetS3Keys = thisProxy.deletePieceTransaction(user, pieceId);
+      deletedPiece = thisProxy.deletePieceTransaction(user, pieceId);
     } catch (DataIntegrityViolationException e) {
       log.warn(
           "Failed to delete piece with id {} due to data integrity violation: {}",
@@ -245,10 +253,19 @@ public class PieceServiceImpl implements PieceService {
           "Cannot delete piece because it is still used in at least one room.");
     }
 
-    messagingService.send(
-        Destinations.topicGeneral(), new GeneralPieceNowUnavailableEvent(pieceId).asDto());
+    Iterable<UUID> permittedUsers = getPermittedUserIds(deletedPiece);
+
+    if (deletedPiece.isPublic()) {
+      messagingService.send(
+          Destinations.topicGeneral(), new GeneralPieceNowUnavailableEvent(pieceId).asDto());
+    } else {
+      messagingService.sendToUsers(
+          permittedUsers, new GeneralPieceNowUnavailableEvent(pieceId).asDto());
+    }
     messagingService.send(Destinations.topicPiece(pieceId), new PieceDeletedEvent().asDto());
 
+    Iterable<String> scoreSheetS3Keys =
+        deletedPiece.getScoreSheets().stream().map(ScoreSheet::getS3Key).toList();
     for (String scoreSheetS3Key : scoreSheetS3Keys) {
       s3Service.deleteFile(scoreSheetS3Key);
     }
@@ -261,17 +278,33 @@ public class PieceServiceImpl implements PieceService {
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
 
+    boolean wasPublic = piece.isPublic();
+
     pieceMapper.updateEntityFromUpdateRequest(piece, updateRequestDto);
     piece = pieceRepository.save(piece);
 
     PieceMetadataDto metadataDto = pieceMapper.toMetadataDto(piece);
-    if (piece.getIsPublic()) {
-      messagingService.send(
-          Destinations.topicGeneral(), new GeneralPieceMetadataUpdatedEvent(metadataDto).asDto());
-    }
-    // TODO: else send message to permitted users
+
     messagingService.send(
         Destinations.topicPiece(pieceId), new PieceMetadataUpdatedEvent(metadataDto).asDto());
+
+    if (wasPublic && !piece.isPublic()) { // public -> private
+      messagingService.send(
+          Destinations.topicGeneral(), new GeneralPieceNowUnavailableEvent(pieceId).asDto());
+      messagingService.sendToUsers(
+          getPermittedUserIds(piece), new GeneralPieceNowAvailableEvent(metadataDto).asDto());
+    } else if (!wasPublic && piece.isPublic()) { // private -> public
+      messagingService.send(
+          Destinations.topicGeneral(), new GeneralPieceNowAvailableEvent(metadataDto).asDto());
+      messagingService.sendToUsers(
+          getPermittedUserIds(piece), new GeneralPieceMetadataUpdatedEvent(metadataDto).asDto());
+    } else if (piece.isPublic()) { // public (no change)
+      messagingService.send(
+          Destinations.topicGeneral(), new GeneralPieceMetadataUpdatedEvent(metadataDto).asDto());
+    } else if (!piece.isPublic()) { // private (no change)
+      messagingService.sendToUsers(
+          getPermittedUserIds(piece), new GeneralPieceMetadataUpdatedEvent(metadataDto).asDto());
+    }
   }
 
   @Override
@@ -422,6 +455,12 @@ public class PieceServiceImpl implements PieceService {
         Destinations.topicPiece(pieceId),
         new PiecePermissionAddedEvent(userMapper.toDto(targetUser), addRequestDto.permissionType())
             .asDto());
+
+    if (!piece.isPublic()) {
+      messagingService.sendToUser(
+          targetUser.getId(),
+          new GeneralPieceNowAvailableEvent(pieceMapper.toMetadataDto(piece)).asDto());
+    }
   }
 
   @Override
@@ -452,6 +491,7 @@ public class PieceServiceImpl implements PieceService {
       final User user, final UUID pieceId, final PiecePermissionRemoveRequestDto removeRequestDto) {
     ensurePermissionModificationAllowed(
         user, pieceId, removeRequestDto.userId(), PermissionType.READER);
+    Piece piece = getPieceEntityById(pieceId);
 
     PiecePermission permission =
         getPiecePermissionEntityByUserId(pieceId, removeRequestDto.userId());
@@ -461,6 +501,11 @@ public class PieceServiceImpl implements PieceService {
     messagingService.send(
         Destinations.topicPiece(pieceId),
         new PiecePermissionRemovedEvent(removeRequestDto.userId()).asDto());
+
+    if (!piece.isPublic()) {
+      messagingService.sendToUser(
+          removeRequestDto.userId(), new GeneralPieceNowUnavailableEvent(piece.getId()).asDto());
+    }
   }
 
   @Override

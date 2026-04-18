@@ -57,4 +57,10 @@ public class Piece extends BaseEntity {
 
   @OneToMany(mappedBy = "piece", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<PiecePermission> permissions;
+
+  // Helpers
+
+  public boolean isPublic() {
+    return Boolean.TRUE.equals(isPublic);
+  }
 }

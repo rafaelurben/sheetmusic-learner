@@ -45,7 +45,7 @@ public class RoomServiceImpl implements RoomService {
   }
 
   private void ensurePieceReadableByUser(final User user, final Piece piece) {
-    if (Boolean.TRUE.equals(piece.getIsPublic())) {
+    if (piece.isPublic()) {
       return;
     }
 
