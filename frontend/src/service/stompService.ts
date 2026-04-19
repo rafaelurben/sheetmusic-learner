@@ -186,7 +186,7 @@ class StompService {
   /**
    * Send a message to the broker
    */
-  publish(destination: PublishDestinationName, body: RequestDto) {
+  publish(destination: PublishDestinationName, body?: RequestDto) {
     if (!this.client) {
       throw new Error("No STOMP client!");
     }
@@ -197,7 +197,7 @@ class StompService {
 
     this.client.publish({
       destination,
-      body: JSON.stringify(body),
+      body: body === undefined ? "" : JSON.stringify(body),
     });
   }
 }

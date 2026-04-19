@@ -1,13 +1,24 @@
 /*
  * (C) 2026. - Rafael Urben
  */
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  PauseIcon,
+  PlayIcon,
+} from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { stompService } from "@/service/stompService.ts";
 import type RoomControlPositionRequestDto from "@/interfaces/async/request/room/RoomControlPositionRequestDto.ts";
 import type { PieceDto, RoomDto } from "@/api/generated/openapi";
+import { metronomeService } from "@/service/metronomeService.ts";
+import {
+  calculateSectionTimings,
+  convertSectionToMetronomePlaylist,
+} from "@/service/metronomeUtils.ts";
+import type { PlayerPlaylistItem } from "@/interfaces/player/playerPlaylistItem.ts";
 
 interface RoomScoreSheetPanelProps {
   room: RoomDto;
@@ -20,6 +31,10 @@ export default function RoomScoreSheetPanel({
   piece,
   canEditRoom,
 }: Readonly<RoomScoreSheetPanelProps>) {
+  const [sectionPositionOverride, setSectionPositionOverride] = useState<
+    number | null
+  >(null);
+
   const sortedSections = useMemo(
     () =>
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -39,7 +54,9 @@ export default function RoomScoreSheetPanel({
 
   const firstSectionPosition = sortedSections[0]?.position ?? 0;
   const currentSectionPosition =
-    room.lastPlaySectionPosition ?? firstSectionPosition;
+    sectionPositionOverride ??
+    room.lastPlaySectionPosition ??
+    firstSectionPosition;
   const currentSection = sortedSections.find(
     (section) => section.position === currentSectionPosition,
   );
@@ -68,6 +85,75 @@ export default function RoomScoreSheetPanel({
   const isNextDisabled =
     sortedSections.length === 0 || currentSectionPosition >= maxSectionPosition;
 
+  // Playback
+  useEffect(() => {
+    if (!room.playing) return;
+
+    const playTimestamp = room.lastPlayTimestamp
+      ? new Date(room.lastPlayTimestamp)
+      : new Date();
+    const playbackSections = sortedSections.slice(
+      room.lastPlaySectionPosition ?? 0,
+    );
+
+    // Audio metronome playback
+    const playlist: PlayerPlaylistItem[] = [];
+    for (const section of playbackSections) {
+      playlist.push(
+        ...convertSectionToMetronomePlaylist(section, room.tempoMultiplier),
+      );
+    }
+    const stopMetronome = metronomeService.playMetronomePlaylist(
+      playlist,
+      playTimestamp,
+    );
+
+    // Visual section selection
+    const timings = calculateSectionTimings(
+      playbackSections,
+      room.tempoMultiplier,
+    );
+    const globalOffsetMs = playTimestamp.getTime() - Date.now();
+    console.log(timings, globalOffsetMs);
+    const timeoutHandles: number[] = [];
+
+    for (const timing of timings) {
+      const offsetMs = globalOffsetMs + timing.offsetMs;
+      if (offsetMs < 0) continue;
+      timeoutHandles.push(
+        setTimeout(() => {
+          setSectionPositionOverride(timing.sectionPosition);
+        }, offsetMs),
+      );
+    }
+    // Select currently playing section (for late joiners)
+    const currentTiming = timings
+      .slice()
+      .reverse()
+      .find((timing) => globalOffsetMs + timing.offsetMs < 0);
+    if (currentTiming) {
+      setTimeout(() => {
+        setSectionPositionOverride(currentTiming.sectionPosition);
+      }, 0);
+    }
+
+    // Cleanup
+    return () => {
+      stopMetronome();
+      timeoutHandles.forEach((handle) => {
+        clearTimeout(handle);
+      });
+      setSectionPositionOverride(null);
+    };
+  }, [
+    sortedSections,
+    room.playing,
+    room.lastPlayTimestamp,
+    room.lastPlaySectionPosition,
+    room.tempoMultiplier,
+    setSectionPositionOverride,
+  ]);
+
   const publishSectionPosition = (nextSectionPosition: number) => {
     if (!canEditRoom) {
       return;
@@ -76,6 +162,18 @@ export default function RoomScoreSheetPanel({
     stompService.publish(`/app/room.${room.id}/control/position`, {
       currentSectionPosition: nextSectionPosition,
     } satisfies RoomControlPositionRequestDto);
+  };
+
+  const publishPlayPause = () => {
+    if (!canEditRoom) {
+      return;
+    }
+
+    stompService.publish(
+      room.playing
+        ? `/app/room.${room.id}/control/pause`
+        : `/app/room.${room.id}/control/play`,
+    );
   };
 
   return (
@@ -116,7 +214,7 @@ export default function RoomScoreSheetPanel({
         </div>
 
         {canEditRoom && (
-          <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 border-t pt-4">
+          <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3 border-t pt-4">
             <Button
               variant="outline"
               size="icon"
@@ -126,6 +224,10 @@ export default function RoomScoreSheetPanel({
               }}
             >
               <ChevronLeftIcon />
+            </Button>
+
+            <Button variant="outline" size="icon" onClick={publishPlayPause}>
+              {room.playing ? <PauseIcon /> : <PlayIcon />}
             </Button>
 
             <div className="text-center text-sm text-muted-foreground">

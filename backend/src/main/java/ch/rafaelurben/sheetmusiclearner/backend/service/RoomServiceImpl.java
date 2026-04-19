@@ -163,7 +163,7 @@ public class RoomServiceImpl implements RoomService {
     ensureUserIsOwner(user, room);
 
     room.setPlaying(true);
-    room.setLastPlayTimestamp(Instant.now());
+    room.setLastPlayTimestamp(Instant.now().plusSeconds(1)); // Prevent cut-off
     room = roomRepository.save(room);
 
     messagingService.send(
@@ -188,7 +188,7 @@ public class RoomServiceImpl implements RoomService {
     ensureUserIsOwner(user, room);
 
     room.setLastPlaySectionPosition(dto.currentSectionPosition());
-    room.setLastPlayTimestamp(Instant.now());
+    room.setLastPlayTimestamp(Instant.now().plusSeconds(1)); // Prevent cut-off
     room = roomRepository.save(room);
 
     messagingService.send(
