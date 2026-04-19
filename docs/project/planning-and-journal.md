@@ -49,6 +49,7 @@
   - Allow reordering sections
   - Add section name
   - Allow editing section coordinates and display the current section on the room page
+  - Added audio metronome implementation with Web Audio API.
 
 ## Project milestones
 
