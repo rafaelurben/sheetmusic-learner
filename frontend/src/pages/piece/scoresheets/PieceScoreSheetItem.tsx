@@ -99,7 +99,7 @@ export default function PieceScoreSheetItem({
           {sectionOverlayCoordinates && (
             <>
               <div
-                className="pointer-events-none absolute border-2 border-primary/80 bg-accent/30"
+                className="pointer-events-none absolute border-2 border-section-highlight bg-section-highlight/30"
                 style={{
                   left: `${sectionOverlayCoordinates.x1 * 100}%`,
                   top: `${sectionOverlayCoordinates.y1 * 100}%`,
@@ -109,7 +109,7 @@ export default function PieceScoreSheetItem({
               />
               <button
                 type="button"
-                className="absolute z-10 size-4 -translate-x-1/2 -translate-y-1/2 cursor-nwse-resize rounded-full border border-primary bg-accent shadow"
+                className="absolute z-10 size-4 -translate-x-1/2 -translate-y-1/2 cursor-nwse-resize rounded-full border border-section-highlight bg-section-highlight shadow"
                 style={{
                   left: `${sectionOverlayCoordinates.x1 * 100}%`,
                   top: `${sectionOverlayCoordinates.y1 * 100}%`,
@@ -122,7 +122,7 @@ export default function PieceScoreSheetItem({
               />
               <button
                 type="button"
-                className="absolute z-10 size-4 -translate-x-1/2 -translate-y-1/2 cursor-se-resize rounded-full border border-primary bg-accent shadow"
+                className="absolute z-10 size-4 -translate-x-1/2 -translate-y-1/2 cursor-se-resize rounded-full border border-section-highlight bg-section-highlight shadow"
                 style={{
                   left: `${sectionOverlayCoordinates.x2 * 100}%`,
                   top: `${sectionOverlayCoordinates.y2 * 100}%`,
