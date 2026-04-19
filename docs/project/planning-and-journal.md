@@ -48,7 +48,7 @@
   - Added specific user-targeted events for piece availability
   - Allow reordering sections
   - Add section name
-  - Allow editing section coordinates
+  - Allow editing section coordinates and display the current section on the room page
 
 ## Project milestones
 

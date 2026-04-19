@@ -2,7 +2,6 @@
  * (C) 2026. - Rafael Urben
  */
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { AspectRatio } from "@/shadcn/components/ui/aspect-ratio.tsx";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import { useMemo } from "react";
@@ -50,6 +49,11 @@ export default function RoomScoreSheetPanel({
       )
     : undefined;
   const displayedScoreSheet = visibleScoreSheet ?? sortedScoreSheets[0];
+  const highlightedSection =
+    currentSection && currentSection.scoreSheetId === visibleScoreSheet?.id
+      ? currentSection
+      : undefined;
+  const toPercent = (value: number) => String(value * 100) + "%";
 
   const minSectionPosition = sortedSections[0]?.position ?? 0;
   const maxSectionPosition =
@@ -76,20 +80,38 @@ export default function RoomScoreSheetPanel({
 
   return (
     <Card className="flex min-h-0 flex-1 flex-col">
-      <CardContent className="flex min-h-0 flex-1 flex-col gap-4 pt-6">
+      <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
         <div className="flex min-h-0 flex-1 items-center justify-center">
           {sortedScoreSheets.length === 0 ? (
             <div className="text-center text-muted-foreground">
               This piece has no score sheets yet.
             </div>
           ) : (
-            <AspectRatio ratio={1.414} className="w-full">
-              <img
-                src={displayedScoreSheet.imageUrl}
-                alt={displayedScoreSheet.title}
-                className="h-full w-full rounded-lg border bg-muted object-contain"
-              />
-            </AspectRatio>
+            <div className="flex justify-center">
+              <div className="relative inline-block">
+                <img
+                  src={displayedScoreSheet.imageUrl}
+                  alt={displayedScoreSheet.title}
+                  className="max-w-full rounded-lg border bg-muted"
+                />
+
+                {highlightedSection && (
+                  <div
+                    className="pointer-events-none absolute rounded-md border-2 border-section-highlight bg-section-highlight/10 shadow-sm"
+                    style={{
+                      left: toPercent(highlightedSection.posX1),
+                      top: toPercent(highlightedSection.posY1),
+                      width: toPercent(
+                        highlightedSection.posX2 - highlightedSection.posX1,
+                      ),
+                      height: toPercent(
+                        highlightedSection.posY2 - highlightedSection.posY1,
+                      ),
+                    }}
+                  ></div>
+                )}
+              </div>
+            </div>
           )}
         </div>
 
