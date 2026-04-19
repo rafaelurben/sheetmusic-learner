@@ -154,10 +154,18 @@ export default function PieceSectionItem({
         {canEdit && isEditing && sectionForm ? (
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="text-sm font-semibold">
-                {isNewSection
-                  ? `New section #${String(section.position + 1)}`
-                  : `Section #${String(section.position + 1)}`}
+              <div className="flex min-w-0 flex-1 items-center gap-2">
+                <div className="text-xs text-muted-foreground">
+                  #{section.position + 1}
+                </div>
+                <Input
+                  value={sectionForm.name}
+                  onChange={(event) => {
+                    updateEditingForm({ name: event.target.value });
+                  }}
+                  placeholder={isNewSection ? "Section" : "Section name"}
+                  className="h-8"
+                />
               </div>
               <Select
                 value={sectionForm.scoreSheetId}
@@ -254,8 +262,13 @@ export default function PieceSectionItem({
         ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="min-w-0 text-sm font-semibold">
-                Section #{section.position + 1}
+              <div className="flex min-w-0 items-center gap-2">
+                <div className="text-xs text-muted-foreground">
+                  #{section.position + 1}
+                </div>
+                <div className="min-w-0 text-sm font-semibold">
+                  {section.name}
+                </div>
               </div>
               <div className="text-xs text-muted-foreground">{sheetTitle}</div>
             </div>

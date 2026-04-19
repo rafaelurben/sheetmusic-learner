@@ -4,6 +4,7 @@
 
 export interface SectionFormState {
   position: number;
+  name: string;
   timeSignatureNumerator: number | null;
   timeSignatureDenominator: number | null;
   barCount: number | null;

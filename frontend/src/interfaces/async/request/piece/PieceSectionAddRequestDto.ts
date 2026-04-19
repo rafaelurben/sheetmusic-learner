@@ -4,6 +4,7 @@
 
 export default interface PieceSectionAddRequestDto {
   position: number;
+  name: string;
   timeSignatureNumerator: number;
   timeSignatureDenominator: number;
   barCount: number;

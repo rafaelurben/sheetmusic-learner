@@ -55,6 +55,7 @@ entity "Section" as section {
   score_sheet_id: uuid
   ..
   position: number
+  name: varchar
   time_signature_numerator: number
   time_signature_denominator: number
   bar_count: number

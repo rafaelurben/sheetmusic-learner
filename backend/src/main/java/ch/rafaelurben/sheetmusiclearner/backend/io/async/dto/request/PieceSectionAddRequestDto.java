@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public record PieceSectionAddRequestDto(
     int position,
+    String name,
     int timeSignatureNumerator,
     int timeSignatureDenominator,
     int barCount,

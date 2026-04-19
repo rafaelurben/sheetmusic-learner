@@ -3,7 +3,10 @@
 ## Build and Test
 - Start local dependencies before app work: `docker compose up -d --wait` from the repo root. PostgreSQL runs on `localhost:5433`, not the default Postgres port.
 - Backend commands: `cd backend && mvn clean verify`, `cd backend && mvn spring-boot:run`, `cd backend && mvn spotless:check`, and `cd backend && mvn spotless:apply`.
-- Frontend commands: `cd frontend && npm ci`, `cd frontend && npm run generate:openapi`, `cd frontend && npm run lint`, `cd frontend && npm run build`, and `cd frontend && npm run dev`.
+- Frontend commands: `cd frontend && npm ci`, `cd frontend && npm run generate:openapi`, `cd frontend && npm run fix` (
+  lint and automatically fix style issues), `cd frontend && npm run build`, and `cd frontend && npm run dev`.
+  - Do not run `npm run lint` alone; it does not automatically fix style issues and will report errors that
+    `npm run fix` can resolve.
 - Run `npm run generate:openapi` after changing the root `openapi.yml`. The frontend dev server does not regenerate the client automatically.
 
 ## Architecture

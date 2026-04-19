@@ -441,6 +441,8 @@ components:
           format: uuid
         position:
           type: integer
+        name:
+          type: string
         timeSignatureNumerator:
           type: integer
         timeSignatureDenominator:
@@ -466,7 +468,7 @@ components:
         posY2:
           type: number
           format: float
-      required: [ id, position, timeSignatureNumerator, timeSignatureDenominator, barCount, bpm, scoreSheetId, posX1, posY1, posX2, posY2 ]
+      required: [ id, position, name, timeSignatureNumerator, timeSignatureDenominator, barCount, bpm, scoreSheetId, posX1, posY1, posX2, posY2 ]
 
     PiecePermissionDto:
       type: object

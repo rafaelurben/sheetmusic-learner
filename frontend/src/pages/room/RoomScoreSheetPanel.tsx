@@ -56,10 +56,7 @@ export default function RoomScoreSheetPanel({
     sortedSections.at(-1)?.position ?? minSectionPosition;
   const sectionPositionText =
     sortedSections.length > 0
-      ? "Section " +
-        String(currentSectionPosition + 1) +
-        " of " +
-        String(maxSectionPosition + 1)
+      ? `Section ${String(currentSectionPosition + 1)} of ${String(maxSectionPosition + 1)} (${currentSection?.name ?? "unknown"})`
       : "No sections available";
 
   const isPreviousDisabled =

@@ -60,6 +60,7 @@ export default function PieceSectionsCard({
 
   const createDefaultForm = (): SectionFormState => ({
     position: maxPosition + 1,
+    name: "Section",
     timeSignatureNumerator: 4,
     timeSignatureDenominator: 4,
     barCount: null,
@@ -140,17 +141,19 @@ export default function PieceSectionsCard({
     currentSection?: SectionDto,
   ): PieceSectionAddRequestDto | null => {
     if (
+      !form.name.trim() ||
       !form.timeSignatureNumerator ||
       !form.timeSignatureDenominator ||
       !form.barCount ||
       !form.bpm
     ) {
-      toast.error("Time signature, bars, and BPM are required.");
+      toast.error("Name, time signature, bars, and BPM are required.");
       return null;
     }
 
     return {
       position: form.position,
+      name: form.name.trim(),
       timeSignatureNumerator: form.timeSignatureNumerator,
       timeSignatureDenominator: form.timeSignatureDenominator,
       barCount: form.barCount,
@@ -182,6 +185,7 @@ export default function PieceSectionsCard({
     ? {
         id: "__new__",
         position: sectionForm.position,
+        name: sectionForm.name,
         timeSignatureNumerator: sectionForm.timeSignatureNumerator ?? 4,
         timeSignatureDenominator: sectionForm.timeSignatureDenominator ?? 4,
         barCount: sectionForm.barCount ?? 0,
@@ -278,6 +282,7 @@ export default function PieceSectionsCard({
                 setEditingSectionId(selectedSection.id);
                 setSectionForm({
                   position: selectedSection.position,
+                  name: selectedSection.name,
                   timeSignatureNumerator:
                     selectedSection.timeSignatureNumerator,
                   timeSignatureDenominator:

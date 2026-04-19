@@ -8,6 +8,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundExcepti
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.EventDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.UserErrorEvent;
 import ch.rafaelurben.sheetmusiclearner.backend.utils.Destinations;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.simp.annotation.SendToUser;
@@ -22,6 +23,19 @@ public class GlobalMessagingExceptionHandler {
   public EventDto<UserErrorEvent> handleBadRequestException(BadRequestException ex) {
     log.debug("Handling Bad Request Exception", ex);
     return new UserErrorEvent("Bad request", ex.getMessage()).asDto();
+  }
+
+  @MessageExceptionHandler(ConstraintViolationException.class)
+  @SendToUser(Destinations.USER_QUEUE_NOTIFICATIONS)
+  public EventDto<UserErrorEvent> handleConstraintViolationException(
+      ConstraintViolationException ex) {
+    log.debug("Handling Constraint Violation Exception", ex);
+    String errorMessage =
+        ex.getConstraintViolations().stream()
+            .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+            .reduce((msg1, msg2) -> msg1 + "; " + msg2)
+            .orElse("Validation error");
+    return new UserErrorEvent("Validation error", errorMessage).asDto();
   }
 
   @MessageExceptionHandler(InsufficientPermissionException.class)

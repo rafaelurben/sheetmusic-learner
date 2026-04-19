@@ -5,6 +5,7 @@
 export default interface PieceSectionUpdateRequestDto {
   sectionId: string;
   position: number;
+  name: string;
   timeSignatureNumerator: number;
   timeSignatureDenominator: number;
   barCount: number;

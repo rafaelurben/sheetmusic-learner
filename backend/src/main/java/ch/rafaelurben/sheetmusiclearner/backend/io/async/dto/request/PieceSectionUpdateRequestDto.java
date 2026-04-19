@@ -6,6 +6,7 @@ import java.util.UUID;
 public record PieceSectionUpdateRequestDto(
     UUID sectionId,
     int position,
+    String name,
     int timeSignatureNumerator,
     int timeSignatureDenominator,
     int barCount,

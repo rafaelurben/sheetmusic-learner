@@ -155,6 +155,12 @@ public class PieceServiceImpl implements PieceService {
     return originalFilename + " (" + position + ")";
   }
 
+  private void validateSectionName(final String sectionName) {
+    if (sectionName == null || sectionName.isBlank()) {
+      throw new BadRequestException("Section name must not be blank");
+    }
+  }
+
   private void validatePngFile(final MultipartFile file) {
     String contentType = file.getContentType();
     if (contentType == null || !contentType.equals(PNG_MEDIA_TYPE)) {
@@ -392,6 +398,7 @@ public class PieceServiceImpl implements PieceService {
     if (targetPosition < 0 || targetPosition > orderedSections.size()) {
       throw new BadRequestException("Section position is out of bounds");
     }
+    validateSectionName(addRequestDto.name());
 
     Section section = sectionMapper.toEntityFromCreateRequest(addRequestDto);
     section.setPiece(piece);
@@ -515,6 +522,7 @@ public class PieceServiceImpl implements PieceService {
     if (updateRequestDto.sectionId() == null) {
       throw new BadRequestException("Section id must be provided");
     }
+    validateSectionName(updateRequestDto.name());
 
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));

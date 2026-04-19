@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import java.util.UUID;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "sections")
@@ -23,6 +24,10 @@ public class Section extends BaseEntity {
 
   @Column(name = "positions", nullable = false)
   private Integer position;
+
+  @Column(name = "name", nullable = false)
+  @Length(max = 25)
+  private String name;
 
   @Column(name = "time_signature_numerator")
   private Integer timeSignatureNumerator;

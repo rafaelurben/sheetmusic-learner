@@ -47,6 +47,7 @@
   - Implemented playback state synchronization with basic section-based page turning
   - Added specific user-targeted events for piece availability
   - Allow reordering sections
+  - Add section name
 
 ## Project milestones
 
