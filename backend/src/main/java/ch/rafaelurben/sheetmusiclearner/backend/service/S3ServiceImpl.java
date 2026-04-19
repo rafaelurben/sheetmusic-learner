@@ -35,9 +35,9 @@ public class S3ServiceImpl implements S3Service {
           d -> d.bucket(s3Properties.getBucket()).key(key).contentType(mediaType),
           RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
 
-      log.debug("Uploaded score sheet to S3: s3://{}/{}", s3Properties.getBucket(), key);
-
-      return String.format("%s/%s", resolvePublicBaseUrl(), trimLeadingSlash(key));
+      String publicUrl = String.format("%s/%s", resolvePublicBaseUrl(), trimLeadingSlash(key));
+      log.info("Uploaded score sheet to S3: {}", publicUrl);
+      return publicUrl;
     } catch (IOException e) {
       throw new BadRequestException("Failed to read file content: " + e.getMessage());
     }
@@ -46,6 +46,8 @@ public class S3ServiceImpl implements S3Service {
   @Override
   public void deleteFile(final String key) {
     s3Client.deleteObject(b -> b.bucket(s3Properties.getBucket()).key(key));
+
+    log.info("Deleted S3 object with key {}", key);
   }
 
   private String resolvePublicBaseUrl() {

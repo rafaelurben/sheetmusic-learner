@@ -165,7 +165,7 @@ public class PieceServiceImpl implements PieceService {
     }
   }
 
-  private Iterable<UUID> getPermittedUserIds(Piece piece) {
+  private Collection<UUID> getPermittedUserIds(Piece piece) {
     return piece.getPermissions().stream().map(PiecePermission::getUser).map(User::getId).toList();
   }
 
@@ -253,7 +253,7 @@ public class PieceServiceImpl implements PieceService {
           "Cannot delete piece because it is still used in at least one room.");
     }
 
-    Iterable<UUID> permittedUsers = getPermittedUserIds(deletedPiece);
+    Collection<UUID> permittedUsers = getPermittedUserIds(deletedPiece);
 
     if (deletedPiece.isPublic()) {
       messagingService.send(
