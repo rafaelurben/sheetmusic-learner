@@ -11,7 +11,9 @@ import {
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import type { SectionDto } from "@/api/generated/openapi";
 import type PieceSectionAddRequestDto from "@/interfaces/async/request/piece/PieceSectionAddRequestDto.ts";
+import type PieceSectionUpdateRequestDto from "@/interfaces/async/request/piece/PieceSectionUpdateRequestDto.ts";
 import { PlusIcon } from "lucide-react";
+import type { DragEvent } from "react";
 import { useState } from "react";
 import PieceSectionItem from "@/pages/piece/sections/PieceSectionItem.tsx";
 import {
@@ -32,6 +34,10 @@ export default function PieceSectionsCard({
   canEdit,
 }: Readonly<PieceSectionsCardProps>) {
   const [isCreating, setIsCreating] = useState(false);
+  const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
+  const [dropTarget, setDropTarget] = useState<{
+    sectionId: string;
+  } | null>(null);
   const piece = usePieceStore((state) => state.piece);
   const editingSectionId = usePieceStore((state) => state.editingSectionId);
   const setEditingSectionId = usePieceStore(
@@ -46,6 +52,7 @@ export default function PieceSectionsCard({
   const sortedSections = [...sections].sort(
     (left, right) => left.position - right.position,
   );
+  const canReorder = canEdit && sectionForm === null;
   const maxPosition = Math.max(
     -1,
     ...sections.map((section) => section.position),
@@ -62,6 +69,70 @@ export default function PieceSectionsCard({
 
   const publishSectionAdd = (payload: PieceSectionAddRequestDto) => {
     stompService.publish(`/app/piece.${piece.id}/section/add`, payload);
+  };
+
+  const publishSectionUpdate = (
+    section: SectionDto,
+    position: number,
+  ): void => {
+    const payload: PieceSectionUpdateRequestDto = {
+      sectionId: section.id,
+      ...section,
+      position,
+    };
+
+    stompService.publish(`/app/piece.${piece.id}/section/update`, payload);
+  };
+
+  const clearDragState = () => {
+    setDraggedSectionId(null);
+    setDropTarget(null);
+  };
+
+  const handleDragStart = (section: SectionDto) => {
+    if (!canReorder) return;
+
+    setDraggedSectionId(section.id);
+    setDropTarget(null);
+  };
+
+  const handleDragOver = (
+    section: SectionDto,
+    event: DragEvent<HTMLDivElement>,
+  ) => {
+    if (!canReorder || !draggedSectionId || draggedSectionId === section.id) {
+      return;
+    }
+
+    event.preventDefault();
+    setDropTarget({ sectionId: section.id });
+  };
+
+  const handleDrop = (
+    section: SectionDto,
+    event: DragEvent<HTMLDivElement>,
+  ) => {
+    event.preventDefault();
+
+    if (!canReorder || !draggedSectionId || draggedSectionId === section.id) {
+      clearDragState();
+      return;
+    }
+
+    const draggedIndex = sortedSections.findIndex(
+      (currentSection) => currentSection.id === draggedSectionId,
+    );
+    const targetIndex = sortedSections.findIndex(
+      (currentSection) => currentSection.id === section.id,
+    );
+
+    if (draggedIndex < 0 || targetIndex < 0) {
+      clearDragState();
+      return;
+    }
+
+    publishSectionUpdate(sortedSections[draggedIndex], targetIndex);
+    clearDragState();
   };
 
   const buildSectionPayloadFromForm = (
@@ -181,6 +252,21 @@ export default function PieceSectionsCard({
             canEdit={canEdit}
             isEditing={editingSectionId === section.id}
             sectionForm={sectionForm}
+            isDraggable={canReorder}
+            isDragging={draggedSectionId === section.id}
+            isDropTarget={dropTarget?.sectionId === section.id}
+            onDragStart={() => {
+              handleDragStart(section);
+            }}
+            onDragEnd={() => {
+              globalThis.setTimeout(clearDragState, 0);
+            }}
+            onDragOver={(event) => {
+              handleDragOver(section, event);
+            }}
+            onDrop={(event) => {
+              handleDrop(section, event);
+            }}
             scoreSheets={piece.scoreSheets
               .slice()
               .sort((left, right) => left.position - right.position)}

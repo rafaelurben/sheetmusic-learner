@@ -46,6 +46,7 @@
   - Some code cleanup
   - Implemented playback state synchronization with basic section-based page turning
   - Added specific user-targeted events for piece availability
+  - Allow reordering sections
 
 ## Project milestones
 

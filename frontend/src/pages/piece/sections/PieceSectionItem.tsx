@@ -13,6 +13,7 @@ import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import { Input } from "@/shadcn/components/ui/input.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
+import { cn } from "@/shadcn/lib/utils.ts";
 import {
   Select,
   SelectContent,
@@ -21,8 +22,14 @@ import {
   SelectValue,
 } from "@/shadcn/components/ui/select.tsx";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
-import { CheckIcon, PencilIcon, Trash2Icon, XIcon } from "lucide-react";
-import type { Dispatch, SetStateAction } from "react";
+import {
+  CheckIcon,
+  GripVerticalIcon,
+  PencilIcon,
+  Trash2Icon,
+  XIcon,
+} from "lucide-react";
+import type { Dispatch, DragEvent, SetStateAction } from "react";
 import { toast } from "sonner";
 import { parseNullableNumberFromInput } from "@/service/utils.ts";
 
@@ -38,6 +45,13 @@ interface PieceSectionItemProps {
     form: SectionFormState,
     currentSection?: SectionDto,
   ) => PieceSectionAddRequestDto | null;
+  isDraggable?: boolean;
+  isDragging?: boolean;
+  isDropTarget?: boolean;
+  onDragStart?: (event: DragEvent<HTMLButtonElement>) => void;
+  onDragEnd?: () => void;
+  onDragOver?: (event: DragEvent<HTMLDivElement>) => void;
+  onDrop?: (event: DragEvent<HTMLDivElement>) => void;
   onSaveCreate?: (form: SectionFormState) => void;
   onStartEdit?: (section: SectionDto) => void;
   onCancelEdit: () => void;
@@ -52,6 +66,13 @@ export default function PieceSectionItem({
   scoreSheets,
   setSectionForm,
   buildSectionPayloadFromForm,
+  isDraggable = false,
+  isDragging = false,
+  isDropTarget = false,
+  onDragStart,
+  onDragEnd,
+  onDragOver,
+  onDrop,
   onSaveCreate,
   onStartEdit,
   onCancelEdit,
@@ -120,7 +141,15 @@ export default function PieceSectionItem({
   )}`;
 
   return (
-    <Card className="border-2">
+    <Card
+      className={cn(
+        "border-2 transition-colors",
+        isDragging && "bg-muted/50 opacity-75",
+        isDropTarget && "border-primary bg-primary/5 ring-1 ring-primary/20",
+      )}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+    >
       <CardContent className="space-y-3">
         {canEdit && isEditing && sectionForm ? (
           <div className="space-y-3">
@@ -225,7 +254,7 @@ export default function PieceSectionItem({
         ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-between gap-2">
-              <div className="text-sm font-semibold">
+              <div className="min-w-0 text-sm font-semibold">
                 Section #{section.position + 1}
               </div>
               <div className="text-xs text-muted-foreground">{sheetTitle}</div>
@@ -251,6 +280,26 @@ export default function PieceSectionItem({
 
               {canEdit && (
                 <div className="flex gap-1 self-end">
+                  {isDraggable && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-sm"
+                      className="cursor-grab active:cursor-grabbing"
+                      aria-label="Drag section"
+                      draggable
+                      onDragStart={(event) => {
+                        event.dataTransfer.effectAllowed = "move";
+                        event.dataTransfer.setData("text/plain", section.id);
+                        onDragStart?.(event);
+                      }}
+                      onDragEnd={() => {
+                        onDragEnd?.();
+                      }}
+                    >
+                      <GripVerticalIcon />
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     size="icon-sm"

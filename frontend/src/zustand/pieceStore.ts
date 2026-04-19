@@ -7,13 +7,11 @@ import type { PieceEventDto } from "@/interfaces/async/EventDto.ts";
 import type { SectionFormState } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
 import type { SetStateAction } from "react";
 
-function normalizeSections(sections: SectionDto[]): SectionDto[] {
-  return [...sections]
-    .sort((left, right) => left.position - right.position)
-    .map((section, index) => ({
-      ...section,
-      position: index,
-    }));
+function normalizePositions(sections: SectionDto[]): SectionDto[] {
+  return sections.map((section, index) => ({
+    ...section,
+    position: index,
+  }));
 }
 
 interface PieceStoreState {
@@ -64,7 +62,7 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
   },
   applyPieceEvent: (event) => {
     switch (event.type) {
-      case "metadata-updated": {
+      case "metadata-updated":
         set((state) => ({
           piece: {
             ...state.piece,
@@ -72,7 +70,6 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
           },
         }));
         return;
-      }
       case "permission-added":
         set((state) => ({
           piece: {
@@ -112,30 +109,32 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
           },
         }));
         return;
-      case "section-added": {
-        const section = event.payload.section;
+      case "section-added":
         set((state) => ({
           piece: {
             ...state.piece,
-            sections: normalizeSections([
-              ...state.piece.sections.slice(0, section.position),
-              section,
-              ...state.piece.sections.slice(section.position),
-            ]),
+            sections: normalizePositions(
+              state.piece.sections.toSpliced(
+                event.payload.section.position,
+                0,
+                event.payload.section,
+              ),
+            ),
           },
         }));
         return;
-      }
       case "section-updated":
         set((state) => ({
           piece: {
             ...state.piece,
-            sections: normalizeSections(
-              state.piece.sections.map((currentSection) =>
-                currentSection.id === event.payload.sectionId
-                  ? event.payload.section
-                  : currentSection,
-              ),
+            sections: normalizePositions(
+              state.piece.sections
+                .filter((section) => section.id !== event.payload.sectionId)
+                .toSpliced(
+                  event.payload.section.position,
+                  0,
+                  event.payload.section,
+                ),
             ),
           },
         }));
@@ -152,7 +151,7 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
               : state.sectionForm,
           piece: {
             ...state.piece,
-            sections: normalizeSections(
+            sections: normalizePositions(
               state.piece.sections.filter(
                 (section) => section.id !== event.payload.sectionId,
               ),
