@@ -17,12 +17,12 @@ import type { DragEvent } from "react";
 import { useState } from "react";
 import PieceSectionItem from "@/pages/piece/sections/PieceSectionItem.tsx";
 import {
+  buildSectionPayloadFromForm,
   type SectionFormState,
   UNASSIGNED_SCORE_SHEET_VALUE,
 } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import { stompService } from "@/service/stompService.ts";
-import { toast } from "sonner";
 
 interface PieceSectionsCardProps {
   sections: SectionDto[];
@@ -66,6 +66,10 @@ export default function PieceSectionsCard({
     barCount: null,
     bpm: null,
     scoreSheetId: UNASSIGNED_SCORE_SHEET_VALUE,
+    posX1: 0,
+    posY1: 0,
+    posX2: 1,
+    posY2: 1,
   });
 
   const publishSectionAdd = (payload: PieceSectionAddRequestDto) => {
@@ -136,40 +140,6 @@ export default function PieceSectionsCard({
     clearDragState();
   };
 
-  const buildSectionPayloadFromForm = (
-    form: SectionFormState,
-    currentSection?: SectionDto,
-  ): PieceSectionAddRequestDto | null => {
-    if (
-      !form.name.trim() ||
-      !form.timeSignatureNumerator ||
-      !form.timeSignatureDenominator ||
-      !form.barCount ||
-      !form.bpm
-    ) {
-      toast.error("Name, time signature, bars, and BPM are required.");
-      return null;
-    }
-
-    return {
-      position: form.position,
-      name: form.name.trim(),
-      timeSignatureNumerator: form.timeSignatureNumerator,
-      timeSignatureDenominator: form.timeSignatureDenominator,
-      barCount: form.barCount,
-      bpm: form.bpm,
-      scoreSheetId:
-        form.scoreSheetId === UNASSIGNED_SCORE_SHEET_VALUE
-          ? null
-          : form.scoreSheetId,
-      // Coordinates are intentionally not editable in this UI yet.
-      posX1: currentSection?.posX1 ?? null,
-      posY1: currentSection?.posY1 ?? null,
-      posX2: currentSection?.posX2 ?? null,
-      posY2: currentSection?.posY2 ?? null,
-    };
-  };
-
   const handleSaveNewSection = () => {
     if (!sectionForm) return;
 
@@ -194,10 +164,10 @@ export default function PieceSectionsCard({
           sectionForm.scoreSheetId === UNASSIGNED_SCORE_SHEET_VALUE
             ? ""
             : sectionForm.scoreSheetId,
-        posX1: 0,
-        posY1: 0,
-        posX2: 0,
-        posY2: 0,
+        posX1: sectionForm.posX1,
+        posY1: sectionForm.posY1,
+        posX2: sectionForm.posX2,
+        posY2: sectionForm.posY2,
       }
     : null;
 
@@ -240,7 +210,6 @@ export default function PieceSectionsCard({
               .slice()
               .sort((left, right) => left.position - right.position)}
             setSectionForm={setSectionForm}
-            buildSectionPayloadFromForm={buildSectionPayloadFromForm}
             onSaveCreate={handleSaveNewSection}
             onCancelEdit={() => {
               setSectionForm(null);
@@ -275,7 +244,6 @@ export default function PieceSectionsCard({
               .slice()
               .sort((left, right) => left.position - right.position)}
             setSectionForm={setSectionForm}
-            buildSectionPayloadFromForm={buildSectionPayloadFromForm}
             onStartEdit={(selectedSection) => {
               if (selectedSection.id) {
                 setIsCreating(false);
@@ -292,6 +260,10 @@ export default function PieceSectionsCard({
                   scoreSheetId:
                     selectedSection.scoreSheetId ??
                     UNASSIGNED_SCORE_SHEET_VALUE,
+                  posX1: selectedSection.posX1,
+                  posY1: selectedSection.posY1,
+                  posX2: selectedSection.posX2,
+                  posY2: selectedSection.posY2,
                 });
               }
             }}

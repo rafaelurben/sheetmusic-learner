@@ -48,6 +48,7 @@
   - Added specific user-targeted events for piece availability
   - Allow reordering sections
   - Add section name
+  - Allow editing section coordinates
 
 ## Project milestones
 

@@ -2,6 +2,7 @@
 package ch.rafaelurben.sheetmusiclearner.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.UUID;
 import lombok.*;
@@ -43,18 +44,22 @@ public class Section extends BaseEntity {
 
   @Column(name = "pos_x1")
   @Min(0)
+  @Max(1)
   private Float posX1;
 
   @Column(name = "pos_y1")
   @Min(0)
+  @Max(1)
   private Float posY1;
 
   @Column(name = "pos_x2")
   @Min(0)
+  @Max(1)
   private Float posX2;
 
   @Column(name = "pos_y2")
   @Min(0)
+  @Max(1)
   private Float posY2;
 
   // Relationships

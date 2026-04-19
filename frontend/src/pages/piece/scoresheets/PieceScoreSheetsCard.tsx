@@ -1,11 +1,13 @@
 /*
  * (C) 2026. - Rafael Urben
  */
-import { Card } from "@/shadcn/components/ui/card";
-import { Button } from "@/shadcn/components/ui/button";
+import { Card } from "@/shadcn/components/ui/card.tsx";
+import { Button } from "@/shadcn/components/ui/button.tsx";
 import type { ScoreSheetDto } from "@/api/generated/openapi";
-import { PencilIcon, Trash2Icon, UploadIcon } from "lucide-react";
-import UploadScoreSheetsDialog from "@/pages/piece/UploadScoreSheetsDialog.tsx";
+import { UploadIcon } from "lucide-react";
+import UploadScoreSheetsDialog from "@/pages/piece/scoresheets/UploadScoreSheetsDialog.tsx";
+import PieceScoreSheetItem from "@/pages/piece/scoresheets/PieceScoreSheetItem.tsx";
+import { UNASSIGNED_SCORE_SHEET_VALUE } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
 import { useState } from "react";
 import { toast } from "sonner";
 import { stompService } from "@/service/stompService.ts";
@@ -21,6 +23,8 @@ export default function PieceScoreSheetsCard({
   canEdit,
 }: Readonly<PieceScoreSheetsCardProps>) {
   const piece = usePieceStore((state) => state.piece);
+  const sectionForm = usePieceStore((state) => state.sectionForm);
+  const setSectionForm = usePieceStore((state) => state.setSectionForm);
 
   const [isUploadScoreSheetsOpen, setIsUploadScoreSheetsOpen] = useState(false);
 
@@ -68,6 +72,12 @@ export default function PieceScoreSheetsCard({
     });
   };
 
+  const activeSectionScoreSheetId =
+    sectionForm && sectionForm.scoreSheetId !== UNASSIGNED_SCORE_SHEET_VALUE
+      ? sectionForm.scoreSheetId
+      : null;
+  const isSectionEditing = sectionForm !== null;
+
   return (
     <Card className="flex min-h-0 flex-1 flex-col p-4">
       <div className="min-h-0 flex-1 overflow-y-auto">
@@ -78,46 +88,38 @@ export default function PieceScoreSheetsCard({
         ) : (
           <div className="grid gap-3 pr-1 sm:grid-cols-2">
             {scoreSheets.map((scoreSheet) => (
-              <div
+              <PieceScoreSheetItem
                 key={scoreSheet.id}
-                className="space-y-2 rounded-md border p-3"
-              >
-                <img
-                  src={scoreSheet.imageUrl}
-                  alt={scoreSheet.title}
-                  className="max-h-72 w-full rounded-md border bg-muted object-contain"
-                />
-                <div className="flex items-center justify-between gap-2">
-                  <div className="text-sm font-medium">{scoreSheet.title}</div>
-                  {canEdit && (
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-7"
-                        onClick={() => {
-                          handleRenameScoreSheet(
-                            scoreSheet.id,
-                            scoreSheet.title,
-                          );
-                        }}
-                      >
-                        <PencilIcon className="size-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="size-7 text-destructive"
-                        onClick={() => {
-                          handleConfirmDeleteScoreSheet(scoreSheet.id);
-                        }}
-                      >
-                        <Trash2Icon className="size-4" />
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </div>
+                scoreSheet={scoreSheet}
+                canEditActions={canEdit && !isSectionEditing}
+                sectionOverlayCoordinates={
+                  sectionForm && scoreSheet.id === activeSectionScoreSheetId
+                    ? {
+                        x1: sectionForm.posX1,
+                        y1: sectionForm.posY1,
+                        x2: sectionForm.posX2,
+                        y2: sectionForm.posY2,
+                      }
+                    : null
+                }
+                onSectionOverlayCoordinatesChange={(nextOverlay) => {
+                  setSectionForm((currentSectionForm) => {
+                    if (currentSectionForm?.scoreSheetId !== scoreSheet.id) {
+                      return currentSectionForm;
+                    }
+
+                    return {
+                      ...currentSectionForm,
+                      posX1: nextOverlay.x1,
+                      posY1: nextOverlay.y1,
+                      posX2: nextOverlay.x2,
+                      posY2: nextOverlay.y2,
+                    };
+                  });
+                }}
+                onRename={handleRenameScoreSheet}
+                onDelete={handleConfirmDeleteScoreSheet}
+              />
             ))}
           </div>
         )}

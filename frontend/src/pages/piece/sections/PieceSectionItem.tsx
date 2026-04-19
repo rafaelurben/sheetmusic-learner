@@ -2,8 +2,8 @@
  * (C) 2026. - Rafael Urben
  */
 import type { ScoreSheetDto, SectionDto } from "@/api/generated/openapi";
-import type PieceSectionAddRequestDto from "@/interfaces/async/request/piece/PieceSectionAddRequestDto.ts";
 import {
+  buildSectionPayloadFromForm,
   type SectionFormState,
   UNASSIGNED_SCORE_SHEET_VALUE,
 } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
@@ -41,10 +41,6 @@ interface PieceSectionItemProps {
   sectionForm: SectionFormState | null;
   scoreSheets: ScoreSheetDto[];
   setSectionForm: Dispatch<SetStateAction<SectionFormState | null>>;
-  buildSectionPayloadFromForm: (
-    form: SectionFormState,
-    currentSection?: SectionDto,
-  ) => PieceSectionAddRequestDto | null;
   isDraggable?: boolean;
   isDragging?: boolean;
   isDropTarget?: boolean;
@@ -65,7 +61,6 @@ export default function PieceSectionItem({
   sectionForm,
   scoreSheets,
   setSectionForm,
-  buildSectionPayloadFromForm,
   isDraggable = false,
   isDragging = false,
   isDropTarget = false,
@@ -97,7 +92,7 @@ export default function PieceSectionItem({
 
     if (!section.id) return;
 
-    const sectionPayload = buildSectionPayloadFromForm(sectionForm, section);
+    const sectionPayload = buildSectionPayloadFromForm(sectionForm);
     if (!sectionPayload) return;
 
     stompService.publish(`/app/piece.${pieceId}/section/update`, {
