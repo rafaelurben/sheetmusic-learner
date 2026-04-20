@@ -4,15 +4,15 @@
 import {
   PermissionType,
   type PiecePermissionDto,
-  type UserDto,
   ResponseError,
+  type UserDto,
 } from "@/api/generated/openapi";
 import { useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
 import PiecePermissionCard from "@/pages/piece/PiecePermissionCard.tsx";
 import type PiecePermissionAddRequestDto from "@/interfaces/async/request/piece/PiecePermissionAddRequestDto.ts";
 import type { PiecePermissionUpdateRequestDto } from "@/interfaces/async/request/piece/PiecePermissionUpdateRequestDto.ts";
 import type { PiecePermissionRemoveRequestDto } from "@/interfaces/async/request/piece/PiecePermissionRemoveRequestDto.ts";
-import { stompService } from "@/service/stompService.ts";
+import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Input } from "@/shadcn/components/ui/input.tsx";
 import {
@@ -93,7 +93,7 @@ export default function PiecePermissions({
     };
 
     try {
-      stompService.publish(`/app/piece.${pieceId}/permission/add`, request);
+      stompPublishingService.piecePermissionAdd(pieceId, request);
       toast.success("Permission add request sent.");
       setEmail("");
       setSearchResult(null);
@@ -114,7 +114,7 @@ export default function PiecePermissions({
     };
 
     try {
-      stompService.publish(`/app/piece.${pieceId}/permission/update`, request);
+      stompPublishingService.piecePermissionUpdate(pieceId, request);
       toast.success("Permission update request sent.");
     } catch (error) {
       console.error("Failed to publish update permission request:", error);
@@ -126,7 +126,7 @@ export default function PiecePermissions({
     const request: PiecePermissionRemoveRequestDto = { userId };
 
     try {
-      stompService.publish(`/app/piece.${pieceId}/permission/remove`, request);
+      stompPublishingService.piecePermissionRemove(pieceId, request);
       toast.success("Permission remove request sent.");
     } catch (error) {
       console.error("Failed to publish remove permission request:", error);

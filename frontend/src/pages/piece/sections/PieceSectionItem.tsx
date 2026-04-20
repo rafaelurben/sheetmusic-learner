@@ -8,7 +8,7 @@ import {
   UNASSIGNED_SCORE_SHEET_VALUE,
 } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
 import PieceSectionTimeSelector from "@/pages/piece/sections/PieceSectionTimeSelector.tsx";
-import { stompService } from "@/service/stompService.ts";
+import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import { Input } from "@/shadcn/components/ui/input.tsx";
@@ -95,7 +95,7 @@ export default function PieceSectionItem({
     const sectionPayload = buildSectionPayloadFromForm(sectionForm);
     if (!sectionPayload) return;
 
-    stompService.publish(`/app/piece.${pieceId}/section/update`, {
+    stompPublishingService.pieceSectionUpdate(pieceId, {
       sectionId: section.id,
       ...sectionPayload,
     });
@@ -112,7 +112,7 @@ export default function PieceSectionItem({
       action: {
         label: "Delete",
         onClick: () => {
-          stompService.publish(`/app/piece.${pieceId}/section/remove`, {
+          stompPublishingService.pieceSectionRemove(pieceId, {
             sectionId: section.id,
           });
         },

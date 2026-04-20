@@ -22,7 +22,7 @@ import {
   UNASSIGNED_SCORE_SHEET_VALUE,
 } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
-import { stompService } from "@/service/stompService.ts";
+import { stompPublishingService } from "@/service/stompPublishingService.ts";
 
 interface PieceSectionsCardProps {
   sections: SectionDto[];
@@ -73,7 +73,7 @@ export default function PieceSectionsCard({
   });
 
   const publishSectionAdd = (payload: PieceSectionAddRequestDto) => {
-    stompService.publish(`/app/piece.${piece.id}/section/add`, payload);
+    stompPublishingService.pieceSectionAdd(piece.id, payload);
   };
 
   const publishSectionUpdate = (
@@ -86,7 +86,7 @@ export default function PieceSectionsCard({
       position,
     };
 
-    stompService.publish(`/app/piece.${piece.id}/section/update`, payload);
+    stompPublishingService.pieceSectionUpdate(piece.id, payload);
   };
 
   const clearDragState = () => {

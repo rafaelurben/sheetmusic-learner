@@ -3,9 +3,7 @@
  */
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import { useCallback, useEffect, useState } from "react";
-import { stompService } from "@/service/stompService.ts";
-import type RoomControlPositionRequestDto from "@/interfaces/async/request/room/RoomControlPositionRequestDto.ts";
-import type RoomControlPlaybackConfigRequestDto from "@/interfaces/async/request/room/RoomControlPlaybackConfigRequestDto.ts";
+import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import type { PieceDto, RoomDto } from "@/api/generated/openapi";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import RoomMetronome from "@/components/player/RoomMetronome.tsx";
@@ -38,9 +36,9 @@ export default function RoomScoreSheetPanel({
         return;
       }
 
-      stompService.publish(`/app/room.${room.id}/control/position`, {
+      stompPublishingService.roomControlPosition(room.id, {
         currentSectionPosition: nextSectionPosition,
-      } satisfies RoomControlPositionRequestDto);
+      });
     },
     [canEditRoom, room.id],
   );
@@ -51,9 +49,9 @@ export default function RoomScoreSheetPanel({
         return;
       }
 
-      stompService.publish(`/app/room.${room.id}/control/config`, {
+      stompPublishingService.roomControlPlaybackConfig(room.id, {
         tempoMultiplier: nextTempoMultiplier,
-      } satisfies RoomControlPlaybackConfigRequestDto);
+      });
     },
     [canEditRoom, room.id, room.playing],
   );
@@ -63,7 +61,7 @@ export default function RoomScoreSheetPanel({
       return;
     }
 
-    stompService.publish(`/app/room.${room.id}/control/play`);
+    stompPublishingService.roomControlPlay(room.id);
   }, [room.id, canEditRoom]);
 
   const publishPause = useCallback(() => {
@@ -71,7 +69,7 @@ export default function RoomScoreSheetPanel({
       return;
     }
 
-    stompService.publish(`/app/room.${room.id}/control/pause`);
+    stompPublishingService.roomControlPause(room.id);
   }, [room.id, canEditRoom]);
 
   const sortedSections = useSorted(piece.sections);

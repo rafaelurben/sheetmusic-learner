@@ -15,11 +15,10 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/shadcn/components/ui/avatar.tsx";
-import { stompService } from "@/service/stompService.ts";
+import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import type { SubmitEvent } from "react";
 import { useRef, useState } from "react";
 import type { UserDto } from "@/api/generated/openapi";
-import type RoomChatMessageRequestDto from "@/interfaces/async/request/room/RoomChatMessageRequestDto.ts";
 
 export default function ChatSidebar() {
   const roomId = useRoomStore((state) => state.room.id);
@@ -34,9 +33,9 @@ export default function ChatSidebar() {
     event.preventDefault();
     const message = messageInput.trim();
     if (!message) return;
-    stompService.publish(`/app/room.${roomId}/chat`, {
+    stompPublishingService.roomChat(roomId, {
       message,
-    } satisfies RoomChatMessageRequestDto);
+    });
     setMessageInput("");
   };
 

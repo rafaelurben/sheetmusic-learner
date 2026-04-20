@@ -13,8 +13,7 @@ import {
 import { Label } from "@/shadcn/components/ui/label.tsx";
 import { Input } from "@/shadcn/components/ui/input.tsx";
 import { Switch } from "@/shadcn/components/ui/switch.tsx";
-import { stompService } from "@/service/stompService.ts";
-import type PieceUpdateRequestDto from "@/interfaces/async/request/piece/PieceUpdateRequestDto.ts";
+import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import type { PieceDto } from "@/api/generated/openapi";
 
 interface EditPieceDialogProps {
@@ -76,7 +75,7 @@ export default function EditPieceDialog({
 
     onOpenChange(false);
 
-    stompService.publish(`/app/piece.${piece.id}/update`, {
+    stompPublishingService.pieceUpdate(piece.id, {
       title: trimmedValues.title,
       composer: trimmedValues.composer,
       year: trimmedValues.year,
@@ -84,7 +83,7 @@ export default function EditPieceDialog({
       difficulty: trimmedValues.difficulty,
       bpmRange: trimmedValues.bpmRange,
       isPublic: trimmedValues.isPublic,
-    } satisfies PieceUpdateRequestDto);
+    });
   };
 
   const handleCancel = () => {

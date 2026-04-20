@@ -12,9 +12,7 @@ import {
 } from "@/shadcn/components/ui/dialog.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
 import { Input } from "@/shadcn/components/ui/input.tsx";
-import { stompService } from "@/service/stompService.ts";
-import type RoomUpdateRequestDto from "@/interfaces/async/request/room/RoomUpdateRequestDto.ts";
-import type RoomChangePieceRequestDto from "@/interfaces/async/request/room/RoomChangePieceRequestDto.ts";
+import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import {
   Select,
@@ -65,18 +63,18 @@ export default function EditRoomDialog({
     onOpenChange(false);
 
     if (trimmedTitle !== trimmedInitialTitle) {
-      stompService.publish(`/app/room.${roomId}/update`, {
+      stompPublishingService.roomUpdate(roomId, {
         title: trimmedTitle,
-      } satisfies RoomUpdateRequestDto);
+      });
     }
 
     if (
       selectedPieceId !== NO_PIECE_VALUE &&
       selectedPieceId !== normalizedInitialPieceId
     ) {
-      stompService.publish(`/app/room.${roomId}/change-piece`, {
+      stompPublishingService.roomChangePiece(roomId, {
         pieceId: selectedPieceId,
-      } satisfies RoomChangePieceRequestDto);
+      });
     }
   };
 

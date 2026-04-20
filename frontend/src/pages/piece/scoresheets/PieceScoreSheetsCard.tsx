@@ -10,7 +10,7 @@ import PieceScoreSheetItem from "@/pages/piece/scoresheets/PieceScoreSheetItem.t
 import { UNASSIGNED_SCORE_SHEET_VALUE } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
 import { useState } from "react";
 import { toast } from "sonner";
-import { stompService } from "@/service/stompService.ts";
+import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 
 interface PieceScoreSheetsCardProps {
@@ -45,7 +45,7 @@ export default function PieceScoreSheetsCard({
       return;
     }
 
-    stompService.publish(`/app/piece.${piece.id}/score-sheet/update`, {
+    stompPublishingService.pieceScoreSheetUpdate(piece.id, {
       scoreSheetId,
       title: trimmedTitle,
     });
@@ -58,7 +58,7 @@ export default function PieceScoreSheetsCard({
       action: {
         label: "Delete",
         onClick: () => {
-          stompService.publish(`/app/piece.${piece.id}/score-sheet/delete`, {
+          stompPublishingService.pieceScoreSheetDelete(piece.id, {
             scoreSheetId,
           });
         },
