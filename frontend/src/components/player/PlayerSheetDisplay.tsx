@@ -4,17 +4,17 @@
 import type { PieceDto } from "@/api/generated/openapi";
 import { useSorted } from "@/service/hooks.ts";
 
-interface RoomSheetDisplayProps {
+interface PlayerSheetDisplayProps {
   piece: PieceDto;
   currentSectionId?: string;
 }
 
 const toPercent = (value: number) => String(value * 100) + "%";
 
-export default function RoomSheetDisplay({
+export default function PlayerSheetDisplay({
   piece,
   currentSectionId,
-}: Readonly<RoomSheetDisplayProps>) {
+}: Readonly<PlayerSheetDisplayProps>) {
   const sortedSections = useSorted(piece.sections);
   const sortedScoreSheets = useSorted(piece.scoreSheets);
 

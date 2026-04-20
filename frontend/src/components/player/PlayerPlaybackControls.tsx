@@ -12,7 +12,7 @@ import { Label } from "@/shadcn/components/ui/label.tsx";
 import { Slider } from "@/shadcn/components/ui/slider.tsx";
 import type { SectionDto } from "@/api/generated/openapi";
 
-interface RoomPlayerControlsProps {
+interface PlayerPlaybackControlsProps {
   playing: boolean;
   tempoMultiplier: number;
   sections: SectionDto[];
@@ -23,7 +23,7 @@ interface RoomPlayerControlsProps {
   onSectionChange: (nextSectionPosition: number) => void;
 }
 
-export default function RoomPlayerControls({
+export default function PlayerPlaybackControls({
   playing,
   tempoMultiplier,
   sections,
@@ -32,7 +32,7 @@ export default function RoomPlayerControls({
   onPause,
   onTempoMultiplierChange,
   onSectionChange,
-}: Readonly<RoomPlayerControlsProps>) {
+}: Readonly<PlayerPlaybackControlsProps>) {
   if (sections.length <= 0) {
     return (
       <div className="flex flex-col gap-4 border-t pt-4">

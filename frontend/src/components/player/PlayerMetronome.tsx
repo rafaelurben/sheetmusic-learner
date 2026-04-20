@@ -2,7 +2,7 @@
  * (C) 2026. - Rafael Urben
  */
 import { useCallback, useEffect } from "react";
-import type { RoomDto, SectionDto } from "@/api/generated/openapi";
+import type { SectionDto } from "@/api/generated/openapi";
 import { metronomeService } from "@/service/metronomeService.ts";
 import {
   calculateSectionTimings,
@@ -10,31 +10,39 @@ import {
 } from "@/service/metronomeUtils.ts";
 import type { PlayerPlaylistItem } from "@/interfaces/player/playerPlaylistItem.ts";
 import { toast } from "sonner";
+import { useMainStore } from "@/zustand/mainStore.ts";
 
-interface RoomMetronomeProps {
-  room: RoomDto;
+interface PlayerMetronomeProps {
+  playing: boolean;
+  lastPlayTimestamp?: string | null;
+  lastPlaySectionPosition?: number | null;
+  tempoMultiplier: number;
   sortedSections: SectionDto[];
-  audioContextReady: boolean;
-  onAudioContextReadyChange: (ready: boolean) => void;
   onSectionPositionOverrideChange: (sectionPosition: number | null) => void;
   onPlaybackEnded: () => void;
 }
 
 const AUDIO_CONTEXT_INIT_TOAST_ID = "room-audio-context-init";
 
-export default function RoomMetronome({
-  room,
+export default function PlayerMetronome({
+  playing,
+  lastPlayTimestamp,
+  lastPlaySectionPosition,
+  tempoMultiplier,
   sortedSections,
-  audioContextReady,
-  onAudioContextReadyChange,
   onSectionPositionOverrideChange,
   onPlaybackEnded,
-}: Readonly<RoomMetronomeProps>) {
+}: Readonly<PlayerMetronomeProps>) {
+  const audioContextReady = useMainStore((state) => state.audioContextReady);
+  const setAudioContextReady = useMainStore(
+    (state) => state.setAudioContextReady,
+  );
+
   const initializeAudioContext = useCallback(
     async (showToastOnError: boolean) => {
       try {
         await metronomeService.initializeAudioContext();
-        onAudioContextReadyChange(true);
+        setAudioContextReady(true);
         toast.dismiss(AUDIO_CONTEXT_INIT_TOAST_ID);
       } catch (error) {
         console.warn("Failed to initialize audio context", error);
@@ -48,10 +56,10 @@ export default function RoomMetronome({
             action: {
               label: "Enable audio",
               onClick: () => {
-                void metronomeService
+                metronomeService
                   .initializeAudioContext()
                   .then(() => {
-                    onAudioContextReadyChange(true);
+                    setAudioContextReady(true);
                     toast.dismiss(AUDIO_CONTEXT_INIT_TOAST_ID);
                   })
                   .catch((retryError: unknown) => {
@@ -66,7 +74,7 @@ export default function RoomMetronome({
         }
       }
     },
-    [onAudioContextReadyChange],
+    [setAudioContextReady],
   );
 
   useEffect(() => {
@@ -76,21 +84,20 @@ export default function RoomMetronome({
   }, [audioContextReady, initializeAudioContext]);
 
   useEffect(() => {
-    if (!audioContextReady || !room.playing) {
+    if (!audioContextReady || !playing) {
       return;
     }
 
-    const playTimestamp = room.lastPlayTimestamp
-      ? new Date(room.lastPlayTimestamp)
+    const playTimestamp = lastPlayTimestamp
+      ? new Date(lastPlayTimestamp)
       : new Date();
-    const playbackSections = sortedSections.slice(
-      room.lastPlaySectionPosition ?? 0,
-    );
+    const playbackSections = sortedSections.slice(lastPlaySectionPosition ?? 0);
 
+    // Audio: Metronome
     const playlist: PlayerPlaylistItem[] = [];
     for (const section of playbackSections) {
       playlist.push(
-        ...convertSectionToMetronomePlaylist(section, room.tempoMultiplier),
+        ...convertSectionToMetronomePlaylist(section, tempoMultiplier),
       );
     }
     const stopMetronome = metronomeService.playMetronomePlaylist(
@@ -98,10 +105,8 @@ export default function RoomMetronome({
       playTimestamp,
     );
 
-    const timings = calculateSectionTimings(
-      playbackSections,
-      room.tempoMultiplier,
-    );
+    // Visual: Section changes
+    const timings = calculateSectionTimings(playbackSections, tempoMultiplier);
     const globalOffsetMs = playTimestamp.getTime() - Date.now();
     const timeoutHandles: number[] = [];
 
@@ -129,6 +134,7 @@ export default function RoomMetronome({
       );
     }
 
+    // Handle playback end
     timeoutHandles.push(
       setTimeout(
         () => {
@@ -141,6 +147,7 @@ export default function RoomMetronome({
       ),
     );
 
+    // Cleanup
     return () => {
       stopMetronome();
       timeoutHandles.forEach((handle) => {
@@ -151,10 +158,10 @@ export default function RoomMetronome({
   }, [
     audioContextReady,
     sortedSections,
-    room.playing,
-    room.lastPlayTimestamp,
-    room.lastPlaySectionPosition,
-    room.tempoMultiplier,
+    playing,
+    lastPlayTimestamp,
+    lastPlaySectionPosition,
+    tempoMultiplier,
     onSectionPositionOverrideChange,
     onPlaybackEnded,
   ]);
