@@ -533,7 +533,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserDto'
-      required: [ id, title, ownerId, roomUsers ]
+      required: [ id, title, ownerId, tempoMultiplier, roomUsers ]
 
     RoomCreateRequestDto:
       type: object

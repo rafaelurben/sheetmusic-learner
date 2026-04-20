@@ -2,6 +2,8 @@
 package ch.rafaelurben.sheetmusiclearner.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import java.time.Instant;
 import java.util.List;
@@ -26,7 +28,11 @@ public class Room extends BaseEntity {
   @Column(name = "title", nullable = false)
   private String title;
 
+  // Playback config
+
   @Column(name = "tempo_multiplier", nullable = false)
+  @DecimalMin("0.01")
+  @DecimalMax("10.0")
   @Builder.Default
   private Float tempoMultiplier = 1.0f;
 
@@ -55,4 +61,10 @@ public class Room extends BaseEntity {
 
   @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<RoomUser> roomUsers;
+
+  // Helpers
+
+  public boolean isPlaying() {
+    return Boolean.TRUE.equals(playing);
+  }
 }

@@ -14,6 +14,7 @@ import type PieceUpdateRequestDto from "@/interfaces/async/request/piece/PieceUp
 import type RoomChangePieceRequestDto from "@/interfaces/async/request/room/RoomChangePieceRequestDto.ts";
 import type RoomChatMessageRequestDto from "@/interfaces/async/request/room/RoomChatMessageRequestDto.ts";
 import type RoomControlPositionRequestDto from "@/interfaces/async/request/room/RoomControlPositionRequestDto.ts";
+import type RoomControlPlaybackConfigRequestDto from "@/interfaces/async/request/room/RoomControlPlaybackConfigRequestDto.ts";
 import type RoomUpdateRequestDto from "@/interfaces/async/request/room/RoomUpdateRequestDto.ts";
 
 export type RequestDto =
@@ -29,4 +30,5 @@ export type RequestDto =
   | RoomUpdateRequestDto
   | RoomChangePieceRequestDto
   | RoomControlPositionRequestDto
+  | RoomControlPlaybackConfigRequestDto
   | RoomChatMessageRequestDto;

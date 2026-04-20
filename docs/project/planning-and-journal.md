@@ -56,6 +56,7 @@
     - Metronome not working because AudioContext not resumed
     - 401 error on session expiration
   - Automatically end audio playback
+  - Tempo multiplier implementation
 
 ## Project milestones
 

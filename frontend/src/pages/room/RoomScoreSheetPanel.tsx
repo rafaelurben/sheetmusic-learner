@@ -9,9 +9,12 @@ import {
 } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
+import { Label } from "@/shadcn/components/ui/label.tsx";
+import { Slider } from "@/shadcn/components/ui/slider.tsx";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { stompService } from "@/service/stompService.ts";
 import type RoomControlPositionRequestDto from "@/interfaces/async/request/room/RoomControlPositionRequestDto.ts";
+import type RoomControlPlaybackConfigRequestDto from "@/interfaces/async/request/room/RoomControlPlaybackConfigRequestDto.ts";
 import type { PieceDto, RoomDto } from "@/api/generated/openapi";
 import { metronomeService } from "@/service/metronomeService.ts";
 import {
@@ -52,6 +55,19 @@ export default function RoomScoreSheetPanel({
       currentSectionPosition: nextSectionPosition,
     } satisfies RoomControlPositionRequestDto);
   };
+
+  const publishPlaybackConfig = useCallback(
+    (nextTempoMultiplier: number) => {
+      if (!canEditRoom || room.playing) {
+        return;
+      }
+
+      stompService.publish(`/app/room.${room.id}/control/config`, {
+        tempoMultiplier: nextTempoMultiplier,
+      } satisfies RoomControlPlaybackConfigRequestDto);
+    },
+    [canEditRoom, room.id, room.playing],
+  );
 
   const publishPlayPause = useCallback(() => {
     if (!canEditRoom) {
@@ -281,36 +297,56 @@ export default function RoomScoreSheetPanel({
         </div>
 
         {canEditRoom && (
-          <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3 border-t pt-4">
-            <Button
-              variant="outline"
-              size="icon"
-              disabled={isPreviousDisabled}
-              onClick={() => {
-                publishSectionPosition(currentSectionPosition - 1);
-              }}
-            >
-              <ChevronLeftIcon />
-            </Button>
+          <div className="flex flex-col gap-4 border-t pt-4">
+            <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
+              <Button
+                variant="outline"
+                size="icon"
+                disabled={isPreviousDisabled}
+                onClick={() => {
+                  publishSectionPosition(currentSectionPosition - 1);
+                }}
+              >
+                <ChevronLeftIcon />
+              </Button>
 
-            <Button variant="outline" size="icon" onClick={publishPlayPause}>
-              {room.playing ? <PauseIcon /> : <PlayIcon />}
-            </Button>
+              <Button variant="outline" size="icon" onClick={publishPlayPause}>
+                {room.playing ? <PauseIcon /> : <PlayIcon />}
+              </Button>
 
-            <div className="text-center text-sm text-muted-foreground">
-              {sectionPositionText}
+              <div className="text-center text-sm text-muted-foreground">
+                {sectionPositionText}
+              </div>
+
+              <Button
+                variant="outline"
+                size="icon"
+                disabled={isNextDisabled}
+                onClick={() => {
+                  publishSectionPosition(currentSectionPosition + 1);
+                }}
+              >
+                <ChevronRightIcon />
+              </Button>
             </div>
 
-            <Button
-              variant="outline"
-              size="icon"
-              disabled={isNextDisabled}
-              onClick={() => {
-                publishSectionPosition(currentSectionPosition + 1);
-              }}
-            >
-              <ChevronRightIcon />
-            </Button>
+            <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-4 sm:flex-row sm:items-center">
+              <Label className="text-sm font-medium sm:w-28">Tempo</Label>
+              <Slider
+                defaultValue={[room.tempoMultiplier]}
+                onValueChange={(value) => {
+                  publishPlaybackConfig(value[0]);
+                }}
+                min={0.1}
+                max={4}
+                step={0.01}
+                disabled={room.playing}
+                className="w-full"
+              />
+              <div className="w-16 text-right text-sm text-muted-foreground">
+                {room.tempoMultiplier.toFixed(2)}x
+              </div>
+            </div>
           </div>
         )}
       </CardContent>

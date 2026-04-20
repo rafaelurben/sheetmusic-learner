@@ -17,4 +17,5 @@ export type PublishDestinationName =
   | `/app/room.${string}/control/play`
   | `/app/room.${string}/control/pause`
   | `/app/room.${string}/control/position`
+  | `/app/room.${string}/control/config`
   | `/app/room.${string}/chat`;

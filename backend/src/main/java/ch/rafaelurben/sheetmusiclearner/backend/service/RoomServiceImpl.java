@@ -5,11 +5,13 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
+import ch.rafaelurben.sheetmusiclearner.backend.exceptions.BadRequestException;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.InsufficientPermissionException;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.*;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPlaybackConfigRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPositionRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.RoomMapper;
@@ -189,6 +191,24 @@ public class RoomServiceImpl implements RoomService {
 
     room.setLastPlaySectionPosition(dto.currentSectionPosition());
     room.setLastPlayTimestamp(Instant.now().plusSeconds(1)); // Prevent cut-off
+    room = roomRepository.save(room);
+
+    messagingService.send(
+        Destinations.topicRoom(roomId), RoomPlaybackStateChangedEvent.fromRoom(room).asDto());
+  }
+
+  @Override
+  public void controlPlaybackConfig(
+      User user, UUID roomId, RoomControlPlaybackConfigRequestDto dto) {
+    Room room = getRoomById(roomId);
+    ensureUserIsOwner(user, room);
+
+    if (room.isPlaying()) {
+      throw new BadRequestException(
+          "Playback configuration can only be changed while playback is paused");
+    }
+
+    room.setTempoMultiplier(dto.tempoMultiplier());
     room = roomRepository.save(room);
 
     messagingService.send(

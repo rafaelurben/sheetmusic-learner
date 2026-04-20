@@ -287,6 +287,7 @@ Application destinations are used for sending messages from clients to the serve
 | `/app/room.{id}/control/play`        | Start playback in the room (owner action)                     |                          |
 | `/app/room.{id}/control/pause`       | Pause playback in the room (owner action)                     |                          |
 | `/app/room.{id}/control/position`    | Change current position / select page (owner action)          | Current position         |
+| `/app/room.{id}/control/config`      | Update playback configuration while paused (owner action)     | Tempo multiplier         |
 | `/app/room.{id}/chat`                | Send a chat message to a room                                 | Message                  |
 
 **Room join** and **leave** actions are handled by subscribing and unsubscribing to the room topic, so there are no
