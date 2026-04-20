@@ -37,12 +37,14 @@ export default function RoomMetronome({
         onAudioContextReadyChange(true);
         toast.dismiss(AUDIO_CONTEXT_INIT_TOAST_ID);
       } catch (error) {
-        console.error("Failed to initialize audio context", error);
+        console.warn("Failed to initialize audio context", error);
         if (showToastOnError) {
           toast.error("Audio playback is not ready.", {
             id: AUDIO_CONTEXT_INIT_TOAST_ID,
             description: "Click Enable audio to hear the metronome.",
             closeButton: false,
+            dismissible: false,
+            duration: Infinity,
             action: {
               label: "Enable audio",
               onClick: () => {

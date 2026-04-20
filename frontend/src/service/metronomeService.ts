@@ -17,6 +17,9 @@ class MetronomeService {
   constructor() {
     try {
       this.audioContext = new AudioContext();
+      this.audioContext.addEventListener("statechange", () => {
+        console.log(`AudioContext state changed: ${this.audioContext.state}`);
+      });
     } catch (error) {
       toast.error("Web Audio API is not supported in this browser");
       throw new Error(
