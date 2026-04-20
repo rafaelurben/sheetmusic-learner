@@ -28,6 +28,9 @@ import type {
   UserEventDto,
 } from "@/interfaces/async/EventDto.ts";
 
+const STOMP_CONNECTED_TOAST_ID = "stomp-connected";
+const STOMP_DISCONNECTED_TOAST_ID = "stomp-disconnected";
+
 export default function AppAuthenticated() {
   const {
     setConnected,
@@ -173,9 +176,17 @@ export default function AppAuthenticated() {
   // Show toast on connection state changes
   useEffect(() => {
     if (connected === false) {
-      toast.error("Connection to realtime service lost!", { duration: 10000 });
+      toast.dismiss(STOMP_CONNECTED_TOAST_ID);
+      toast.error("Connection to realtime service lost!", {
+        id: STOMP_DISCONNECTED_TOAST_ID,
+        duration: Infinity,
+      });
     } else if (connected) {
-      toast.info("Connected to realtime service!", { duration: 2500 });
+      toast.dismiss(STOMP_DISCONNECTED_TOAST_ID);
+      toast.info("Connected to realtime service!", {
+        id: STOMP_CONNECTED_TOAST_ID,
+        duration: 2500,
+      });
     }
   }, [connected]);
 
