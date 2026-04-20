@@ -19,9 +19,10 @@ import {
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import { usePageTitle } from "@/zustand/pageTitleStore.ts";
-import { Trash2Icon, UsersIcon } from "lucide-react";
+import { PlayIcon, Trash2Icon, UsersIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import PiecePlayerDialog from "@/pages/piece/PiecePlayerDialog.tsx";
 
 export default function PiecePage() {
   const piece = usePieceStore((state) => state.piece);
@@ -30,6 +31,7 @@ export default function PiecePage() {
   const piecesApi = usePiecesApi();
 
   const [isPermissionsOpen, setIsPermissionsOpen] = useState(false);
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const [isEditingPiece, setIsEditingPiece] = useState(false);
   const [isDeletingPiece, setIsDeletingPiece] = useState(false);
 
@@ -94,6 +96,15 @@ export default function PiecePage() {
           </h1>
           <div className="flex items-center gap-2">
             <Button
+              className="gap-2"
+              onClick={() => {
+                setIsPlayerOpen(true);
+              }}
+            >
+              <PlayIcon className="size-4" />
+              Play
+            </Button>
+            <Button
               variant="outline"
               className="gap-2"
               onClick={() => {
@@ -151,6 +162,15 @@ export default function PiecePage() {
           />
         </SheetContent>
       </Sheet>
+
+      {isPlayerOpen && (
+        <PiecePlayerDialog
+          piece={piece}
+          onClosePlayer={() => {
+            setIsPlayerOpen(false);
+          }}
+        />
+      )}
 
       <EditPieceDialog
         open={isEditingPiece}
