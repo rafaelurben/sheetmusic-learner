@@ -1,7 +1,14 @@
 /*
  * (C) 2026. - Rafael Urben
  */
-import { Card } from "@/shadcn/components/ui/card.tsx";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/shadcn/components/ui/card.tsx";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import type { ScoreSheetDto } from "@/api/generated/openapi";
 import { UploadIcon } from "lucide-react";
@@ -12,6 +19,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
+import { Switch } from "@/shadcn/components/ui/switch.tsx";
+import { Label } from "@/shadcn/components/ui/label.tsx";
 
 interface PieceScoreSheetsCardProps {
   scoreSheets: ScoreSheetDto[];
@@ -27,6 +36,7 @@ export default function PieceScoreSheetsCard({
   const setSectionForm = usePieceStore((state) => state.setSectionForm);
 
   const [isUploadScoreSheetsOpen, setIsUploadScoreSheetsOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const handleRenameScoreSheet = (
     scoreSheetId: string,
@@ -77,13 +87,47 @@ export default function PieceScoreSheetsCard({
       ? sectionForm.scoreSheetId
       : null;
   const isSectionEditing = sectionForm !== null;
+  const canShowUploadButton =
+    canEdit && (isEditMode || scoreSheets.length === 0);
 
   return (
-    <Card className="flex min-h-0 flex-1 flex-col p-4">
-      <div className="min-h-0 flex-1 overflow-y-auto">
+    <Card className="gap-2">
+      <CardHeader>
+        <CardTitle>Score sheets</CardTitle>
+        {canEdit && scoreSheets.length > 0 && (
+          <CardAction>
+            <div className="flex items-center gap-2">
+              <Label
+                className="text-sm text-muted-foreground"
+                htmlFor="piece-score-sheets-edit-mode"
+              >
+                Edit
+              </Label>
+              <Switch
+                id="piece-score-sheets-edit-mode"
+                checked={isEditMode}
+                onCheckedChange={setIsEditMode}
+              />
+            </div>
+          </CardAction>
+        )}
+      </CardHeader>
+
+      <CardContent className="min-h-0 flex-1 overflow-y-auto px-3 py-0">
         {scoreSheets.length === 0 ? (
-          <div className="flex h-full items-center justify-center rounded-md border-2 border-dashed text-sm text-muted-foreground">
-            No score sheets uploaded yet.
+          <div className="flex h-full min-h-60 flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed text-sm text-muted-foreground">
+            <span>No score sheets uploaded yet.</span>
+            {canShowUploadButton && (
+              <Button
+                className="gap-2"
+                onClick={() => {
+                  setIsUploadScoreSheetsOpen(true);
+                }}
+              >
+                <UploadIcon className="size-4" />
+                Upload score sheets
+              </Button>
+            )}
           </div>
         ) : (
           <div className="grid gap-3 pr-1 sm:grid-cols-2">
@@ -91,7 +135,7 @@ export default function PieceScoreSheetsCard({
               <PieceScoreSheetItem
                 key={scoreSheet.id}
                 scoreSheet={scoreSheet}
-                canEditActions={canEdit && !isSectionEditing}
+                canEditActions={canEdit && isEditMode && !isSectionEditing}
                 sectionOverlayCoordinates={
                   sectionForm && scoreSheet.id === activeSectionScoreSheetId
                     ? {
@@ -123,12 +167,12 @@ export default function PieceScoreSheetsCard({
             ))}
           </div>
         )}
-      </div>
+      </CardContent>
 
-      {canEdit && (
-        <div className="mt-4 border-t pt-4">
+      {canShowUploadButton && scoreSheets.length > 0 && (
+        <CardFooter>
           <Button
-            className="w-full gap-2"
+            className="w-full gap-2 mt-3"
             onClick={() => {
               setIsUploadScoreSheetsOpen(true);
             }}
@@ -136,7 +180,7 @@ export default function PieceScoreSheetsCard({
             <UploadIcon className="size-4" />
             Upload score sheets
           </Button>
-        </div>
+        </CardFooter>
       )}
 
       <UploadScoreSheetsDialog
