@@ -35,7 +35,10 @@ function useAuthenticatedApiClient<T extends BaseAPI>(
           if (response.status >= 400) {
             console.log("API request error:", response);
             if (response.status === 401) {
-              toast.error("Not authenticated. Maybe your session expired?");
+              toast.error(
+                "Not authenticated. Assuming your session expired...",
+              );
+              void auth.signoutRedirect();
             } else if (response.status === 403) {
               toast.error("Access denied!");
             } else if (response.status === 404) {
@@ -52,7 +55,7 @@ function useAuthenticatedApiClient<T extends BaseAPI>(
     });
 
     return new apiClass(config);
-  }, [apiClass, auth.user?.access_token]);
+  }, [apiClass, auth]);
 }
 
 export function useUsersApi() {
