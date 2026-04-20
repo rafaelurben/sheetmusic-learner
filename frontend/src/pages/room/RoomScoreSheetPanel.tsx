@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { stompService } from "@/service/stompService.ts";
 import type RoomControlPositionRequestDto from "@/interfaces/async/request/room/RoomControlPositionRequestDto.ts";
 import type { PieceDto, RoomDto } from "@/api/generated/openapi";
@@ -19,13 +19,14 @@ import {
   convertSectionToMetronomePlaylist,
 } from "@/service/metronomeUtils.ts";
 import type { PlayerPlaylistItem } from "@/interfaces/player/playerPlaylistItem.ts";
-
+import { toast } from "sonner";
+import { useMainStore } from "@/zustand/mainStore.ts";
 interface RoomScoreSheetPanelProps {
   room: RoomDto;
   piece: PieceDto;
   canEditRoom: boolean;
 }
-
+const AUDIO_CONTEXT_INIT_TOAST_ID = "room-audio-context-init";
 export default function RoomScoreSheetPanel({
   room,
   piece,
@@ -34,6 +35,10 @@ export default function RoomScoreSheetPanel({
   const [sectionPositionOverride, setSectionPositionOverride] = useState<
     number | null
   >(null);
+  const audioContextReady = useMainStore((state) => state.audioContextReady);
+  const setAudioContextReady = useMainStore(
+    (state) => state.setAudioContextReady,
+  );
 
   const sortedSections = useMemo(
     () =>
@@ -85,9 +90,52 @@ export default function RoomScoreSheetPanel({
   const isNextDisabled =
     sortedSections.length === 0 || currentSectionPosition >= maxSectionPosition;
 
+  const initializeAudioContext = useCallback(
+    async (showToastOnError: boolean) => {
+      try {
+        await metronomeService.initializeAudioContext();
+        setAudioContextReady(true);
+        toast.dismiss(AUDIO_CONTEXT_INIT_TOAST_ID);
+      } catch (error) {
+        console.error("Failed to initialize audio context", error);
+        if (showToastOnError) {
+          toast.error("Audio playback is not ready.", {
+            id: AUDIO_CONTEXT_INIT_TOAST_ID,
+            description: "Click Enable audio to hear the metronome.",
+            closeButton: false,
+            action: {
+              label: "Enable audio",
+              onClick: () => {
+                void metronomeService
+                  .initializeAudioContext()
+                  .then(() => {
+                    setAudioContextReady(true);
+                    toast.dismiss(AUDIO_CONTEXT_INIT_TOAST_ID);
+                  })
+                  .catch((retryError: unknown) => {
+                    console.error(
+                      "Failed to initialize audio context",
+                      retryError,
+                    );
+                  });
+              },
+            },
+          });
+        }
+      }
+    },
+    [setAudioContextReady],
+  );
+
+  useEffect(() => {
+    if (!audioContextReady) {
+      void initializeAudioContext(true);
+    }
+  }, [audioContextReady, initializeAudioContext]);
+
   // Playback
   useEffect(() => {
-    if (!room.playing) return;
+    if (!audioContextReady || !room.playing) return;
 
     const playTimestamp = room.lastPlayTimestamp
       ? new Date(room.lastPlayTimestamp)
@@ -114,7 +162,6 @@ export default function RoomScoreSheetPanel({
       room.tempoMultiplier,
     );
     const globalOffsetMs = playTimestamp.getTime() - Date.now();
-    console.log(timings, globalOffsetMs);
     const timeoutHandles: number[] = [];
 
     for (const timing of timings) {
@@ -146,6 +193,7 @@ export default function RoomScoreSheetPanel({
       setSectionPositionOverride(null);
     };
   }, [
+    audioContextReady,
     sortedSections,
     room.playing,
     room.lastPlayTimestamp,

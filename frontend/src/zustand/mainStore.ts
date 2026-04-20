@@ -11,11 +11,13 @@ import type { GeneralEventDto } from "@/interfaces/async/EventDto.ts";
 
 export interface MainStoreState {
   connected: boolean | null;
+  audioContextReady: boolean;
   rooms: Record<string, RoomMetadataDto>;
   pieces: Record<string, PieceMetadataDto>;
   currentUser: UserDto | null;
 
   setConnected: (value: boolean) => void;
+  setAudioContextReady: (value: boolean) => void;
   setCurrentUser: (user: UserDto) => void;
 
   addRoom: (room: RoomMetadataDto) => void;
@@ -30,9 +32,13 @@ export const useMainStore = create<MainStoreState>((set) => ({
   rooms: {},
   pieces: {},
   connected: null,
+  audioContextReady: false,
   currentUser: null,
   setConnected: (value) => {
     set({ connected: value });
+  },
+  setAudioContextReady: (value) => {
+    set({ audioContextReady: value });
   },
   setCurrentUser: (user) => {
     set({ currentUser: user });

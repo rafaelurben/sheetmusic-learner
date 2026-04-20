@@ -87,6 +87,26 @@ class MetronomeService {
     };
   }
 
+  public async initializeAudioContext() {
+    return new Promise((resolve, reject) => {
+      if (this.audioContext.state === "running") {
+        console.debug("AudioContext is already running");
+        return;
+      }
+      console.debug("Resuming AudioContext...");
+      void this.audioContext.resume(); // will neither reject nor resolve if blocked by autoplay policy
+
+      setTimeout(() => {
+        console.debug("AudioContext state: ", this.audioContext.state);
+        if (this.audioContext.state === "running") {
+          resolve();
+        } else {
+          reject(new Error("AudioContext still not ready..."));
+        }
+      }, 500);
+    });
+  }
+
   /**
    * Play a metronome playlist.
    * @param items the playlist
