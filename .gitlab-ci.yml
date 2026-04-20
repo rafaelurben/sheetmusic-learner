@@ -28,7 +28,7 @@ checks::frontend:
     - npm ci --cache .npm --prefer-offline
     - npm run generate:openapi
     - npm run lint
-    - npx tsc -b
+    - npx run typescript-check
 
 build::backend:
   stage: build

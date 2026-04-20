@@ -99,7 +99,7 @@ class MetronomeService {
       setTimeout(() => {
         console.debug("AudioContext state: ", this.audioContext.state);
         if (this.audioContext.state === "running") {
-          resolve();
+          resolve("AudioContext is ready");
         } else {
           reject(new Error("AudioContext still not ready..."));
         }

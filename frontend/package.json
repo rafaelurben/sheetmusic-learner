@@ -9,6 +9,7 @@
     "build": "npm run generate:openapi && tsc -b && vite build",
     "lint": "eslint .",
     "fix": "eslint . --fix",
+    "typescript-check": "tsc -b",
     "preview": "vite preview"
   },
   "dependencies": {
