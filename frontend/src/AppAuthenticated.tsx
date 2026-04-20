@@ -48,16 +48,6 @@ export default function AppAuthenticated() {
   // Initialize store from API
   useEffect(() => {
     // Add pieces
-    addPiece({
-      id: "dummy",
-      title: "Dummy Piece",
-      composer: "",
-      year: "2034",
-      difficulty: "",
-      description: "",
-      bpmRange: "",
-      isPublic: false,
-    });
     piecesApi
       .getPieces()
       .then((pieces) => {
@@ -70,11 +60,6 @@ export default function AppAuthenticated() {
       });
 
     // Add rooms
-    addRoom({
-      id: "dummy",
-      title: "Dummy RoomPageContainer",
-      ownerId: "00000000-0000-0000-0000-000000000000",
-    });
     roomsApi
       .getRooms()
       .then((rooms) => {
