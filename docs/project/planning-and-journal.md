@@ -51,6 +51,11 @@
   - Allow editing section coordinates and display the current section on the room page
   - Added audio metronome implementation with Web Audio API.
   - Added automatic metronome playback and section progression based on timings.
+- 2026-04-20:
+  - Fixed bugs:
+    - Metronome not working because AudioContext not resumed
+    - 401 error on session expiration
+  - Automatically end audio playback
 
 ## Project milestones
 
