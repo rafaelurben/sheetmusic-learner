@@ -21,12 +21,15 @@ import {
 import type { PlayerPlaylistItem } from "@/interfaces/player/playerPlaylistItem.ts";
 import { toast } from "sonner";
 import { useMainStore } from "@/zustand/mainStore.ts";
+
 interface RoomScoreSheetPanelProps {
   room: RoomDto;
   piece: PieceDto;
   canEditRoom: boolean;
 }
+
 const AUDIO_CONTEXT_INIT_TOAST_ID = "room-audio-context-init";
+
 export default function RoomScoreSheetPanel({
   room,
   piece,
@@ -39,6 +42,28 @@ export default function RoomScoreSheetPanel({
   const setAudioContextReady = useMainStore(
     (state) => state.setAudioContextReady,
   );
+
+  const publishSectionPosition = (nextSectionPosition: number) => {
+    if (!canEditRoom) {
+      return;
+    }
+
+    stompService.publish(`/app/room.${room.id}/control/position`, {
+      currentSectionPosition: nextSectionPosition,
+    } satisfies RoomControlPositionRequestDto);
+  };
+
+  const publishPlayPause = useCallback(() => {
+    if (!canEditRoom) {
+      return;
+    }
+
+    stompService.publish(
+      room.playing
+        ? `/app/room.${room.id}/control/pause`
+        : `/app/room.${room.id}/control/play`,
+    );
+  }, [room.playing, room.id, canEditRoom]);
 
   const sortedSections = useMemo(
     () =>
@@ -184,6 +209,20 @@ export default function RoomScoreSheetPanel({
       }, 0);
     }
 
+    // Auto end
+    if (canEditRoom) {
+      timeoutHandles.push(
+        setTimeout(
+          () => {
+            publishPlayPause();
+          },
+          globalOffsetMs +
+            timings.map((t) => t.durationMs).reduce((acc, val) => acc + val),
+          0,
+        ),
+      );
+    }
+
     // Cleanup
     return () => {
       stopMetronome();
@@ -200,29 +239,9 @@ export default function RoomScoreSheetPanel({
     room.lastPlaySectionPosition,
     room.tempoMultiplier,
     setSectionPositionOverride,
+    canEditRoom,
+    publishPlayPause,
   ]);
-
-  const publishSectionPosition = (nextSectionPosition: number) => {
-    if (!canEditRoom) {
-      return;
-    }
-
-    stompService.publish(`/app/room.${room.id}/control/position`, {
-      currentSectionPosition: nextSectionPosition,
-    } satisfies RoomControlPositionRequestDto);
-  };
-
-  const publishPlayPause = () => {
-    if (!canEditRoom) {
-      return;
-    }
-
-    stompService.publish(
-      room.playing
-        ? `/app/room.${room.id}/control/pause`
-        : `/app/room.${room.id}/control/play`,
-    );
-  };
 
   return (
     <Card className="flex min-h-0 flex-1 flex-col">

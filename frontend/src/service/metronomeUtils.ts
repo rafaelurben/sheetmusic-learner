@@ -37,15 +37,16 @@ export function calculateSectionTimings(
   let totalOffsetMs = 0;
 
   for (const section of sections) {
-    items.push({
-      offsetMs: totalOffsetMs,
-      sectionId: section.id,
-      sectionPosition: section.position,
-    });
     const durationMs =
       section.barCount *
       section.timeSignatureNumerator *
       (60_000 / section.bpm / tempoMultiplier);
+    items.push({
+      durationMs: durationMs,
+      offsetMs: totalOffsetMs,
+      sectionId: section.id,
+      sectionPosition: section.position,
+    });
     totalOffsetMs += durationMs;
   }
 
