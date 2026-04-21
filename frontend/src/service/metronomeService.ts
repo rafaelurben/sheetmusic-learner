@@ -32,6 +32,16 @@ class MetronomeService {
     Object.entries(SOUND_FILES).forEach(async ([name, url]) => {
       this.soundsMap[name as SoundName] = await this.loadSound(url);
     });
+
+    // Fix for iOS/iPadOS not playing if mute switch is on
+    if (
+      /iP(ad|od|hone)/i.test(window.navigator.userAgent) &&
+      "audioSession" in navigator
+    ) {
+      console.log("Applying iOS fix for audio playback");
+      // @ts-expect-error - audioSession is not yet in TypeScript lib.dom.d.ts
+      navigator.audioSession.type = "playback";
+    }
   }
 
   private async loadSound(url: string): Promise<AudioBuffer> {
