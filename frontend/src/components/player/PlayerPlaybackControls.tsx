@@ -2,6 +2,7 @@
  * (C) 2026. - Rafael Urben
  */
 import {
+  ChevronFirstIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   CogIcon,
@@ -59,33 +60,40 @@ export default function PlayerPlaybackControls({
     currentSection.position == lastSection.position;
 
   return (
-    <div className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center gap-3">
-      {!readonly && (
-        <Button
-          variant="outline"
-          size="icon"
-          disabled={isPreviousDisabled}
-          onClick={() => {
-            if (currentSection) onSectionChange(currentSection.position - 1);
-          }}
-          className="col-start-1"
-        >
-          <ChevronLeftIcon />
-        </Button>
-      )}
+    <div className="grid grid-cols-[auto_auto_auto_1fr_auto_auto] items-center gap-3">
+      <Button
+        variant="outline"
+        size="icon"
+        disabled={readonly || !currentSection || currentSection.position === 0}
+        onClick={() => {
+          if (currentSection) onSectionChange(0);
+        }}
+      >
+        <ChevronFirstIcon />
+      </Button>
 
-      {!readonly && (
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={playing ? onPause : onPlay}
-          className="col-start-2"
-        >
-          {playing ? <PauseIcon /> : <PlayIcon />}
-        </Button>
-      )}
+      <Button
+        variant="outline"
+        size="icon"
+        disabled={readonly || isPreviousDisabled}
+        onClick={() => {
+          if (currentSection) onSectionChange(currentSection.position - 1);
+        }}
+      >
+        <ChevronLeftIcon />
+      </Button>
 
-      <div className="text-center text-sm text-muted-foreground col-start-3">
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={playing ? onPause : onPlay}
+        className="col-start-3"
+        disabled={readonly}
+      >
+        {playing ? <PauseIcon /> : <PlayIcon />}
+      </Button>
+
+      <div className="text-center text-sm text-muted-foreground">
         {sectionPositionText}
       </div>
 
@@ -95,7 +103,6 @@ export default function PlayerPlaybackControls({
             variant="outline"
             size="icon"
             aria-label="Open player controls"
-            className="col-start-4"
           >
             <CogIcon />
           </Button>
@@ -126,19 +133,17 @@ export default function PlayerPlaybackControls({
         </PopoverContent>
       </Popover>
 
-      {!readonly && (
-        <Button
-          variant="outline"
-          size="icon"
-          disabled={isNextDisabled}
-          onClick={() => {
-            if (currentSection) onSectionChange(currentSection.position + 1);
-          }}
-          className="col-start-5"
-        >
-          <ChevronRightIcon />
-        </Button>
-      )}
+      <Button
+        variant="outline"
+        size="icon"
+        disabled={readonly || isNextDisabled}
+        onClick={() => {
+          if (currentSection) onSectionChange(currentSection.position + 1);
+        }}
+        className="col-start-6"
+      >
+        <ChevronRightIcon />
+      </Button>
     </div>
   );
 }
