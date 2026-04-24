@@ -4,7 +4,12 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import type { ScoreSheetDto } from "@/api/generated/openapi";
 import { Button } from "@/shadcn/components/ui/button.tsx";
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import {
+  CircleCheckIcon,
+  CircleIcon,
+  PencilIcon,
+  Trash2Icon,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 type DragCorner = "top-left" | "bottom-right";
@@ -18,7 +23,10 @@ interface SectionCoordinates {
 
 interface PieceScoreSheetItemProps {
   scoreSheet: ScoreSheetDto;
-  canEditActions: boolean;
+  showEditDeleteActions: boolean;
+  showSelectActions: boolean;
+  isSelected: boolean;
+  onSelect: () => void;
   sectionOverlayCoordinates: SectionCoordinates | null;
   onSectionOverlayCoordinatesChange: (nextOverlay: SectionCoordinates) => void;
   onRename: (scoreSheetId: string, currentTitle: string) => void;
@@ -31,7 +39,10 @@ function clamp01(value: number): number {
 
 export default function PieceScoreSheetItem({
   scoreSheet,
-  canEditActions,
+  showEditDeleteActions,
+  showSelectActions,
+  isSelected,
+  onSelect,
   sectionOverlayCoordinates,
   onSectionOverlayCoordinatesChange,
   onRename,
@@ -87,7 +98,7 @@ export default function PieceScoreSheetItem({
   ]);
 
   return (
-    <div className="space-y-2 rounded-md border p-3">
+    <div className="space-y-2 rounded-md shadow-sm border-2 p-3 bg-card text-card-foreground flex flex-col">
       <div className="flex justify-center">
         <div ref={imageWrapperRef} className="relative inline-block">
           <img
@@ -138,9 +149,9 @@ export default function PieceScoreSheetItem({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 mt-auto">
         <div className="text-sm font-medium">{scoreSheet.title}</div>
-        {canEditActions && (
+        {showEditDeleteActions && (
           <div className="flex items-center gap-1">
             <Button
               variant="ghost"
@@ -163,6 +174,16 @@ export default function PieceScoreSheetItem({
               <Trash2Icon className="size-4" />
             </Button>
           </div>
+        )}
+        {showSelectActions && (
+          <Button
+            variant={isSelected ? "default" : "outline"}
+            size="icon-xs"
+            disabled={isSelected}
+            onClick={onSelect}
+          >
+            {isSelected ? <CircleCheckIcon /> : <CircleIcon />}
+          </Button>
         )}
       </div>
     </div>

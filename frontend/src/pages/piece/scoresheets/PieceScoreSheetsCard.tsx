@@ -21,6 +21,7 @@ import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import { Switch } from "@/shadcn/components/ui/switch.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
+import { ScrollArea } from "@/shadcn/components/ui/scroll-area.tsx";
 
 interface PieceScoreSheetsCardProps {
   scoreSheets: ScoreSheetDto[];
@@ -91,7 +92,7 @@ export default function PieceScoreSheetsCard({
     canEdit && (isEditMode || scoreSheets.length === 0);
 
   return (
-    <Card className="gap-2">
+    <Card className="gap-2 @container">
       <CardHeader>
         <CardTitle>Score sheets</CardTitle>
         {canEdit && scoreSheets.length > 0 && (
@@ -130,42 +131,57 @@ export default function PieceScoreSheetsCard({
             )}
           </div>
         ) : (
-          <div className="grid gap-3 pr-1 sm:grid-cols-2">
-            {scoreSheets.map((scoreSheet) => (
-              <PieceScoreSheetItem
-                key={scoreSheet.id}
-                scoreSheet={scoreSheet}
-                canEditActions={canEdit && isEditMode && !isSectionEditing}
-                sectionOverlayCoordinates={
-                  sectionForm && scoreSheet.id === activeSectionScoreSheetId
-                    ? {
-                        x1: sectionForm.posX1,
-                        y1: sectionForm.posY1,
-                        x2: sectionForm.posX2,
-                        y2: sectionForm.posY2,
+          <ScrollArea className="h-[60vh]">
+            <div className="grid gap-3 pr-1 grid-cols-1 @sm:grid-cols-2 @2xl:grid-cols-3">
+              {scoreSheets.map((scoreSheet) => (
+                <PieceScoreSheetItem
+                  key={scoreSheet.id}
+                  scoreSheet={scoreSheet}
+                  showEditDeleteActions={
+                    canEdit && isEditMode && !isSectionEditing
+                  }
+                  showSelectActions={isSectionEditing}
+                  isSelected={scoreSheet.id === activeSectionScoreSheetId}
+                  onSelect={() => {
+                    setSectionForm((currentSectionForm) => {
+                      if (!currentSectionForm) return null;
+                      return {
+                        ...currentSectionForm,
+                        scoreSheetId: scoreSheet.id,
+                      };
+                    });
+                  }}
+                  sectionOverlayCoordinates={
+                    sectionForm && scoreSheet.id === activeSectionScoreSheetId
+                      ? {
+                          x1: sectionForm.posX1,
+                          y1: sectionForm.posY1,
+                          x2: sectionForm.posX2,
+                          y2: sectionForm.posY2,
+                        }
+                      : null
+                  }
+                  onSectionOverlayCoordinatesChange={(nextOverlay) => {
+                    setSectionForm((currentSectionForm) => {
+                      if (currentSectionForm?.scoreSheetId !== scoreSheet.id) {
+                        return currentSectionForm;
                       }
-                    : null
-                }
-                onSectionOverlayCoordinatesChange={(nextOverlay) => {
-                  setSectionForm((currentSectionForm) => {
-                    if (currentSectionForm?.scoreSheetId !== scoreSheet.id) {
-                      return currentSectionForm;
-                    }
 
-                    return {
-                      ...currentSectionForm,
-                      posX1: nextOverlay.x1,
-                      posY1: nextOverlay.y1,
-                      posX2: nextOverlay.x2,
-                      posY2: nextOverlay.y2,
-                    };
-                  });
-                }}
-                onRename={handleRenameScoreSheet}
-                onDelete={handleConfirmDeleteScoreSheet}
-              />
-            ))}
-          </div>
+                      return {
+                        ...currentSectionForm,
+                        posX1: nextOverlay.x1,
+                        posY1: nextOverlay.y1,
+                        posX2: nextOverlay.x2,
+                        posY2: nextOverlay.y2,
+                      };
+                    });
+                  }}
+                  onRename={handleRenameScoreSheet}
+                  onDelete={handleConfirmDeleteScoreSheet}
+                />
+              ))}
+            </div>
+          </ScrollArea>
         )}
       </CardContent>
 

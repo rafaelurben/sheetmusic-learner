@@ -3,7 +3,6 @@
  */
 import {
   Card,
-  CardAction,
   CardContent,
   CardFooter,
   CardHeader,
@@ -13,7 +12,7 @@ import { Button } from "@/shadcn/components/ui/button.tsx";
 import type { SectionDto } from "@/api/generated/openapi";
 import type PieceSectionAddRequestDto from "@/interfaces/async/request/piece/PieceSectionAddRequestDto.ts";
 import type PieceSectionUpdateRequestDto from "@/interfaces/async/request/piece/PieceSectionUpdateRequestDto.ts";
-import { PlusIcon, SquarePlusIcon } from "lucide-react";
+import { SquarePlusIcon } from "lucide-react";
 import type { DragEvent } from "react";
 import { useState } from "react";
 import PieceSectionItem from "@/pages/piece/sections/PieceSectionItem.tsx";
@@ -24,6 +23,7 @@ import {
 } from "@/pages/piece/sections/PieceSectionFormUtils.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import { stompPublishingService } from "@/service/stompPublishingService.ts";
+import { ScrollArea } from "@/shadcn/components/ui/scroll-area.tsx";
 
 interface PieceSectionsCardProps {
   sections: SectionDto[];
@@ -182,101 +182,98 @@ export default function PieceSectionsCard({
     <Card className="gap-2">
       <CardHeader>
         <CardTitle>Sections</CardTitle>
-        {canEdit && (
-          <CardAction>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={startCreating}
-              disabled={sectionForm !== null}
-            >
-              <PlusIcon />
-            </Button>
-          </CardAction>
-        )}
       </CardHeader>
-      <CardContent className="space-y-1.5 px-3">
-        {sections.length === 0 && (
-          <div className="text-sm text-muted-foreground">
-            No sections available.
+      <CardContent className="px-3">
+        <ScrollArea className="h-[75vh]">
+          <div className="flex flex-col gap-1.5">
+            {sections.length === 0 && (
+              <div className="flex h-full min-h-60 flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed text-sm text-muted-foreground">
+                <span>No sections available.</span>
+                {canEdit && (
+                  <Button
+                    className="gap-2"
+                    onClick={startCreating}
+                    disabled={sectionForm !== null}
+                  >
+                    <SquarePlusIcon className="size-4" />
+                    Add section
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {sortedSections.map((section) => (
+              <PieceSectionItem
+                key={section.id}
+                section={section}
+                canEdit={canEdit}
+                isEditing={editingSectionId === section.id}
+                sectionForm={sectionForm}
+                isDraggable={canReorder}
+                isDragging={draggedSectionId === section.id}
+                isDropTarget={dropTarget?.sectionId === section.id}
+                onDragStart={() => {
+                  handleDragStart(section);
+                }}
+                onDragEnd={() => {
+                  globalThis.setTimeout(clearDragState, 0);
+                }}
+                onDragOver={(event) => {
+                  handleDragOver(section, event);
+                }}
+                onDrop={(event) => {
+                  handleDrop(section, event);
+                }}
+                scoreSheets={piece.scoreSheets
+                  .slice()
+                  .sort((left, right) => left.position - right.position)}
+                setSectionForm={setSectionForm}
+                onStartEdit={() => {
+                  setIsCreating(false);
+                  setEditingSectionId(section.id);
+                  setSectionForm({
+                    position: section.position,
+                    name: section.name,
+                    timeSignatureNumerator: section.timeSignatureNumerator,
+                    timeSignatureDenominator: section.timeSignatureDenominator,
+                    barCount: section.barCount,
+                    bpm: section.bpm,
+                    scoreSheetId:
+                      section.scoreSheetId ?? UNASSIGNED_SCORE_SHEET_VALUE,
+                    posX1: section.posX1,
+                    posY1: section.posY1,
+                    posX2: section.posX2,
+                    posY2: section.posY2,
+                  });
+                }}
+                onCancelEdit={() => {
+                  clearEditingSectionId();
+                  setSectionForm(null);
+                  setIsCreating(false);
+                }}
+              />
+            ))}
+
+            {isCreating && sectionForm && newSectionDraft && (
+              <PieceSectionItem
+                section={newSectionDraft}
+                canEdit={canEdit}
+                isEditing
+                isNewSection
+                sectionForm={sectionForm}
+                scoreSheets={piece.scoreSheets
+                  .slice()
+                  .sort((left, right) => left.position - right.position)}
+                setSectionForm={setSectionForm}
+                onSaveCreate={handleSaveNewSection}
+                onCancelEdit={() => {
+                  setSectionForm(null);
+                  setIsCreating(false);
+                }}
+              />
+            )}
           </div>
-        )}
-
-        {sortedSections.map((section) => (
-          <PieceSectionItem
-            key={section.id}
-            section={section}
-            canEdit={canEdit}
-            isEditing={editingSectionId === section.id}
-            sectionForm={sectionForm}
-            isDraggable={canReorder}
-            isDragging={draggedSectionId === section.id}
-            isDropTarget={dropTarget?.sectionId === section.id}
-            onDragStart={() => {
-              handleDragStart(section);
-            }}
-            onDragEnd={() => {
-              globalThis.setTimeout(clearDragState, 0);
-            }}
-            onDragOver={(event) => {
-              handleDragOver(section, event);
-            }}
-            onDrop={(event) => {
-              handleDrop(section, event);
-            }}
-            scoreSheets={piece.scoreSheets
-              .slice()
-              .sort((left, right) => left.position - right.position)}
-            setSectionForm={setSectionForm}
-            onStartEdit={(selectedSection) => {
-              if (selectedSection.id) {
-                setIsCreating(false);
-                setEditingSectionId(selectedSection.id);
-                setSectionForm({
-                  position: selectedSection.position,
-                  name: selectedSection.name,
-                  timeSignatureNumerator:
-                    selectedSection.timeSignatureNumerator,
-                  timeSignatureDenominator:
-                    selectedSection.timeSignatureDenominator,
-                  barCount: selectedSection.barCount,
-                  bpm: selectedSection.bpm,
-                  scoreSheetId:
-                    selectedSection.scoreSheetId ??
-                    UNASSIGNED_SCORE_SHEET_VALUE,
-                  posX1: selectedSection.posX1,
-                  posY1: selectedSection.posY1,
-                  posX2: selectedSection.posX2,
-                  posY2: selectedSection.posY2,
-                });
-              }
-            }}
-            onCancelEdit={() => {
-              clearEditingSectionId();
-              setSectionForm(null);
-              setIsCreating(false);
-            }}
-          />
-        ))}
-
-        {isCreating && sectionForm && newSectionDraft && (
-          <PieceSectionItem
-            section={newSectionDraft}
-            canEdit={canEdit}
-            isEditing
-            isNewSection
-            sectionForm={sectionForm}
-            scoreSheets={piece.scoreSheets
-              .slice()
-              .sort((left, right) => left.position - right.position)}
-            setSectionForm={setSectionForm}
-            onSaveCreate={handleSaveNewSection}
-            onCancelEdit={() => {
-              setSectionForm(null);
-              setIsCreating(false);
-            }}
-          />
-        )}
+        </ScrollArea>
       </CardContent>
       {canEdit && (
         <CardFooter>

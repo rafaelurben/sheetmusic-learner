@@ -195,7 +195,7 @@ export default function AppAuthenticated() {
             />
             <AppBreadcrumbs />
           </header>
-          <main className="flex-1 p-4">
+          <main className="flex-1 p-1 md:p-2 lg:p-3">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/rooms/dummy" element={<DummyRoom />} />

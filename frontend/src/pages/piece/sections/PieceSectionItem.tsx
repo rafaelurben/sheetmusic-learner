@@ -49,7 +49,7 @@ interface PieceSectionItemProps {
   onDragOver?: (event: DragEvent<HTMLDivElement>) => void;
   onDrop?: (event: DragEvent<HTMLDivElement>) => void;
   onSaveCreate?: (form: SectionFormState) => void;
-  onStartEdit?: (section: SectionDto) => void;
+  onStartEdit?: () => void;
   onCancelEdit: () => void;
 }
 
@@ -314,7 +314,7 @@ export default function PieceSectionItem({
                     variant="outline"
                     size="icon-sm"
                     onClick={() => {
-                      onStartEdit?.(section);
+                      onStartEdit?.();
                     }}
                   >
                     <PencilIcon />
