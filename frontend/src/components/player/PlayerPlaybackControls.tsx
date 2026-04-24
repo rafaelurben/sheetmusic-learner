@@ -4,16 +4,26 @@
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
+  CogIcon,
   PauseIcon,
   PlayIcon,
 } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/shadcn/components/ui/popover.tsx";
 import { Slider } from "@/shadcn/components/ui/slider.tsx";
 import type { SectionDto } from "@/api/generated/openapi";
 
 interface PlayerPlaybackControlsProps {
   playing: boolean;
+  readonly?: boolean;
   tempoMultiplier: number;
   sections: SectionDto[];
   currentSection: SectionDto | undefined;
@@ -25,6 +35,7 @@ interface PlayerPlaybackControlsProps {
 
 export default function PlayerPlaybackControls({
   playing,
+  readonly = false,
   tempoMultiplier,
   sections,
   currentSection,
@@ -33,29 +44,23 @@ export default function PlayerPlaybackControls({
   onTempoMultiplierChange,
   onSectionChange,
 }: Readonly<PlayerPlaybackControlsProps>) {
-  if (sections.length <= 0) {
-    return (
-      <div className="flex flex-col gap-4 border-t pt-4">
-        <div className="text-center text-sm text-muted-foreground">
-          No sections available!
-        </div>
-      </div>
-    );
+  const lastSection = sections.at(-1);
+
+  let sectionPositionText = "No sections available!";
+  if (lastSection && currentSection) {
+    sectionPositionText = `Section ${String(currentSection.position + 1)} of ${String(lastSection.position + 1)} (${currentSection.name})`;
+  } else if (lastSection) {
+    sectionPositionText = "Unknown section";
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const lastSection = sections.at(-1)!;
-
-  const sectionPositionText = currentSection
-    ? `Section ${String(currentSection.position + 1)} of ${String(lastSection.position + 1)} (${currentSection.name})`
-    : "Unknown section";
   const isPreviousDisabled = !currentSection || currentSection.position == 0;
   const isNextDisabled =
-    !currentSection || currentSection.position == lastSection.position;
+    !currentSection ||
+    !lastSection ||
+    currentSection.position == lastSection.position;
 
   return (
-    <div className="flex flex-col gap-4 border-t pt-4">
-      <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
+    <div className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center gap-3">
+      {!readonly && (
         <Button
           variant="outline"
           size="icon"
@@ -63,22 +68,65 @@ export default function PlayerPlaybackControls({
           onClick={() => {
             if (currentSection) onSectionChange(currentSection.position - 1);
           }}
+          className="col-start-1"
         >
           <ChevronLeftIcon />
         </Button>
+      )}
 
+      {!readonly && (
         <Button
           variant="outline"
           size="icon"
           onClick={playing ? onPause : onPlay}
+          className="col-start-2"
         >
           {playing ? <PauseIcon /> : <PlayIcon />}
         </Button>
+      )}
 
-        <div className="text-center text-sm text-muted-foreground">
-          {sectionPositionText}
-        </div>
+      <div className="text-center text-sm text-muted-foreground col-start-3">
+        {sectionPositionText}
+      </div>
 
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Open player controls"
+            className="col-start-4"
+          >
+            <CogIcon />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-80">
+          <PopoverHeader>
+            <PopoverTitle>Playback controls</PopoverTitle>
+            <PopoverDescription>Readonly during playback.</PopoverDescription>
+          </PopoverHeader>
+
+          <div className="mt-4 flex flex-col gap-3">
+            <Label className="text-sm font-medium">Speed</Label>
+            <Slider
+              value={[tempoMultiplier]}
+              onValueChange={(value) => {
+                onTempoMultiplierChange(value[0]);
+              }}
+              min={0.1}
+              max={4}
+              step={0.01}
+              disabled={playing || readonly}
+              className="w-full"
+            />
+            <div className="text-right text-sm text-muted-foreground">
+              {tempoMultiplier.toFixed(2)}x
+            </div>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+      {!readonly && (
         <Button
           variant="outline"
           size="icon"
@@ -86,28 +134,11 @@ export default function PlayerPlaybackControls({
           onClick={() => {
             if (currentSection) onSectionChange(currentSection.position + 1);
           }}
+          className="col-start-5"
         >
           <ChevronRightIcon />
         </Button>
-      </div>
-
-      <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-4 sm:flex-row sm:items-center">
-        <Label className="text-sm font-medium sm:w-28">Tempo</Label>
-        <Slider
-          value={[tempoMultiplier]}
-          onValueChange={(value) => {
-            onTempoMultiplierChange(value[0]);
-          }}
-          min={0.1}
-          max={4}
-          step={0.01}
-          disabled={playing}
-          className="w-full"
-        />
-        <div className="w-16 text-right text-sm text-muted-foreground">
-          {tempoMultiplier.toFixed(2)}x
-        </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -59,18 +59,17 @@ export default function Player({
           currentSectionId={currentSection?.id}
         />
 
-        {showControls && (
-          <PlayerPlaybackControls
-            sections={sortedSections}
-            currentSection={currentSection}
-            playing={playbackState.playing}
-            tempoMultiplier={playbackState.tempoMultiplier}
-            onPlay={onPlay}
-            onPause={onPause}
-            onTempoMultiplierChange={onTempoMultiplierChange}
-            onSectionChange={onSectionChange}
-          />
-        )}
+        <PlayerPlaybackControls
+          sections={sortedSections}
+          currentSection={currentSection}
+          playing={playbackState.playing}
+          readonly={!showControls}
+          tempoMultiplier={playbackState.tempoMultiplier}
+          onPlay={onPlay}
+          onPause={onPause}
+          onTempoMultiplierChange={onTempoMultiplierChange}
+          onSectionChange={onSectionChange}
+        />
 
         <PlayerMetronome
           playing={playbackState.playing}
