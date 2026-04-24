@@ -61,6 +61,11 @@
   - Improved toast persistence
   - Code cleanup and some refactoring
   - Added single-user player to piece page
+- 2026-04-24 - 2026-04-25:
+  - Player: Move tempo multiplier into popover menu
+  - Player: Add back to beginning button
+  - Player: Add keyboard controls
+  - UI improvements
 
 ## Project milestones
 
