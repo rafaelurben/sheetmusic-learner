@@ -12,7 +12,6 @@ import {
 } from "@/shadcn/components/ui/dialog.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
 import { Input } from "@/shadcn/components/ui/input.tsx";
-import { Switch } from "@/shadcn/components/ui/switch.tsx";
 import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import type { PieceDto } from "@/api/generated/openapi";
 
@@ -34,7 +33,6 @@ export default function EditPieceDialog({
     description: piece.description,
     difficulty: piece.difficulty,
     bpmRange: piece.bpmRange,
-    isPublic: piece.isPublic,
   });
 
   useEffect(() => {
@@ -47,7 +45,6 @@ export default function EditPieceDialog({
         description: piece.description,
         difficulty: piece.difficulty,
         bpmRange: piece.bpmRange,
-        isPublic: piece.isPublic,
       });
     }
   }, [open, piece]);
@@ -82,7 +79,7 @@ export default function EditPieceDialog({
       description: trimmedValues.description,
       difficulty: trimmedValues.difficulty,
       bpmRange: trimmedValues.bpmRange,
-      isPublic: trimmedValues.isPublic,
+      isPublic: piece.isPublic,
     });
   };
 
@@ -95,7 +92,6 @@ export default function EditPieceDialog({
       description: piece.description,
       difficulty: piece.difficulty,
       bpmRange: piece.bpmRange,
-      isPublic: piece.isPublic,
     });
   };
 
@@ -174,19 +170,6 @@ export default function EditPieceDialog({
                 setValues((current) => ({
                   ...current,
                   bpmRange: e.target.value,
-                }));
-              }}
-            />
-          </div>
-          <div className="flex items-center justify-between rounded-md border p-3">
-            <Label htmlFor="piece-public">Public Piece</Label>
-            <Switch
-              id="piece-public"
-              checked={values.isPublic}
-              onCheckedChange={(checked) => {
-                setValues((current) => ({
-                  ...current,
-                  isPublic: checked,
                 }));
               }}
             />

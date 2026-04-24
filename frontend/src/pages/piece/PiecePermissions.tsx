@@ -15,6 +15,7 @@ import type { PiecePermissionRemoveRequestDto } from "@/interfaces/async/request
 import { stompPublishingService } from "@/service/stompPublishingService.ts";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Input } from "@/shadcn/components/ui/input.tsx";
+import { Label } from "@/shadcn/components/ui/label.tsx";
 import {
   Select,
   SelectContent,
@@ -22,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/components/ui/select.tsx";
+import { Switch } from "@/shadcn/components/ui/switch.tsx";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import { SearchIcon } from "lucide-react";
@@ -38,6 +40,7 @@ export default function PiecePermissions({
   isPublic,
 }: Readonly<PiecePermissionsCardProps>) {
   const currentUserId = useMainStore((state) => state.currentUser?.id);
+  const piece = usePieceStore((state) => state.piece);
   const pieceId = usePieceStore((state) => state.piece.id);
   const usersApi = useUsersApi();
 
@@ -134,13 +137,55 @@ export default function PiecePermissions({
     }
   };
 
+  const handlePublicChange = (checked: boolean) => {
+    if (!isOwner) {
+      return;
+    }
+
+    try {
+      stompPublishingService.pieceUpdate(pieceId, {
+        title: piece.title,
+        composer: piece.composer,
+        year: piece.year,
+        description: piece.description,
+        difficulty: piece.difficulty,
+        bpmRange: piece.bpmRange,
+        isPublic: checked,
+      });
+    } catch (error) {
+      console.error("Failed to publish visibility update request:", error);
+      toast.error("Failed to send visibility update request.");
+    }
+  };
+
   return (
     <div className="space-y-2 px-4">
-      {isPublic && (
-        <div className="text-sm text-muted-foreground">
-          This piece is public and can be read by anyone.
-        </div>
-      )}
+      <div
+        className={`flex items-center justify-between rounded-md border p-3 ${
+          isPublic
+            ? "border-amber-300 bg-amber-50 text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200"
+            : "border-green-300 bg-green-50 text-green-900 dark:border-green-700 dark:bg-green-950/40 dark:text-green-200"
+        }`}
+      >
+        <Label htmlFor="piece-public">
+          {isPublic ? (
+            <span>
+              Public <i>(readable by anyone)</i>
+            </span>
+          ) : (
+            <span>
+              Private <i>(readable by people below)</i>
+            </span>
+          )}
+        </Label>
+        {isOwner && (
+          <Switch
+            id="piece-public"
+            checked={isPublic}
+            onCheckedChange={handlePublicChange}
+          />
+        )}
+      </div>
       {isOwner && (
         <div className="space-y-3 rounded-md border p-3">
           <div className="text-sm font-medium">Add member</div>

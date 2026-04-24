@@ -282,9 +282,13 @@ public class PieceServiceImpl implements PieceService {
   public void updatePiece(
       final User user, final UUID pieceId, final PieceUpdateRequestDto updateRequestDto) {
     Piece piece = getPieceEntityById(pieceId);
-    ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
 
     boolean wasPublic = piece.isPublic();
+    if (wasPublic != Boolean.TRUE.equals(updateRequestDto.isPublic())) {
+      ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER));
+    } else {
+      ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
+    }
 
     pieceMapper.updateEntityFromUpdateRequest(piece, updateRequestDto);
     piece = pieceRepository.save(piece);
