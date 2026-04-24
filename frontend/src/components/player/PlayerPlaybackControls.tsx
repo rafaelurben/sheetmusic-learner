@@ -21,6 +21,7 @@ import {
 } from "@/shadcn/components/ui/popover.tsx";
 import { Slider } from "@/shadcn/components/ui/slider.tsx";
 import type { SectionDto } from "@/api/generated/openapi";
+import { useEffect } from "react";
 
 interface PlayerPlaybackControlsProps {
   playing: boolean;
@@ -58,6 +59,60 @@ export default function PlayerPlaybackControls({
     !currentSection ||
     !lastSection ||
     currentSection.position == lastSection.position;
+
+  // Keyboard controls
+  useEffect(() => {
+    if (readonly) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLButtonElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        // Don't interfere with typing in input fields or navigation
+        return;
+      }
+
+      switch (event.key) {
+        case " ":
+          event.preventDefault();
+          if (playing) {
+            onPause();
+          } else {
+            onPlay();
+          }
+          break;
+        case "ArrowLeft":
+          if (!isPreviousDisabled) {
+            onSectionChange(currentSection.position - 1);
+          }
+          break;
+        case "ArrowRight":
+          if (!isNextDisabled) {
+            onSectionChange(currentSection.position + 1);
+          }
+          break;
+        case "r":
+          onSectionChange(0);
+          break;
+      }
+    };
+
+    globalThis.addEventListener("keydown", handleKeyDown);
+    return () => {
+      globalThis.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [
+    currentSection,
+    isNextDisabled,
+    isPreviousDisabled,
+    onPause,
+    onPlay,
+    onSectionChange,
+    playing,
+    readonly,
+  ]);
 
   return (
     <div className="grid grid-cols-[auto_auto_auto_1fr_auto_auto] items-center gap-3">
