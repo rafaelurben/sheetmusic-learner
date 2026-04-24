@@ -5,6 +5,7 @@ import {
   Card,
   CardAction,
   CardContent,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/shadcn/components/ui/card.tsx";
@@ -12,7 +13,7 @@ import { Button } from "@/shadcn/components/ui/button.tsx";
 import type { SectionDto } from "@/api/generated/openapi";
 import type PieceSectionAddRequestDto from "@/interfaces/async/request/piece/PieceSectionAddRequestDto.ts";
 import type PieceSectionUpdateRequestDto from "@/interfaces/async/request/piece/PieceSectionUpdateRequestDto.ts";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, SquarePlusIcon } from "lucide-react";
 import type { DragEvent } from "react";
 import { useState } from "react";
 import PieceSectionItem from "@/pages/piece/sections/PieceSectionItem.tsx";
@@ -151,6 +152,12 @@ export default function PieceSectionsCard({
     setIsCreating(false);
   };
 
+  const startCreating = () => {
+    setIsCreating(true);
+    clearEditingSectionId();
+    setSectionForm(createDefaultForm());
+  };
+
   const newSectionDraft: SectionDto | null = sectionForm
     ? {
         id: "__new__",
@@ -172,7 +179,7 @@ export default function PieceSectionsCard({
     : null;
 
   return (
-    <Card>
+    <Card className="gap-2">
       <CardHeader>
         <CardTitle>Sections</CardTitle>
         {canEdit && (
@@ -180,11 +187,7 @@ export default function PieceSectionsCard({
             <Button
               variant="ghost"
               size="icon-sm"
-              onClick={() => {
-                setIsCreating(true);
-                clearEditingSectionId();
-                setSectionForm(createDefaultForm());
-              }}
+              onClick={startCreating}
               disabled={sectionForm !== null}
             >
               <PlusIcon />
@@ -192,30 +195,11 @@ export default function PieceSectionsCard({
           </CardAction>
         )}
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-1.5 px-3">
         {sections.length === 0 && (
           <div className="text-sm text-muted-foreground">
             No sections available.
           </div>
-        )}
-
-        {isCreating && sectionForm && newSectionDraft && (
-          <PieceSectionItem
-            section={newSectionDraft}
-            canEdit={canEdit}
-            isEditing
-            isNewSection
-            sectionForm={sectionForm}
-            scoreSheets={piece.scoreSheets
-              .slice()
-              .sort((left, right) => left.position - right.position)}
-            setSectionForm={setSectionForm}
-            onSaveCreate={handleSaveNewSection}
-            onCancelEdit={() => {
-              setSectionForm(null);
-              setIsCreating(false);
-            }}
-          />
         )}
 
         {sortedSections.map((section) => (
@@ -274,7 +258,38 @@ export default function PieceSectionsCard({
             }}
           />
         ))}
+
+        {isCreating && sectionForm && newSectionDraft && (
+          <PieceSectionItem
+            section={newSectionDraft}
+            canEdit={canEdit}
+            isEditing
+            isNewSection
+            sectionForm={sectionForm}
+            scoreSheets={piece.scoreSheets
+              .slice()
+              .sort((left, right) => left.position - right.position)}
+            setSectionForm={setSectionForm}
+            onSaveCreate={handleSaveNewSection}
+            onCancelEdit={() => {
+              setSectionForm(null);
+              setIsCreating(false);
+            }}
+          />
+        )}
       </CardContent>
+      {canEdit && (
+        <CardFooter>
+          <Button
+            className="w-full gap-2 mt-3"
+            disabled={sectionForm !== null}
+            onClick={startCreating}
+          >
+            <SquarePlusIcon className="size-4" />
+            Add section
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 }

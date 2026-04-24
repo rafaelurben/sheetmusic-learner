@@ -141,13 +141,14 @@ export default function PieceSectionItem({
         "border-2 transition-colors",
         isDragging && "bg-muted/50 opacity-75",
         isDropTarget && "border-primary bg-primary/5 ring-1 ring-primary/20",
+        "py-4",
       )}
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2 px-5">
         {canEdit && isEditing && sectionForm ? (
-          <div className="space-y-3">
+          <>
             <div className="flex items-center justify-between gap-2">
               <div className="flex min-w-0 flex-1 items-center gap-2">
                 <div className="text-xs text-muted-foreground">
@@ -160,6 +161,7 @@ export default function PieceSectionItem({
                   }}
                   placeholder={isNewSection ? "Section" : "Section name"}
                   className="h-8"
+                  autoFocus={true}
                 />
               </div>
               <Select
@@ -253,9 +255,9 @@ export default function PieceSectionItem({
                 </Button>
               </div>
             </div>
-          </div>
+          </>
         ) : (
-          <div className="space-y-3">
+          <>
             <div className="flex items-center justify-between gap-2">
               <div className="flex min-w-0 items-center gap-2">
                 <div className="text-xs text-muted-foreground">
@@ -320,7 +322,7 @@ export default function PieceSectionItem({
                 </div>
               )}
             </div>
-          </div>
+          </>
         )}
       </CardContent>
     </Card>
