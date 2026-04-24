@@ -17,6 +17,7 @@ import { usePageTitle } from "@/zustand/pageTitleStore.ts";
 export default function PiecePageContainer() {
   const { id } = useParams();
   const [notFound, setNotFound] = useState(false);
+  const [notAllowed, setNotAllowed] = useState(false);
   const pieceFromMainStore = useMainStore((state) =>
     id ? state.pieces[id] : undefined,
   );
@@ -26,9 +27,7 @@ export default function PiecePageContainer() {
   const { setPiece, reset, initialLoadComplete, applyPieceEvent } =
     usePieceStore();
 
-  const pageTitle = pieceFromMainStore?.title ?? (id ? `Room #${id}` : "Room");
-
-  usePageTitle(pageTitle);
+  usePageTitle(pieceFromMainStore?.title ?? "Unknown piece");
 
   useEffect(() => {
     if (id) {
@@ -40,8 +39,12 @@ export default function PiecePageContainer() {
         })
         .catch((err: unknown) => {
           console.error(`Failed to fetch piece ${id}:`, err);
-          if (err instanceof ResponseError && err.response.status === 404) {
-            setNotFound(true);
+          if (err instanceof ResponseError) {
+            if (err.response.status === 404) {
+              setNotFound(true);
+            } else if (err.response.status === 403) {
+              setNotAllowed(true);
+            }
           }
         });
     }
@@ -70,11 +73,11 @@ export default function PiecePageContainer() {
 
   if (notFound) {
     return <div>Piece not found</div>;
-  }
-
-  if (!initialLoadComplete) {
+  } else if (notAllowed) {
+    return <div>Access denied</div>;
+  } else if (initialLoadComplete) {
+    return <PiecePage />;
+  } else {
     return <Spinner />;
   }
-
-  return <PiecePage />;
 }

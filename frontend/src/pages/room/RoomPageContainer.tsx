@@ -20,6 +20,7 @@ import type { SubscribeDestinationName } from "@/interfaces/SubscribeDestination
 export default function RoomPageContainer() {
   const { id } = useParams();
   const [notFound, setNotFound] = useState(false);
+  const [notAllowed, setNotAllowed] = useState(false);
   const roomFromMainStore = useMainStore((state) =>
     id ? state.rooms[id] : undefined,
   );
@@ -36,9 +37,7 @@ export default function RoomPageContainer() {
   const piecesApi = usePiecesApi();
   const navigate = useNavigate();
 
-  const pageTitle = roomFromMainStore?.title ?? (id ? `Room #${id}` : "Room");
-
-  usePageTitle(pageTitle);
+  usePageTitle(roomFromMainStore?.title ?? "Unknown room");
 
   // Async room store sub
   useEffect(() => {
@@ -111,6 +110,8 @@ export default function RoomPageContainer() {
           if (err instanceof ResponseError) {
             if (err.response.status === 404) {
               setNotFound(true);
+            } else if (err.response.status === 403) {
+              setNotAllowed(true);
             }
           }
         });
@@ -182,6 +183,8 @@ export default function RoomPageContainer() {
 
   if (notFound) {
     return <div>Room not found</div>;
+  } else if (notAllowed) {
+    return <div>Access denied</div>;
   } else if (initialLoadComplete) {
     return <RoomPage />;
   } else {
