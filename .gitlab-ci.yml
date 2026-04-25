@@ -16,6 +16,16 @@ checks::backend:
   script:
     - mvn -B -f backend/pom.xml spotless:check
 
+checks::backend-tests:
+  stage: checks
+  image: maven:3.9.11-eclipse-temurin-25
+  cache:
+    key: maven-$CI_COMMIT_REF_SLUG
+    paths:
+      - .m2/repository
+  script:
+    - mvn -B -f backend/pom.xml test
+
 checks::frontend:
   stage: checks
   image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest

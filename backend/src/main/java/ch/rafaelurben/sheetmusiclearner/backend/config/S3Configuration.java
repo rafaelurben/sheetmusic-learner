@@ -3,6 +3,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.config;
 
 import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
@@ -15,6 +16,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 public class S3Configuration {
 
   @Bean
+  @ConditionalOnMissingBean(S3Client.class)
   public S3Client s3Client(S3ConfigurationProperties properties) {
     String endpoint = properties.getEndpointOverride();
     if (endpoint != null && !endpoint.isBlank()) {
