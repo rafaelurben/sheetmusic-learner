@@ -5,7 +5,9 @@ import java.util.UUID;
 
 public record RoomPieceChangedEvent(UUID pieceId) {
 
+  public static final String TYPE_DISCRIMINATOR = "piece-changed";
+
   public EventDto<RoomPieceChangedEvent> asDto() {
-    return new EventDto<>("piece-changed", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

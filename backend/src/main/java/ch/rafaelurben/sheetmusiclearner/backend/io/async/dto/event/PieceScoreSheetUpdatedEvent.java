@@ -6,7 +6,9 @@ import java.util.UUID;
 
 public record PieceScoreSheetUpdatedEvent(UUID scoreSheetId, ScoreSheetDto scoreSheet) {
 
+  public static final String TYPE_DISCRIMINATOR = "score-sheet-updated";
+
   public EventDto<PieceScoreSheetUpdatedEvent> asDto() {
-    return new EventDto<>("score-sheet-updated", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

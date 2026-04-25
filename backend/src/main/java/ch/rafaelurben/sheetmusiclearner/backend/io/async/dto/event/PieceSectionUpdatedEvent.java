@@ -6,7 +6,9 @@ import java.util.UUID;
 
 public record PieceSectionUpdatedEvent(UUID sectionId, SectionDto section) {
 
+  public static final String TYPE_DISCRIMINATOR = "section-updated";
+
   public EventDto<PieceSectionUpdatedEvent> asDto() {
-    return new EventDto<>("section-updated", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

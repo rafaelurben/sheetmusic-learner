@@ -5,7 +5,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.SectionDto;
 
 public record PieceSectionAddedEvent(SectionDto section) {
 
+  public static final String TYPE_DISCRIMINATOR = "section-added";
+
   public EventDto<PieceSectionAddedEvent> asDto() {
-    return new EventDto<>("section-added", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

@@ -5,7 +5,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomMetadataDto;
 
 public record GeneralRoomNowAvailableEvent(RoomMetadataDto room) {
 
+  public static final String TYPE_DISCRIMINATOR = "room-now-available";
+
   public EventDto<GeneralRoomNowAvailableEvent> asDto() {
-    return new EventDto<>("room-now-available", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

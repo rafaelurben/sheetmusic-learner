@@ -6,7 +6,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
 
 public record PiecePermissionAddedEvent(UserDto user, PermissionType permissionType) {
 
+  public static final String TYPE_DISCRIMINATOR = "permission-added";
+
   public EventDto<PiecePermissionAddedEvent> asDto() {
-    return new EventDto<>("permission-added", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

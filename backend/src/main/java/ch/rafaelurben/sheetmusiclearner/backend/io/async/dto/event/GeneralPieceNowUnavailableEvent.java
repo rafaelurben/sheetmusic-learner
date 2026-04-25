@@ -5,7 +5,9 @@ import java.util.UUID;
 
 public record GeneralPieceNowUnavailableEvent(UUID pieceId) {
 
+  public static final String TYPE_DISCRIMINATOR = "piece-now-unavailable";
+
   public EventDto<GeneralPieceNowUnavailableEvent> asDto() {
-    return new EventDto<>("piece-now-unavailable", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

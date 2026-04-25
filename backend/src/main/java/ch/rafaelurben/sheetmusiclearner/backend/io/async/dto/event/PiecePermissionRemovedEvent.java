@@ -5,7 +5,9 @@ import java.util.UUID;
 
 public record PiecePermissionRemovedEvent(UUID userId) {
 
+  public static final String TYPE_DISCRIMINATOR = "permission-removed";
+
   public EventDto<PiecePermissionRemovedEvent> asDto() {
-    return new EventDto<>("permission-removed", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

@@ -5,7 +5,9 @@ import java.util.UUID;
 
 public record PieceScoreSheetRemovedEvent(UUID scoreSheetId) {
 
+  public static final String TYPE_DISCRIMINATOR = "score-sheet-removed";
+
   public EventDto<PieceScoreSheetRemovedEvent> asDto() {
-    return new EventDto<>("score-sheet-removed", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

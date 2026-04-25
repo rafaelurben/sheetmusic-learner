@@ -5,7 +5,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceMetadataDto;
 
 public record PieceMetadataUpdatedEvent(PieceMetadataDto piece) {
 
+  public static final String TYPE_DISCRIMINATOR = "metadata-updated";
+
   public EventDto<PieceMetadataUpdatedEvent> asDto() {
-    return new EventDto<>("metadata-updated", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }
