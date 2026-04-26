@@ -1,6 +1,7 @@
 # Custom
 
 **/generated/**
+test-results/
 
 # Created by https://www.toptal.com/developers/gitignore/api/intellij+all,java,maven,react,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij+all,java,maven,react,node

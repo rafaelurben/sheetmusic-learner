@@ -26,6 +26,30 @@ checks::backend-tests:
   script:
     - mvn -B -f backend/pom.xml test
 
+checks::frontend-tests:
+  stage: checks
+  image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
+  cache:
+    key: npm-$CI_COMMIT_REF_SLUG
+    paths:
+      - frontend/.npm
+  script:
+    - cd frontend
+    - npm ci --cache .npm --prefer-offline
+    - npm run generate:openapi
+    - npm run test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - frontend/test-results/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: frontend/coverage/cobertura-coverage.xml
+    paths:
+      - frontend/test-results/
+      - frontend/coverage/
+
 checks::frontend:
   stage: checks
   image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
