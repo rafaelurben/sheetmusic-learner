@@ -5,7 +5,9 @@ import java.util.UUID;
 
 public record PieceSectionRemovedEvent(UUID sectionId) {
 
+  public static final String TYPE_DISCRIMINATOR = "section-removed";
+
   public EventDto<PieceSectionRemovedEvent> asDto() {
-    return new EventDto<>("section-removed", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

@@ -5,7 +5,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RoomMetadataDto;
 
 public record GeneralRoomMetadataUpdatedEvent(RoomMetadataDto room) {
 
+  public static final String TYPE_DISCRIMINATOR = "room-metadata-updated";
+
   public EventDto<GeneralRoomMetadataUpdatedEvent> asDto() {
-    return new EventDto<>("room-metadata-updated", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

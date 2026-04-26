@@ -5,7 +5,9 @@ import java.util.UUID;
 
 public record GeneralRoomNowUnavailableEvent(UUID roomId) {
 
+  public static final String TYPE_DISCRIMINATOR = "room-now-unavailable";
+
   public EventDto<GeneralRoomNowUnavailableEvent> asDto() {
-    return new EventDto<>("room-now-unavailable", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

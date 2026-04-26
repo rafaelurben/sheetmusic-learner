@@ -5,7 +5,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
 
 public record PieceScoreSheetAddedEvent(ScoreSheetDto scoreSheet) {
 
+  public static final String TYPE_DISCRIMINATOR = "score-sheet-added";
+
   public EventDto<PieceScoreSheetAddedEvent> asDto() {
-    return new EventDto<>("score-sheet-added", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

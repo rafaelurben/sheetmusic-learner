@@ -5,7 +5,9 @@ import java.util.UUID;
 
 public record RoomUserLeftEvent(UUID userId) {
 
+  public static final String TYPE_DISCRIMINATOR = "user-left";
+
   public EventDto<RoomUserLeftEvent> asDto() {
-    return new EventDto<>("user-left", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

@@ -8,7 +8,9 @@ import java.util.UUID;
 public record RoomChatMessageEvent(
     UUID messageId, UserDto sender, String content, Instant timestamp) {
 
+  public static final String TYPE_DISCRIMINATOR = "chat-message";
+
   public EventDto<RoomChatMessageEvent> asDto() {
-    return new EventDto<>("chat-message", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

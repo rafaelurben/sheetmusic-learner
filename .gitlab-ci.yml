@@ -6,6 +6,13 @@ stages:
 variables:
   KANIKO_IMAGE: gcr.io/kaniko-project/executor:v1.23.2-debug
 
+workflow:
+  rules:
+    # Disable merge request pipelines.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+    - when: always
+
 checks::backend:
   stage: checks
   image: maven:3.9.11-eclipse-temurin-25
@@ -15,6 +22,47 @@ checks::backend:
       - .m2/repository
   script:
     - mvn -B -f backend/pom.xml spotless:check
+
+checks::backend-tests:
+  stage: checks
+  image: maven:3.9.11-eclipse-temurin-25
+  cache:
+    key: maven-$CI_COMMIT_REF_SLUG
+    paths:
+      - .m2/repository
+  script:
+    - mvn -B -f backend/pom.xml test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - backend/target/surefire-reports/TEST-*.xml
+    paths:
+      - backend/target/surefire-reports/
+
+checks::frontend-tests:
+  stage: checks
+  image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
+  cache:
+    key: npm-$CI_COMMIT_REF_SLUG
+    paths:
+      - frontend/.npm
+  script:
+    - cd frontend
+    - npm ci --cache .npm --prefer-offline
+    - npm run generate:openapi
+    - npm run test:ci
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - frontend/test-results/junit.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: frontend/coverage/cobertura-coverage.xml
+    paths:
+      - frontend/test-results/
+      - frontend/coverage/
 
 checks::frontend:
   stage: checks

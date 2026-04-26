@@ -10,6 +10,8 @@ public record RoomPlaybackStateChangedEvent(
     Instant lastPlayTimestamp,
     float tempoMultiplier) {
 
+  public static final String TYPE_DISCRIMINATOR = "playback-state-changed";
+
   public static RoomPlaybackStateChangedEvent fromRoom(Room room) {
     return new RoomPlaybackStateChangedEvent(
         room.getPlaying(),
@@ -19,6 +21,6 @@ public record RoomPlaybackStateChangedEvent(
   }
 
   public EventDto<RoomPlaybackStateChangedEvent> asDto() {
-    return new EventDto<>("playback-state-changed", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

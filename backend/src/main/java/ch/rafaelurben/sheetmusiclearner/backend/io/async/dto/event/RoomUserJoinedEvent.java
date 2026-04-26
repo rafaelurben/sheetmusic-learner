@@ -5,7 +5,9 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
 
 public record RoomUserJoinedEvent(UserDto user) {
 
+  public static final String TYPE_DISCRIMINATOR = "user-joined";
+
   public EventDto<RoomUserJoinedEvent> asDto() {
-    return new EventDto<>("user-joined", this);
+    return new EventDto<>(TYPE_DISCRIMINATOR, this);
   }
 }

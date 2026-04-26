@@ -6,6 +6,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import java.time.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -51,6 +52,7 @@ public class SecurityConfig {
   }
 
   @Bean
+  @ConditionalOnMissingBean(JwtDecoder.class)
   public JwtDecoder jwtDecoder(RestOperations restOperations) {
     log.info("Configuring JwtDecoder with issuer URI: {}", issuerUri);
     try {
