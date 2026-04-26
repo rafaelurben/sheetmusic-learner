@@ -25,6 +25,13 @@ checks::backend-tests:
       - .m2/repository
   script:
     - mvn -B -f backend/pom.xml test
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - backend/target/surefire-reports/TEST-*.xml
+    paths:
+      - backend/target/surefire-reports/
 
 checks::frontend-tests:
   stage: checks
