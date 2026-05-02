@@ -39,5 +39,5 @@ public interface UserService {
     return getCurrentUserDto(false);
   }
 
-  UserDto getUserByEmailDto(String email);
+  UserDto getUserDtoByEmail(String email);
 }

@@ -20,6 +20,6 @@ public class UsersController implements UsersApi {
 
   @Override
   public UserDto getUserByEmail(String email) {
-    return userService.getUserByEmailDto(email);
+    return userService.getUserDtoByEmail(email);
   }
 }

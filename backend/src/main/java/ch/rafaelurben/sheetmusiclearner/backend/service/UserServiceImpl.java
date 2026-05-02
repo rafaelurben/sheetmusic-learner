@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(readOnly = true)
-  public UserDto getUserByEmailDto(String email) {
+  public UserDto getUserDtoByEmail(String email) {
     if (email == null || email.isBlank()) {
       throw new BadRequestException("Email must not be blank");
     }

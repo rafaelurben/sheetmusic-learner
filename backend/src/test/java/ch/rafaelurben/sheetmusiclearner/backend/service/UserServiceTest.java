@@ -73,19 +73,19 @@ class UserServiceTest extends BaseSpringBootTest {
   }
 
   @Test
-  void testGetUserByEmailDtoExists() {
+  void testGetUserDtoByEmailExists() {
     UUID user1Id = UUID.randomUUID();
     User user1 = TestUsers.createUser(user1Id);
 
     userRepository.save(user1);
 
-    UserDto userResult = userService.getUserByEmailDto(user1.getEmail());
+    UserDto userResult = userService.getUserDtoByEmail(user1.getEmail());
     assertEquals(user1.getId(), userResult.getId());
     assertEquals(user1.getFirstName(), userResult.getFirstName());
   }
 
   @Test
-  void testGetUserByEmailDtoDoesNotExist() {
-    assertThrows(ObjectNotFoundException.class, () -> userService.getUserByEmailDto("nonexistent"));
+  void testGetUserDtoByEmailDoesNotExist() {
+    assertThrows(ObjectNotFoundException.class, () -> userService.getUserDtoByEmail("nonexistent"));
   }
 }
