@@ -18,8 +18,7 @@ import {
   SelectValue,
 } from "@/shadcn/components/ui/select.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
-import { Button } from "@/shadcn/components/ui/button.tsx";
-import { Trash2Icon } from "lucide-react";
+import DeleteButton from "@/components/deleteButton.tsx";
 
 interface PiecePermissionCardProps {
   permission: PiecePermissionDto;
@@ -76,16 +75,14 @@ export default function PiecePermissionCard({
           </SelectContent>
         </Select>
         {editable && (
-          <Button
-            type="button"
-            size="icon"
+          <DeleteButton
+            title="Remove this user?"
+            size="normal"
             variant="outline"
-            onClick={() => {
+            action={() => {
               onRemove?.(permission.user.id);
             }}
-          >
-            <Trash2Icon className="size-4" />
-          </Button>
+          />
         )}
       </CardContent>
     </Card>

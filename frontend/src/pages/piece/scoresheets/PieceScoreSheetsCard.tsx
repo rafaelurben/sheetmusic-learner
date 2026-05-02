@@ -62,24 +62,9 @@ export default function PieceScoreSheetsCard({
     });
   };
 
-  const handleConfirmDeleteScoreSheet = (scoreSheetId: string) => {
-    toast.error("Delete this score sheet?", {
-      description: "This action cannot be undone.",
-      closeButton: false,
-      action: {
-        label: "Delete",
-        onClick: () => {
-          stompPublishingService.pieceScoreSheetDelete(piece.id, {
-            scoreSheetId,
-          });
-        },
-      },
-      cancel: {
-        label: "Cancel",
-        onClick: () => {
-          toast.dismiss();
-        },
-      },
+  const handleDeleteScoreSheet = (scoreSheetId: string) => {
+    stompPublishingService.pieceScoreSheetDelete(piece.id, {
+      scoreSheetId,
     });
   };
 
@@ -177,7 +162,7 @@ export default function PieceScoreSheetsCard({
                     });
                   }}
                   onRename={handleRenameScoreSheet}
-                  onDelete={handleConfirmDeleteScoreSheet}
+                  onDelete={handleDeleteScoreSheet}
                 />
               ))}
             </div>

@@ -22,16 +22,10 @@ import {
   SelectValue,
 } from "@/shadcn/components/ui/select.tsx";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
-import {
-  CheckIcon,
-  GripVerticalIcon,
-  PencilIcon,
-  Trash2Icon,
-  XIcon,
-} from "lucide-react";
+import { CheckIcon, GripVerticalIcon, PencilIcon, XIcon } from "lucide-react";
 import type { Dispatch, DragEvent, SetStateAction } from "react";
-import { toast } from "sonner";
 import { parseNullableNumberFromInput } from "@/service/utils.ts";
+import DeleteButton from "@/components/deleteButton.tsx";
 
 interface PieceSectionItemProps {
   section: SectionDto;
@@ -102,27 +96,10 @@ export default function PieceSectionItem({
     onCancelEdit();
   };
 
-  const handleConfirmDeleteSection = () => {
-    if (isNewSection) return;
+  const handleDeleteSection = () => {
     if (!section.id) return;
-
-    toast.error("Delete this section?", {
-      description: "This action cannot be undone.",
-      closeButton: false,
-      action: {
-        label: "Delete",
-        onClick: () => {
-          stompPublishingService.pieceSectionRemove(pieceId, {
-            sectionId: section.id,
-          });
-        },
-      },
-      cancel: {
-        label: "Cancel",
-        onClick: () => {
-          toast.dismiss();
-        },
-      },
+    stompPublishingService.pieceSectionRemove(pieceId, {
+      sectionId: section.id,
     });
   };
 
@@ -241,14 +218,10 @@ export default function PieceSectionItem({
                   <XIcon />
                 </Button>
                 {!isNewSection && (
-                  <Button
-                    variant="outline"
-                    size="icon-sm"
-                    className="text-destructive"
-                    onClick={handleConfirmDeleteSection}
-                  >
-                    <Trash2Icon />
-                  </Button>
+                  <DeleteButton
+                    title="Delete this section?"
+                    action={handleDeleteSection}
+                  />
                 )}
                 <Button size="icon-sm" onClick={handleSaveEditedSection}>
                   <CheckIcon />

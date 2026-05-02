@@ -1,6 +1,6 @@
 import { useRoomStore } from "@/zustand/roomStore.ts";
 import { SidebarProvider } from "@/shadcn/components/ui/sidebar.tsx";
-import { SettingsIcon, Trash2Icon, UsersIcon } from "lucide-react";
+import { SettingsIcon, UsersIcon } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import React, { useState } from "react";
@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/shadcn/components/ui/tooltip.tsx";
 import ChatToggle from "@/pages/room/ChatToggle.tsx";
+import DeleteButton from "@/components/deleteButton.tsx";
 
 export default function RoomPageContainer() {
   const { room } = useRoomStore();
@@ -49,25 +50,6 @@ export default function RoomPageContainer() {
     } finally {
       setIsDeletingRoom(false);
     }
-  };
-
-  const handleConfirmDeleteRoom = () => {
-    toast.error("Delete this room?", {
-      description: "This action cannot be undone.",
-      closeButton: false,
-      action: {
-        label: "Delete",
-        onClick: () => {
-          void handleDeleteRoom();
-        },
-      },
-      cancel: {
-        label: "Cancel",
-        onClick: () => {
-          toast.dismiss();
-        },
-      },
-    });
   };
 
   return (
@@ -128,14 +110,12 @@ export default function RoomPageContainer() {
                   >
                     <SettingsIcon />
                   </Button>
-                  <Button
+                  <DeleteButton
                     variant="destructive"
-                    size="icon"
+                    title="Delete this room?"
                     disabled={isDeletingRoom}
-                    onClick={handleConfirmDeleteRoom}
-                  >
-                    <Trash2Icon />
-                  </Button>
+                    action={() => void handleDeleteRoom()}
+                  />
                 </>
               )}
             </div>

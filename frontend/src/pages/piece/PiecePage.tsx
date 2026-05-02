@@ -19,10 +19,11 @@ import {
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import { usePageTitle } from "@/zustand/pageTitleStore.ts";
-import { PlayIcon, Trash2Icon, UsersIcon } from "lucide-react";
+import { PlayIcon, UsersIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import PiecePlayerDialog from "@/pages/piece/PiecePlayerDialog.tsx";
+import DeleteButton from "@/components/deleteButton.tsx";
 
 export default function PiecePage() {
   const piece = usePieceStore((state) => state.piece);
@@ -66,25 +67,6 @@ export default function PiecePage() {
     }
   };
 
-  const handleConfirmDeletePiece = () => {
-    toast.error("Delete this piece?", {
-      description: "This action cannot be undone.",
-      closeButton: false,
-      action: {
-        label: "Delete",
-        onClick: () => {
-          void handleDeletePiece();
-        },
-      },
-      cancel: {
-        label: "Cancel",
-        onClick: () => {
-          toast.dismiss();
-        },
-      },
-    });
-  };
-
   usePageTitle(piece.title);
 
   return (
@@ -115,14 +97,12 @@ export default function PiecePage() {
               Permissions
             </Button>
             {canDeletePiece && (
-              <Button
-                variant="destructive"
-                size="icon"
+              <DeleteButton
+                title="Delete this piece?"
                 disabled={isDeletingPiece}
-                onClick={handleConfirmDeletePiece}
-              >
-                <Trash2Icon className="size-4" />
-              </Button>
+                variant="destructive"
+                action={() => void handleDeletePiece()}
+              />
             )}
           </div>
         </div>

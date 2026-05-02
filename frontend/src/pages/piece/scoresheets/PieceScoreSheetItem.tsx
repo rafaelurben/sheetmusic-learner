@@ -4,13 +4,9 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import type { ScoreSheetDto } from "@/api/generated/openapi";
 import { Button } from "@/shadcn/components/ui/button.tsx";
-import {
-  CircleCheckIcon,
-  CircleIcon,
-  PencilIcon,
-  Trash2Icon,
-} from "lucide-react";
+import { CircleCheckIcon, CircleIcon, PencilIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import DeleteButton from "@/components/deleteButton.tsx";
 
 type DragCorner = "top-left" | "bottom-right";
 
@@ -163,16 +159,13 @@ export default function PieceScoreSheetItem({
             >
               <PencilIcon className="size-4" />
             </Button>
-            <Button
+            <DeleteButton
               variant="ghost"
-              size="icon"
-              className="size-7 text-destructive"
-              onClick={() => {
+              title="Delete this score sheet?"
+              action={() => {
                 onDelete(scoreSheet.id);
               }}
-            >
-              <Trash2Icon className="size-4" />
-            </Button>
+            />
           </div>
         )}
         {showSelectActions && (
