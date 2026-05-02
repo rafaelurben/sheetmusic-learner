@@ -8,6 +8,9 @@ import PlayerMetronome from "@/components/player/PlayerMetronome.tsx";
 import PlayerSheetDisplay from "@/components/player/PlayerSheetDisplay.tsx";
 import PlayerPlaybackControls from "@/components/player/PlayerPlaybackControls.tsx";
 import { useSorted } from "@/service/hooks.ts";
+import type { PlayerSectionState } from "@/interfaces/player/playerSectionState.ts";
+
+import "./player.css";
 
 interface PlayerProps {
   piece: PieceDto;
@@ -33,13 +36,14 @@ export default function Player({
   onTempoMultiplierChange,
   onSectionChange,
 }: Readonly<PlayerProps>) {
-  const [sectionPositionOverride, setSectionPositionOverride] = useState<
-    number | null
-  >(null);
+  const [sectionStateOverride, setSectionStateOverride] =
+    useState<PlayerSectionState | null>(null);
 
   const sortedSections = useSorted(piece.sections);
   const currentSectionPosition =
-    sectionPositionOverride ?? playbackState.lastPlaySectionPosition ?? 0;
+    sectionStateOverride?.sectionPosition ??
+    playbackState.lastPlaySectionPosition ??
+    0;
   const currentSection = sortedSections.find(
     (section) => section.position === currentSectionPosition,
   );
@@ -47,7 +51,7 @@ export default function Player({
   useEffect(() => {
     if (!playbackState.playing) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setSectionPositionOverride(null);
+      setSectionStateOverride(null);
     }
   }, [playbackState.playing]);
 
@@ -57,6 +61,7 @@ export default function Player({
         <PlayerSheetDisplay
           piece={piece}
           currentSectionId={currentSection?.id}
+          sectionPlaybackState={sectionStateOverride}
         />
 
         <PlayerPlaybackControls
@@ -77,7 +82,7 @@ export default function Player({
           lastPlaySectionPosition={playbackState.lastPlaySectionPosition}
           tempoMultiplier={playbackState.tempoMultiplier}
           sortedSections={sortedSections}
-          onSectionPositionOverrideChange={setSectionPositionOverride}
+          onSectionStateChange={setSectionStateOverride}
           onPlaybackEnded={onPause}
         />
       </CardContent>

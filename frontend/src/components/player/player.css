@@ -1,0 +1,24 @@
+/*
+ * (C) 2026. - Rafael Urben
+ */
+
+@keyframes section-progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.section-progress-fill {
+  animation-delay: var(--section-progress-delay);
+  animation-duration: var(--section-progress-duration);
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+  animation-name: section-progress-fill;
+  animation-timing-function: linear;
+  transform-origin: left center;
+  will-change: transform;
+}

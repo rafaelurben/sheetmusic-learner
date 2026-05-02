@@ -2,11 +2,14 @@
  * (C) 2026. - Rafael Urben
  */
 import type { PieceDto } from "@/api/generated/openapi";
+import type { PlayerSectionState } from "@/interfaces/player/playerSectionState.ts";
 import { useSorted } from "@/service/hooks.ts";
+import type { CSSProperties } from "react";
 
 interface PlayerSheetDisplayProps {
   piece: PieceDto;
   currentSectionId?: string;
+  sectionPlaybackState: PlayerSectionState | null;
 }
 
 const toPercent = (value: number) => String(value * 100) + "%";
@@ -14,6 +17,7 @@ const toPercent = (value: number) => String(value * 100) + "%";
 export default function PlayerSheetDisplay({
   piece,
   currentSectionId,
+  sectionPlaybackState,
 }: Readonly<PlayerSheetDisplayProps>) {
   const sortedSections = useSorted(piece.sections);
   const sortedScoreSheets = useSorted(piece.scoreSheets);
@@ -32,6 +36,16 @@ export default function PlayerSheetDisplay({
       ? currentSection
       : undefined;
 
+  const progressBarStyle: CSSProperties | undefined = sectionPlaybackState
+    ? ({
+        "--section-progress-duration": `${String(sectionPlaybackState.durationMs)}ms`,
+        "--section-progress-delay": `${String(
+          // eslint-disable-next-line react-hooks/purity
+          sectionPlaybackState.startTimeMs - Date.now(),
+        )}ms`,
+      } as CSSProperties & Record<string, string>)
+    : undefined;
+
   return (
     <div className="flex min-h-0 flex-1 items-center justify-center">
       {sortedScoreSheets.length === 0 ? (
@@ -49,7 +63,7 @@ export default function PlayerSheetDisplay({
 
             {highlightedSection && (
               <div
-                className="pointer-events-none absolute rounded-md border-2 border-section-highlight bg-section-highlight/10 shadow-sm"
+                className="pointer-events-none absolute overflow-hidden rounded-md border-2 border-section-highlight bg-section-highlight/10 shadow-sm"
                 style={{
                   left: toPercent(highlightedSection.posX1),
                   top: toPercent(highlightedSection.posY1),
@@ -60,7 +74,20 @@ export default function PlayerSheetDisplay({
                     highlightedSection.posY2 - highlightedSection.posY1,
                   ),
                 }}
-              ></div>
+              >
+                {progressBarStyle && (
+                  /* NOTE: key is required to restart animation on section change. */
+                  <div
+                    key={currentSectionId}
+                    className="overflow-hidden absolute inset-x-0 bottom-0 h-1 bg-section-highlight/30"
+                  >
+                    <div
+                      className="section-progress-fill h-full w-full bg-section-highlight-foreground/90"
+                      style={progressBarStyle}
+                    />
+                  </div>
+                )}
+              </div>
             )}
           </div>
         </div>

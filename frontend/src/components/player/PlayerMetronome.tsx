@@ -9,6 +9,7 @@ import {
   convertSectionToMetronomePlaylist,
 } from "@/service/metronomeUtils.ts";
 import type { PlayerPlaylistItem } from "@/interfaces/player/playerPlaylistItem.ts";
+import type { PlayerSectionState } from "@/interfaces/player/playerSectionState.ts";
 import { toast } from "sonner";
 import { useMainStore } from "@/zustand/mainStore.ts";
 
@@ -18,7 +19,7 @@ interface PlayerMetronomeProps {
   lastPlaySectionPosition?: number | null;
   tempoMultiplier: number;
   sortedSections: SectionDto[];
-  onSectionPositionOverrideChange: (sectionPosition: number | null) => void;
+  onSectionStateChange: (override: PlayerSectionState | null) => void;
   onPlaybackEnded: () => void;
 }
 
@@ -30,7 +31,7 @@ export default function PlayerMetronome({
   lastPlaySectionPosition,
   tempoMultiplier,
   sortedSections,
-  onSectionPositionOverrideChange,
+  onSectionStateChange,
   onPlaybackEnded,
 }: Readonly<PlayerMetronomeProps>) {
   const audioContextReady = useMainStore((state) => state.audioContextReady);
@@ -107,7 +108,8 @@ export default function PlayerMetronome({
 
     // Visual: Section changes
     const timings = calculateSectionTimings(playbackSections, tempoMultiplier);
-    const globalOffsetMs = playTimestamp.getTime() - Date.now();
+    const nowMs = Date.now();
+    const globalOffsetMs = playTimestamp.getTime() - nowMs;
     const timeoutHandles: number[] = [];
 
     for (const timing of timings) {
@@ -117,7 +119,11 @@ export default function PlayerMetronome({
       }
       timeoutHandles.push(
         setTimeout(() => {
-          onSectionPositionOverrideChange(timing.sectionPosition);
+          onSectionStateChange({
+            sectionPosition: timing.sectionPosition,
+            startTimeMs: playTimestamp.getTime() + timing.offsetMs,
+            durationMs: timing.durationMs,
+          });
         }, offsetMs),
       );
     }
@@ -129,7 +135,11 @@ export default function PlayerMetronome({
     if (currentTiming) {
       timeoutHandles.push(
         setTimeout(() => {
-          onSectionPositionOverrideChange(currentTiming.sectionPosition);
+          onSectionStateChange({
+            sectionPosition: currentTiming.sectionPosition,
+            startTimeMs: playTimestamp.getTime() + currentTiming.offsetMs,
+            durationMs: currentTiming.durationMs,
+          });
         }, 0),
       );
     }
@@ -153,7 +163,7 @@ export default function PlayerMetronome({
       timeoutHandles.forEach((handle) => {
         clearTimeout(handle);
       });
-      onSectionPositionOverrideChange(null);
+      onSectionStateChange(null);
     };
   }, [
     audioContextReady,
@@ -162,7 +172,7 @@ export default function PlayerMetronome({
     lastPlayTimestamp,
     lastPlaySectionPosition,
     tempoMultiplier,
-    onSectionPositionOverrideChange,
+    onSectionStateChange,
     onPlaybackEnded,
   ]);
 
