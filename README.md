@@ -30,12 +30,13 @@ The [docker-compose.yml](docker-compose.yml) configuration contains two services
 1. A postgres database running on port 5433
     - Warning: This is not the default port for postgres!
 2. A simple mock OIDC server running on port 4011
-    - **Important**: Does **not** work on ARM
+    - **Important**: Newer image versions than the one fixed do **not** work on ARM
       architectures! ([Issue](https://github.com/Soluto/oidc-server-mock/issues/165))
     - Mock users: (username = password)
-        - `rafael`
-        - `rick`
-        - `bart`
+        - `rafael` (rafael.urben@dummy.tpto.ch)
+        - `rick` (rick.astley@dummy.tpto.ch)
+        - `bart` (bart.simpson@dummy.tpto.ch)
+        - `donald` (donald.duck@dummy.tpto.ch)
 3. A local minio instance running on port 9000 for object storage
 
 ### Commands

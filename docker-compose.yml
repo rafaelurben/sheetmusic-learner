@@ -82,12 +82,12 @@ services:
               },
               {
                 "Type": "email",
-                "Value": "dev@rafaelurben.ch",
+                "Value": "rafael.urben@dummy.tpto.ch",
                 "ValueType": "string"
               },
               {
                 "Type": "picture",
-                "Value": "https://gravatar.com/avatar/a6edbd223876f44c6794092ec50f41dc?s=128",
+                "Value": "https://gravatar.com/avatar/90e29427623a42a3fa5ad85e60959c8d?s=128&d=initials&initials=RU",
                 "ValueType": "string"
               }
             ]
@@ -104,12 +104,12 @@ services:
               },
               {
                 "Type": "email",
-                "Value": "rick.astley@tpto.ch",
+                "Value": "rick.astley@dummy.tpto.ch",
                 "ValueType": "string"
               },
               {
                 "Type": "picture",
-                "Value": "https://gravatar.com/avatar/a6edbd223876f44c6794092ec50f41da?s=128",
+                "Value": "https://gravatar.com/avatar/7b3589aea86040517544253c6b5a7975?s=128&d=initials&initials=RA",
                 "ValueType": "string"
               }
             ]
@@ -126,12 +126,34 @@ services:
               },
               {
                 "Type": "email",
-                "Value": "bart.simpson@tpto.ch",
+                "Value": "bart.simpson@dummy.tpto.ch",
                 "ValueType": "string"
               },
               {
                 "Type": "picture",
-                "Value": "https://gravatar.com/avatar/a6edbd223876f44c6794092ec50f41da?s=128",
+                "Value": "https://gravatar.com/avatar/3f28bf3533e67039f11de213d54edd64?s=128&d=initials&initials=BS",
+                "ValueType": "string"
+              }
+            ]
+          },
+          {
+            "SubjectId":"7afe1dda-5e67-407a-ba6c-2f20602129c6",
+            "Username":"donald",
+            "Password":"donald",
+            "Claims": [
+              {
+                "Type": "name",
+                "Value": "Donald Duck",
+                "ValueType": "string"
+              },
+              {
+                "Type": "email",
+                "Value": "donald.duck@dummy.tpto.ch",
+                "ValueType": "string"
+              },
+              {
+                "Type": "picture",
+                "Value": "https://gravatar.com/avatar/f8134bcc6ec2bafa8185acb5cd28a821?s=128&d=initials&initials=DD",
                 "ValueType": "string"
               }
             ]
