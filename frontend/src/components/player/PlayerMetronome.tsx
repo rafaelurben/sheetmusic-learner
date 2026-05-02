@@ -92,6 +92,7 @@ export default function PlayerMetronome({
   const [activeBarIndex, setActiveBarIndex] = useState<number | null>(null);
   const [activeBeatIndex, setActiveBeatIndex] = useState<number | null>(null);
 
+  // Audio metronome
   useEffect(() => {
     if (!audioContextReady || !playing) {
       return;
@@ -102,7 +103,6 @@ export default function PlayerMetronome({
       : new Date();
     const playbackSections = sortedSections.slice(lastPlaySectionPosition ?? 0);
 
-    // Audio: Metronome
     const playlist: PlayerPlaylistItem[] = [];
     for (const section of playbackSections) {
       playlist.push(
@@ -113,6 +113,30 @@ export default function PlayerMetronome({
       playlist,
       playTimestamp,
     );
+
+    // Cleanup
+    return () => {
+      stopMetronome();
+    };
+  }, [
+    audioContextReady,
+    lastPlaySectionPosition,
+    lastPlayTimestamp,
+    playing,
+    sortedSections,
+    tempoMultiplier,
+  ]);
+
+  // Visual: Section highlighting and automatic playback end
+  useEffect(() => {
+    if (!playing) {
+      return;
+    }
+
+    const playTimestamp = lastPlayTimestamp
+      ? new Date(lastPlayTimestamp)
+      : new Date();
+    const playbackSections = sortedSections.slice(lastPlaySectionPosition ?? 0);
 
     // Visual: Section changes
     const timings = calculateSectionTimings(playbackSections, tempoMultiplier);
@@ -167,24 +191,22 @@ export default function PlayerMetronome({
 
     // Cleanup
     return () => {
-      stopMetronome();
       timeoutHandles.forEach((handle) => {
         clearTimeout(handle);
       });
       onSectionStateChange(null);
     };
   }, [
-    audioContextReady,
-    sortedSections,
-    playing,
-    lastPlayTimestamp,
     lastPlaySectionPosition,
-    tempoMultiplier,
-    onSectionStateChange,
+    lastPlayTimestamp,
     onPlaybackEnded,
+    onSectionStateChange,
+    playing,
+    sortedSections,
+    tempoMultiplier,
   ]);
 
-  // Visual beat scheduling (flashes one box per beat)
+  // Visual: Visual metronome
   useEffect(() => {
     if (!showMetronome || !playing) {
       // hide visuals when not shown or not playing
