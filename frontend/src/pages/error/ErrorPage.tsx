@@ -1,3 +1,6 @@
+/*
+ * (C) 2026. - Rafael Urben
+ */
 import {
   Empty,
   EmptyContent,
@@ -7,36 +10,39 @@ import {
   EmptyTitle,
 } from "@/shadcn/components/ui/empty.tsx";
 import { Button } from "@/shadcn/components/ui/button.tsx";
-import { CloudAlertIcon, RefreshCcwIcon } from "lucide-react";
+import { HomeIcon, TriangleAlertIcon } from "lucide-react";
+import React from "react";
 
 interface ErrorPageProps {
+  icon?: React.ReactNode;
   title: string;
   description: string;
-  refreshAction?: () => void;
+  action: () => void;
+  actionIcon?: React.ReactNode;
+  actionLabel?: string;
 }
 
 export default function ErrorPage({
+  icon = <TriangleAlertIcon />,
   title,
   description,
-  refreshAction = () => {
-    globalThis.location.reload();
-  },
+  action,
+  actionIcon = <HomeIcon />,
+  actionLabel = "Go home",
 }: Readonly<ErrorPageProps>) {
   return (
     <Empty className="bg-muted/30 h-dvh">
       <EmptyHeader>
-        <EmptyMedia variant="icon">
-          <CloudAlertIcon />
-        </EmptyMedia>
+        <EmptyMedia variant="icon">{icon}</EmptyMedia>
         <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription className="max-w-xs text-pretty">
           {description}
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <Button variant="outline" onClick={refreshAction}>
-          <RefreshCcwIcon />
-          Refresh
+        <Button variant="outline" onClick={action}>
+          {actionIcon}
+          {actionLabel}
         </Button>
       </EmptyContent>
     </Empty>

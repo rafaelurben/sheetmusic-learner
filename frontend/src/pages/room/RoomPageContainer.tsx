@@ -16,6 +16,8 @@ import { toast } from "sonner";
 import { usePageTitle } from "@/zustand/pageTitleStore.ts";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import type { SubscribeDestinationName } from "@/interfaces/SubscribeDestinationName.ts";
+import ErrorPage from "@/pages/error/ErrorPage.tsx";
+import ForbiddenPage from "@/pages/error/ForbiddenPage.tsx";
 
 export default function RoomPageContainer() {
   const { id } = useParams();
@@ -182,9 +184,16 @@ export default function RoomPageContainer() {
   ]);
 
   if (notFound) {
-    return <div>Room not found</div>;
+    return (
+      <ErrorPage
+        title="Room not found"
+        description="This room was not found."
+        /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
+        action={() => navigate("/")}
+      />
+    );
   } else if (notAllowed) {
-    return <div>Access denied</div>;
+    return <ForbiddenPage />;
   } else if (initialLoadComplete) {
     return <RoomPage />;
   } else {

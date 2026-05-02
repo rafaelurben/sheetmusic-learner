@@ -13,6 +13,8 @@ import PiecePage from "@/pages/piece/PiecePage.tsx";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { usePageTitle } from "@/zustand/pageTitleStore.ts";
+import ErrorPage from "@/pages/error/ErrorPage.tsx";
+import ForbiddenPage from "@/pages/error/ForbiddenPage.tsx";
 
 export default function PiecePageContainer() {
   const { id } = useParams();
@@ -72,9 +74,16 @@ export default function PiecePageContainer() {
   }, [id, initialLoadComplete, notFound, applyPieceEvent, navigate, reset]);
 
   if (notFound) {
-    return <div>Piece not found</div>;
+    return (
+      <ErrorPage
+        title="Piece not found"
+        description="This piece was not found."
+        /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
+        action={() => navigate("/")}
+      />
+    );
   } else if (notAllowed) {
-    return <div>Access denied</div>;
+    return <ForbiddenPage />;
   } else if (initialLoadComplete) {
     return <PiecePage />;
   } else {

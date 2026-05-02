@@ -7,8 +7,9 @@ import { BrowserRouter } from "react-router-dom";
 import { loadConfig } from "@/config";
 import { TooltipProvider } from "@/shadcn/components/ui/tooltip.tsx";
 import { WebStorageStateStore } from "oidc-client-ts";
-import ErrorPage from "@/pages/ErrorPage.tsx";
+import ErrorPage from "@/pages/error/ErrorPage.tsx";
 import { Toaster } from "sonner";
+import { CloudAlertIcon, RefreshCcwIcon } from "lucide-react";
 
 async function bootstrap() {
   let appConfig: Awaited<ReturnType<typeof loadConfig>>;
@@ -22,6 +23,12 @@ async function bootstrap() {
         <ErrorPage
           title="Backend unavailable"
           description="Failed to load configuration. The system might be currently unavailable. Please try again later."
+          icon={<CloudAlertIcon />}
+          action={() => {
+            globalThis.location.reload();
+          }}
+          actionLabel="Refresh"
+          actionIcon={<RefreshCcwIcon />}
         />
       </StrictMode>,
     );

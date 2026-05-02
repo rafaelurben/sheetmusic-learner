@@ -27,6 +27,7 @@ import type {
   GeneralEventDto,
   UserEventDto,
 } from "@/interfaces/async/EventDto.ts";
+import NotFoundPage from "./pages/error/NotFoundPage.tsx";
 
 const STOMP_CONNECTED_TOAST_ID = "stomp-connected";
 const STOMP_DISCONNECTED_TOAST_ID = "stomp-disconnected";
@@ -202,6 +203,7 @@ export default function AppAuthenticated() {
               <Route path="/pieces/dummy" element={<DummyPiece />} />
               <Route path="/pieces/:id" element={<PiecePageContainer />} />
               <Route path="/debug/stomp" element={<DebugStompPage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </main>
         </SidebarInset>
