@@ -32,14 +32,13 @@ const STOMP_CONNECTED_TOAST_ID = "stomp-connected";
 const STOMP_DISCONNECTED_TOAST_ID = "stomp-disconnected";
 
 export default function AppAuthenticated() {
-  const {
-    setConnected,
-    setCurrentUser,
-    addPiece,
-    addRoom,
-    applyGeneralEvent,
-    connected,
-  } = useMainStore();
+  const setConnected = useMainStore((store) => store.setConnected);
+  const setCurrentUser = useMainStore((store) => store.setCurrentUser);
+  const addPiece = useMainStore((store) => store.addPiece);
+  const addRoom = useMainStore((store) => store.addRoom);
+  const applyGeneralEvent = useMainStore((store) => store.applyGeneralEvent);
+  const connected = useMainStore((store) => store.connected);
+
   const usersApi = useUsersApi();
   const piecesApi = usePiecesApi();
   const roomsApi = useRoomsApi();

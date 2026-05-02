@@ -25,7 +25,7 @@ import ChatToggle from "@/pages/room/ChatToggle.tsx";
 import DeleteButton from "@/components/deleteButton.tsx";
 
 export default function RoomPageContainer() {
-  const { room } = useRoomStore();
+  const room = useRoomStore((store) => store.room);
   const piece = usePieceStore((state) => state.piece);
   const userId = useMainStore((state) => state.currentUser?.id);
   const removeRoom = useMainStore((state) => state.removeRoom);
