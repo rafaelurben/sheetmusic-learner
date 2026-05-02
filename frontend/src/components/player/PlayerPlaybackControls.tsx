@@ -6,11 +6,15 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CogIcon,
+  MetronomeIcon,
   PauseIcon,
   PlayIcon,
+  RabbitIcon,
 } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
+import { Switch } from "@/shadcn/components/ui/switch.tsx";
+import { useMainStore } from "@/zustand/mainStore.ts";
 import {
   Popover,
   PopoverContent,
@@ -46,6 +50,8 @@ export default function PlayerPlaybackControls({
   onTempoMultiplierChange,
   onSectionChange,
 }: Readonly<PlayerPlaybackControlsProps>) {
+  const showMetronome = useMainStore((s) => s.showMetronome);
+  const setShowMetronome = useMainStore((s) => s.setShowMetronome);
   const lastSection = sections.at(-1);
 
   let sectionPositionText = "No sections available!";
@@ -174,7 +180,13 @@ export default function PlayerPlaybackControls({
             </PopoverHeader>
 
             <div className="mt-4 flex flex-col gap-3">
-              <Label className="text-sm font-medium">Speed</Label>
+              <Label className="text-sm font-medium">
+                <RabbitIcon size="1rem" />
+                Speed
+                <div className="text-right text-sm text-muted-foreground">
+                  {tempoMultiplier.toFixed(2)}x
+                </div>
+              </Label>
               <Slider
                 value={[tempoMultiplier]}
                 onValueChange={(value) => {
@@ -186,8 +198,15 @@ export default function PlayerPlaybackControls({
                 disabled={playing || readonly}
                 className="w-full"
               />
-              <div className="text-right text-sm text-muted-foreground">
-                {tempoMultiplier.toFixed(2)}x
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">
+                  <MetronomeIcon size="1rem" />
+                  Show metronome
+                </Label>
+                <Switch
+                  checked={showMetronome}
+                  onCheckedChange={setShowMetronome}
+                />
               </div>
             </div>
           </PopoverContent>

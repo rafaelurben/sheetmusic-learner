@@ -1,7 +1,7 @@
 /*
  * (C) 2026. - Rafael Urben
  */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
+
 import type { ScoreSheetDto } from "@/api/generated/openapi";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { CircleCheckIcon, CircleIcon, PencilIcon } from "lucide-react";

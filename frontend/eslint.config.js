@@ -32,6 +32,13 @@ export default defineConfig([
     },
     rules: {
       "@typescript-eslint/no-non-null-assertion": "warn",
+      "@typescript-eslint/restrict-template-expressions": [
+        "error",
+        {
+          allowBoolean: true,
+          allowNumber: true,
+        },
+      ],
     },
   },
 ]);

@@ -22,3 +22,33 @@
   transform-origin: left center;
   will-change: transform;
 }
+
+/* Visual metronome */
+
+@keyframes metronome-beat-flash {
+  0% {
+    transform: scale(1);
+    background-color: var(--color-primary);
+  }
+  50% {
+    transform: scale(1.25);
+    background-color: var(--color-primary);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.metronome-beat {
+  background-color: var(--color-muted);
+  border: 1px solid var(--color-muted-foreground);
+}
+
+.metronome-beat-active {
+  animation-name: metronome-beat-flash;
+  animation-duration: var(--metronome-animation-duration, 180ms);
+  animation-timing-function: ease-out;
+  animation-iteration-count: 1;
+  will-change: transform;
+}
+
