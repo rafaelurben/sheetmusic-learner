@@ -6,7 +6,7 @@ import {
 } from "@/api/generated/openapi";
 import { usePiecesApi } from "@/api/useAuthenticatedApiClient.ts";
 import EditPieceDialog from "@/pages/piece/EditPieceDialog.tsx";
-import PiecePermissions from "@/pages/piece/PiecePermissions.tsx";
+import PiecePermissions from "./permissions/PiecePermissions.tsx";
 import PieceMetadataCard from "@/pages/piece/PieceMetadataCard.tsx";
 import PieceScoreSheetsCard from "@/pages/piece/scoresheets/PieceScoreSheetsCard.tsx";
 import PieceSectionsCard from "@/pages/piece/sections/PieceSectionsCard.tsx";
@@ -132,7 +132,7 @@ export default function PiecePage() {
       </div>
 
       <Sheet open={isPermissionsOpen} onOpenChange={setIsPermissionsOpen}>
-        <SheetContent>
+        <SheetContent className="w-auto sm:max-w-full md:max-w-lg">
           <SheetHeader>
             <SheetTitle>Permissions</SheetTitle>
           </SheetHeader>

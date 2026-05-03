@@ -1,6 +1,7 @@
 import * as React from "react";
 
-const MOBILE_BREAKPOINT = 768;
+// default is 768; increased due to possibility of two sidebars (room chat)
+const MOBILE_BREAKPOINT = 1000;
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState<boolean | undefined>(

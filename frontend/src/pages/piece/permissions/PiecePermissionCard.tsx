@@ -42,7 +42,7 @@ export default function PiecePermissionCard({
 }: Readonly<PiecePermissionCardProps>) {
   return (
     <Card key={permission.user.id} className="border-2">
-      <CardContent className="flex items-center gap-3">
+      <CardContent className="flex flex-wrap items-center gap-3">
         <Avatar className="size-8">
           <AvatarImage src={permission.user.avatarUrl} />
           <AvatarFallback>
@@ -55,35 +55,37 @@ export default function PiecePermissionCard({
           </div>
           <div className="text-muted-foreground">{permission.user.email}</div>
         </div>
-        <Select
-          value={permission.permissionType}
-          disabled={!editable}
-          onValueChange={(value) => {
-            onPermissionTypeChange?.(
-              permission.user.id,
-              value as PermissionType,
-            );
-          }}
-        >
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={PermissionType.Owner}>Owner</SelectItem>
-            <SelectItem value={PermissionType.Editor}>Editor</SelectItem>
-            <SelectItem value={PermissionType.Reader}>Reader</SelectItem>
-          </SelectContent>
-        </Select>
-        {editable && (
-          <DeleteButton
-            title="Remove this user?"
-            size="normal"
-            variant="outline"
-            action={() => {
-              onRemove?.(permission.user.id);
+        <div className="flex gap-3 justify-end grow">
+          <Select
+            value={permission.permissionType}
+            disabled={!editable}
+            onValueChange={(value) => {
+              onPermissionTypeChange?.(
+                permission.user.id,
+                value as PermissionType,
+              );
             }}
-          />
-        )}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={PermissionType.Owner}>Owner</SelectItem>
+              <SelectItem value={PermissionType.Editor}>Editor</SelectItem>
+              <SelectItem value={PermissionType.Reader}>Reader</SelectItem>
+            </SelectContent>
+          </Select>
+          {editable && (
+            <DeleteButton
+              title="Remove this user?"
+              size="normal"
+              variant="outline"
+              action={() => {
+                onRemove?.(permission.user.id);
+              }}
+            />
+          )}
+        </div>
       </CardContent>
     </Card>
   );

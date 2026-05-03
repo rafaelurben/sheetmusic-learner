@@ -8,7 +8,7 @@ import {
   type UserDto,
 } from "@/api/generated/openapi";
 import { useUsersApi } from "@/api/useAuthenticatedApiClient.ts";
-import PiecePermissionCard from "@/pages/piece/PiecePermissionCard.tsx";
+import PiecePermissionCard from "@/pages/piece/permissions/PiecePermissionCard.tsx";
 import type PiecePermissionAddRequestDto from "@/interfaces/async/request/piece/PiecePermissionAddRequestDto.ts";
 import type { PiecePermissionUpdateRequestDto } from "@/interfaces/async/request/piece/PiecePermissionUpdateRequestDto.ts";
 import type { PiecePermissionRemoveRequestDto } from "@/interfaces/async/request/piece/PiecePermissionRemoveRequestDto.ts";
