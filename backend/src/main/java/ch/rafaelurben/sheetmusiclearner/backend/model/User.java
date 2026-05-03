@@ -4,9 +4,11 @@ package ch.rafaelurben.sheetmusiclearner.backend.model;
 import jakarta.persistence.*;
 import java.util.UUID;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Table(name = "users")
+@Audited
 @Getter
 @Setter
 @NoArgsConstructor

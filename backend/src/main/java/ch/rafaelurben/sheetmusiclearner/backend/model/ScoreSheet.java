@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import java.util.UUID;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Table(name = "score_sheets")
+@Audited
 @Getter
 @Setter
 @NoArgsConstructor

@@ -18,3 +18,11 @@ spring:
       max-request-size: 50MB
   main:
     allow-circular-references: true
+  jpa:
+    properties:
+      org:
+        hibernate:
+          envers:
+            # May replace with ValidityAuditStrategy to improve history reading performance (db columns already exist)
+            audit_strategy: org.hibernate.envers.strategy.DefaultAuditStrategy
+            audit_strategy_validity_store_revend_timestamp: true

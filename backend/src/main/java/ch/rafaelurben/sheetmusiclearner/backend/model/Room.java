@@ -9,9 +9,12 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.*;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 @Entity
 @Table(name = "rooms")
+@Audited
 @Getter
 @Setter
 @NoArgsConstructor
@@ -59,6 +62,7 @@ public class Room extends BaseEntity {
   @JoinColumn(name = "piece_id")
   private Piece piece;
 
+  @NotAudited
   @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<RoomUser> roomUsers;
 

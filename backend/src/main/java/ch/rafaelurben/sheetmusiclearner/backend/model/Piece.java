@@ -5,9 +5,11 @@ import jakarta.persistence.*;
 import java.util.List;
 import java.util.UUID;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Table(name = "pieces")
+@Audited
 @Getter
 @Setter
 @NoArgsConstructor

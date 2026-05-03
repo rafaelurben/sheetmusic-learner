@@ -1,0 +1,459 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1777804581550-1
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_piece_permissions_aud
+                  name: rev
+                  type: INT
+              - column:
+                  name: revtype
+                  type: SMALLINT
+              - column:
+                  name: revend
+                  type: INT
+              - column:
+                  name: revend_tstmp
+                  type: TIMESTAMP
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_piece_permissions_aud
+                  name: piece_id
+                  type: UUID
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_piece_permissions_aud
+                  name: user_id
+                  type: UUID
+              - column:
+                  name: permission_type
+                  type: VARCHAR(255)
+            tableName: piece_permissions_aud
+  - changeSet:
+      id: 1777804581550-2
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_pieces_aud
+                  name: rev
+                  type: INT
+              - column:
+                  name: revtype
+                  type: SMALLINT
+              - column:
+                  name: revend
+                  type: INT
+              - column:
+                  name: revend_tstmp
+                  type: TIMESTAMP
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_pieces_aud
+                  name: id
+                  type: UUID
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  name: composer
+                  type: VARCHAR(255)
+              - column:
+                  name: year
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: difficulty
+                  type: VARCHAR(255)
+              - column:
+                  name: bpm_range
+                  type: VARCHAR(255)
+              - column:
+                  name: is_public
+                  type: BOOLEAN
+            tableName: pieces_aud
+  - changeSet:
+      id: 1777804581550-3
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_revinfo
+                  name: id
+                  type: INT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: timestamp
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user_id
+                  type: UUID
+            tableName: revinfo
+  - changeSet:
+      id: 1777804581550-4
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_rooms_aud
+                  name: rev
+                  type: INT
+              - column:
+                  name: revtype
+                  type: SMALLINT
+              - column:
+                  name: revend
+                  type: INT
+              - column:
+                  name: revend_tstmp
+                  type: TIMESTAMP
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_rooms_aud
+                  name: id
+                  type: UUID
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  name: tempo_multiplier
+                  type: FLOAT
+              - column:
+                  name: playing
+                  type: BOOLEAN
+              - column:
+                  name: last_play_section_position
+                  type: INT
+              - column:
+                  name: last_play_timestamp
+                  type: DATETIME
+              - column:
+                  name: owner_id
+                  type: UUID
+              - column:
+                  name: piece_id
+                  type: UUID
+            tableName: rooms_aud
+  - changeSet:
+      id: 1777804581550-5
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_score_sheets_aud
+                  name: rev
+                  type: INT
+              - column:
+                  name: revtype
+                  type: SMALLINT
+              - column:
+                  name: revend
+                  type: INT
+              - column:
+                  name: revend_tstmp
+                  type: TIMESTAMP
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_score_sheets_aud
+                  name: id
+                  type: UUID
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+              - column:
+                  name: position
+                  type: INT
+              - column:
+                  name: s3_key
+                  type: VARCHAR(255)
+              - column:
+                  name: image_url
+                  type: VARCHAR(255)
+              - column:
+                  name: piece_id
+                  type: UUID
+            tableName: score_sheets_aud
+  - changeSet:
+      id: 1777804581550-6
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_sections_aud
+                  name: rev
+                  type: INT
+              - column:
+                  name: revtype
+                  type: SMALLINT
+              - column:
+                  name: revend
+                  type: INT
+              - column:
+                  name: revend_tstmp
+                  type: TIMESTAMP
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_sections_aud
+                  name: id
+                  type: UUID
+              - column:
+                  name: positions
+                  type: INT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: time_signature_numerator
+                  type: INT
+              - column:
+                  name: time_signature_denominator
+                  type: INT
+              - column:
+                  name: bar_count
+                  type: INT
+              - column:
+                  name: bpm
+                  type: INT
+              - column:
+                  name: pos_x1
+                  type: FLOAT
+              - column:
+                  name: pos_y1
+                  type: FLOAT
+              - column:
+                  name: pos_x2
+                  type: FLOAT
+              - column:
+                  name: pos_y2
+                  type: FLOAT
+              - column:
+                  name: piece_id
+                  type: UUID
+              - column:
+                  name: score_sheet_id
+                  type: UUID
+            tableName: sections_aud
+  - changeSet:
+      id: 1777804581550-7
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users_aud
+                  name: rev
+                  type: INT
+              - column:
+                  name: revtype
+                  type: SMALLINT
+              - column:
+                  name: revend
+                  type: INT
+              - column:
+                  name: revend_tstmp
+                  type: TIMESTAMP
+              - column:
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_users_aud
+                  name: id
+                  type: UUID
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: avatar_url
+                  type: VARCHAR(255)
+            tableName: users_aud
+  - changeSet:
+      id: 1777804581550-8
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: rev
+            baseTableName: pieces_aud
+            constraintName: FK_PIECES_AUD_ON_REV
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-9
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: rev
+            baseTableName: piece_permissions_aud
+            constraintName: FK_PIECE_PERMISSIONS_AUD_ON_REV
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-10
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: rev
+            baseTableName: rooms_aud
+            constraintName: FK_ROOMS_AUD_ON_REV
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-11
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: rev
+            baseTableName: score_sheets_aud
+            constraintName: FK_SCORE_SHEETS_AUD_ON_REV
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-12
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: rev
+            baseTableName: sections_aud
+            constraintName: FK_SECTIONS_AUD_ON_REV
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-13
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: rev
+            baseTableName: users_aud
+            constraintName: FK_USERS_AUD_ON_REV
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-14
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: revend
+            baseTableName: pieces_aud
+            constraintName: FK_PIECES_AUD_ON_REVEND
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-15
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: revend
+            baseTableName: piece_permissions_aud
+            constraintName: FK_PIECE_PERMISSIONS_AUD_ON_REVEND
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-16
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: revend
+            baseTableName: rooms_aud
+            constraintName: FK_ROOMS_AUD_ON_REVEND
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-17
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: revend
+            baseTableName: score_sheets_aud
+            constraintName: FK_SCORE_SHEETS_AUD_ON_REVEND
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-18
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: revend
+            baseTableName: sections_aud
+            constraintName: FK_SECTIONS_AUD_ON_REVEND
+            referencedColumnNames: id
+            referencedTableName: revinfo
+  - changeSet:
+      id: 1777804581550-19
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: revend
+            baseTableName: users_aud
+            constraintName: FK_USERS_AUD_ON_REVEND
+            referencedColumnNames: id
+            referencedTableName: revinfo

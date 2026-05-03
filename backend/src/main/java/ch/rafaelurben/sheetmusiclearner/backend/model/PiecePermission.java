@@ -6,9 +6,11 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 import lombok.*;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Table(name = "piece_permissions")
+@Audited
 @Getter
 @Setter
 @NoArgsConstructor
