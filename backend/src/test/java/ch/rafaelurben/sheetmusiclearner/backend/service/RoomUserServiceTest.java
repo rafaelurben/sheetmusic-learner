@@ -39,8 +39,11 @@ class RoomUserServiceTest extends BaseSpringBootTest {
 
     roomUserService.createRoomUser(roomId, user);
 
-    var payload = assertSingleMessage(Destinations.topicRoom(roomId), RoomUserJoinedEvent.class);
-    assertEquals(user.getId(), payload.user().getId());
+    getMessageAsserter()
+        .assertSend(
+            Destinations.topicRoom(roomId),
+            RoomUserJoinedEvent.class,
+            payload -> assertEquals(user.getId(), payload.user().getId()));
   }
 
   @Test
@@ -53,7 +56,10 @@ class RoomUserServiceTest extends BaseSpringBootTest {
 
     roomUserService.deleteRoomUser(roomUserId);
 
-    var payload = assertSingleMessage(Destinations.topicRoom(roomId), RoomUserLeftEvent.class);
-    assertEquals(userId, payload.userId());
+    getMessageAsserter()
+        .assertSend(
+            Destinations.topicRoom(roomId),
+            RoomUserLeftEvent.class,
+            payload -> assertEquals(userId, payload.userId()));
   }
 }

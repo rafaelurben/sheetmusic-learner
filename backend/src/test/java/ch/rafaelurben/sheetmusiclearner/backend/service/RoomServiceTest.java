@@ -41,8 +41,11 @@ class RoomServiceTest extends BaseSpringBootTest {
 
     roomService.sendChatMessage(user, roomId, new RoomChatMessageRequestDto("hello room"));
 
-    var payload = assertSingleMessage(Destinations.topicRoom(roomId), RoomChatMessageEvent.class);
-    assertEquals("hello room", payload.content());
+    getMessageAsserter()
+        .assertSend(
+            Destinations.topicRoom(roomId),
+            RoomChatMessageEvent.class,
+            payload -> assertEquals("hello room", payload.content()));
   }
 
   @Test
@@ -57,8 +60,10 @@ class RoomServiceTest extends BaseSpringBootTest {
     roomService.controlPlaybackConfig(
         owner, roomId, new RoomControlPlaybackConfigRequestDto(1.25f));
 
-    var payload =
-        assertSingleMessage(Destinations.topicRoom(roomId), RoomPlaybackStateChangedEvent.class);
-    assertEquals(1.25f, payload.tempoMultiplier());
+    getMessageAsserter()
+        .assertSend(
+            Destinations.topicRoom(roomId),
+            RoomPlaybackStateChangedEvent.class,
+            payload -> assertEquals(1.25f, payload.tempoMultiplier()));
   }
 }

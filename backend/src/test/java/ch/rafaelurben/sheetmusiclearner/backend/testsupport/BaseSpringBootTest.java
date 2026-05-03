@@ -3,9 +3,10 @@ package ch.rafaelurben.sheetmusiclearner.backend.testsupport;
 
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import ch.rafaelurben.sheetmusiclearner.backend.service.MessagingService;
-import ch.rafaelurben.sheetmusiclearner.backend.utils.Destination;
 import java.util.UUID;
+import lombok.AccessLevel;
 import lombok.Getter;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,9 @@ public abstract class BaseSpringBootTest {
 
   @Getter private static User defaultUser;
 
+  @Getter(AccessLevel.PROTECTED)
+  private MessageAsserter messageAsserter;
+
   @BeforeAll
   static void beforeAll() {
     defaultUser = TestUsers.createUser(UUID.fromString("00000000-0000-0000-0000-000000000000"));
@@ -34,9 +38,13 @@ public abstract class BaseSpringBootTest {
   @BeforeEach
   void beforeEach() {
     TestUsers.setCurrentUser(defaultUser);
+    messageAsserter = new MessageAsserter(messagingService);
   }
 
-  protected <T> T assertSingleMessage(final Destination destination, final Class<T> payloadType) {
-    return MessagingAssertions.assertSingleSend(messagingService, destination, payloadType);
+  @AfterEach
+  void afterEach() {
+    if (messageAsserter != null) {
+      messageAsserter.assertNoMore();
+    }
   }
 }
