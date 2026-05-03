@@ -184,7 +184,13 @@ export default function PieceSectionsCard({
         <CardTitle>Sections</CardTitle>
       </CardHeader>
       <CardContent className="px-3">
-        <ScrollArea className="h-[75vh]">
+        <ScrollArea
+          className={
+            canEdit
+              ? "h-fit lg:h-[calc(100vh-18.5rem)]"
+              : "h-fit lg:h-[calc(100vh-15rem)]"
+          }
+        >
           <div className="flex flex-col gap-1.5">
             {sections.length === 0 && (
               <div className="flex h-full min-h-60 flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed text-sm text-muted-foreground">

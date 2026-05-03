@@ -116,7 +116,13 @@ export default function PieceScoreSheetsCard({
             )}
           </div>
         ) : (
-          <ScrollArea className="h-[60vh]">
+          <ScrollArea
+            className={
+              canShowUploadButton
+                ? "h-fit lg:h-[calc(100vh-28rem)]"
+                : "h-fit lg:h-[calc(100vh-24.5rem)]"
+            }
+          >
             <div className="grid gap-3 pr-1 grid-cols-1 @sm:grid-cols-2 @2xl:grid-cols-3">
               {scoreSheets.map((scoreSheet) => (
                 <PieceScoreSheetItem

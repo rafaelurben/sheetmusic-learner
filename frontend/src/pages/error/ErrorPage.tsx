@@ -31,7 +31,7 @@ export default function ErrorPage({
   actionLabel = "Go home",
 }: Readonly<ErrorPageProps>) {
   return (
-    <Empty className="bg-muted/30 h-dvh">
+    <Empty className="bg-muted/30 h-full">
       <EmptyHeader>
         <EmptyMedia variant="icon">{icon}</EmptyMedia>
         <EmptyTitle>{title}</EmptyTitle>
