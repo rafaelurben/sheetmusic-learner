@@ -5,12 +5,18 @@ import {
   Card,
   CardAction,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/shadcn/components/ui/card";
 import type { PieceDto } from "@/api/generated/openapi";
 import { Button } from "@/shadcn/components/ui/button.tsx";
-import { PencilIcon } from "lucide-react";
+import {
+  CalendarDaysIcon,
+  GaugeIcon,
+  MetronomeIcon,
+  PencilIcon,
+} from "lucide-react";
 
 interface PieceMetadataCardProps {
   piece: PieceDto;
@@ -26,7 +32,10 @@ export default function PieceMetadataCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Metadata</CardTitle>
+        <CardTitle>
+          {piece.title} · {piece.composer}
+        </CardTitle>
+        <CardDescription>{piece.description}</CardDescription>
         {canEdit && (
           <CardAction>
             <Button
@@ -41,27 +50,17 @@ export default function PieceMetadataCard({
           </CardAction>
         )}
       </CardHeader>
-      <CardContent className="grid grid-cols-1 gap-2 text-sm lg:grid-cols-2">
-        <div>
-          <span className="text-muted-foreground">Title:</span> {piece.title}
+      <CardContent className="flex flex-wrap gap-4 text-sm">
+        <div className="flex gap-1.5 items-center">
+          <CalendarDaysIcon size="1rem" className="text-muted-foreground" />
+          {piece.year}
         </div>
-        <div>
-          <span className="text-muted-foreground">Composer:</span>{" "}
-          {piece.composer}
-        </div>
-        <div>
-          <span className="text-muted-foreground">Year:</span> {piece.year}
-        </div>
-        <div>
-          <span className="text-muted-foreground">Description:</span>{" "}
-          {piece.description}
-        </div>
-        <div>
-          <span className="text-muted-foreground">Difficulty:</span>{" "}
+        <div className="flex gap-1.5 items-center">
+          <GaugeIcon size="1rem" className="text-muted-foreground" />
           {piece.difficulty}
         </div>
-        <div>
-          <span className="text-muted-foreground">BPM Range:</span>{" "}
+        <div className="flex gap-1.5 items-center">
+          <MetronomeIcon size="1rem" className="text-muted-foreground" />
           {piece.bpmRange}
         </div>
       </CardContent>
