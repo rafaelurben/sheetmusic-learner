@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
+import ch.rafaelurben.sheetmusiclearner.backend.exceptions.BadRequestException;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.UserRepository;
@@ -87,5 +88,11 @@ class UserServiceTest extends BaseSpringBootTest {
   @Test
   void testGetUserDtoByEmailDoesNotExist() {
     assertThrows(ObjectNotFoundException.class, () -> userService.getUserDtoByEmail("nonexistent"));
+  }
+
+  @Test
+  void testGetUserDtoByEmailInvalidParams() {
+    assertThrows(BadRequestException.class, () -> userService.getUserDtoByEmail(""));
+    assertThrows(BadRequestException.class, () -> userService.getUserDtoByEmail(null));
   }
 }

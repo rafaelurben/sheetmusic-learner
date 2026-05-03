@@ -1,6 +1,17 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="backend: tests" type="JUnit" factoryName="JUnit">
     <module name="backend" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="ch.rafaelurben.sheetmusiclearner.backend.api.*" />
+        <option name="ENABLED" value="true" />
+        <option name="INCLUDE" value="false" />
+      </pattern>
+      <pattern>
+        <option name="PATTERN" value="ch.rafaelurben.sheetmusiclearner.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="ALTERNATIVE_JRE_PATH" value="25" />
     <option name="PACKAGE_NAME" value="" />
