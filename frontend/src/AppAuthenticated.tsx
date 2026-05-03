@@ -10,8 +10,6 @@ import { Separator } from "@/shadcn/components/ui/separator.tsx";
 import { AppSidebar } from "@/components/sidebar/AppSidebar.tsx";
 import React, { useEffect } from "react";
 import PiecePageContainer from "@/pages/piece/PiecePageContainer.tsx";
-import DummyPiece from "@/pages/DummyPiece.tsx";
-import DummyRoom from "@/pages/DummyRoom.tsx";
 import DebugStompPage from "@/pages/debug/DebugStompPage.tsx";
 import { stompService } from "@/service/stompService.ts";
 import { useMainStore } from "@/zustand/mainStore.ts";
@@ -198,9 +196,7 @@ export default function AppAuthenticated() {
           <main className="flex-1 p-1 md:p-2 lg:p-3">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/rooms/dummy" element={<DummyRoom />} />
               <Route path="/rooms/:id" element={<RoomPageContainer />} />
-              <Route path="/pieces/dummy" element={<DummyPiece />} />
               <Route path="/pieces/:id" element={<PiecePageContainer />} />
               <Route path="/debug/stomp" element={<DebugStompPage />} />
               <Route path="*" element={<NotFoundPage />} />
