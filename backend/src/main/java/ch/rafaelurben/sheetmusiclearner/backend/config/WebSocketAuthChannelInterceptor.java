@@ -26,6 +26,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.stereotype.Component;
 
@@ -140,9 +141,12 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
 
         // Return a new message with the modified accessor to persist changes
         return MessageBuilder.createMessage(message.getPayload(), accessor.getMessageHeaders());
+      } catch (JwtValidationException e) {
+        log.warn("Invalid JWT Token: {}", e.getMessage());
+        throw new BadCredentialsException("Invalid JWT Token", e);
       } catch (Exception e) {
         log.error("Failed to authenticate WebSocket CONNECT!", e);
-        throw new BadCredentialsException("Invalid token", e);
+        throw new BadCredentialsException("Failed to authenticate!", e);
       }
     } else if (StompCommand.SUBSCRIBE.equals(command)) {
       handleSubscribe(accessor);
