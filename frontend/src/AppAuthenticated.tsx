@@ -146,10 +146,7 @@ export default function AppAuthenticated() {
     if (auth.isAuthenticated && auth.user?.access_token) {
       usersApi
         .getCurrentUser()
-        .then((user) => {
-          console.log(user);
-          setCurrentUser(user);
-        })
+        .then(setCurrentUser)
         .catch((error: unknown) => {
           console.error("Failed to fetch current user:", error);
         });

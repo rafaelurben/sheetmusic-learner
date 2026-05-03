@@ -61,11 +61,22 @@
   - Improved toast persistence
   - Code cleanup and some refactoring
   - Added single-user player to piece page
-- 2026-04-24 - 2026-04-25:
+- 2026-04-24 - 2026-04-26:
   - Player: Move tempo multiplier into popover menu
   - Player: Add back to beginning button
   - Player: Add keyboard controls
   - UI improvements
+  - Added simple testing setup for frontend and backend
+- 2026-05-02 - 2026-05-03:
+  - Added a section progress indicator bar
+  - Added a visual metronome
+  - Added proper error pages
+  - Added auditing
+  - Multiple UI improvements:
+    - Deletion of objects now shows a popover directly at the button location instead of a toast.
+    - Less scrollbars
+    - More compact piece metadata card
+  - Some code cleanup
 
 ## Project milestones
 
