@@ -65,7 +65,7 @@ export default function PiecePlayerDialog({
         <DialogHeader>
           <DialogTitle>Play: {piece.title}</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-1">
+        <div className="flex flex-1 min-h-0">
           <Player
             piece={piece}
             playbackState={playbackState}

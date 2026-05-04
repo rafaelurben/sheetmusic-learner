@@ -1,5 +1,8 @@
 import { useRoomStore } from "@/zustand/roomStore.ts";
-import { SidebarProvider } from "@/shadcn/components/ui/sidebar.tsx";
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/shadcn/components/ui/sidebar.tsx";
 import { SettingsIcon, UsersIcon } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
@@ -54,6 +57,7 @@ export default function RoomPageContainer() {
 
   return (
     <SidebarProvider
+      className="min-h-0 h-[calc(100vh-4.5rem)] lg:h-[calc(100vh-5.5rem)]"
       defaultOpen={false}
       style={
         {
@@ -62,9 +66,9 @@ export default function RoomPageContainer() {
         } as React.CSSProperties
       }
     >
-      <div className="flex h-full w-full">
+      <SidebarInset className="min-h-0">
         {/* Main content */}
-        <div className="flex flex-1 flex-col gap-4 p-2 pt-0 ">
+        <div className="flex flex-col min-h-0 gap-4 p-2 pt-0 ">
           {/* Header */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h1 className="text-xl font-bold sm:text-2xl">
@@ -121,29 +125,26 @@ export default function RoomPageContainer() {
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-1 gap-4">
-            {/* Main content area - Sheet music and controls */}
-            <div className="flex min-h-0 flex-1 flex-col gap-4">
-              {piece.id ? (
-                <RoomScoreSheetPanel
-                  room={room}
-                  canEditRoom={canEditRoom}
-                  piece={piece}
-                />
-              ) : (
-                <Card className="flex min-h-0 flex-1 flex-col">
-                  <CardContent className="flex min-h-0 flex-1 items-center justify-center text-center text-muted-foreground">
-                    No piece loaded for this room.
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+          {/* Sheet music and controls */}
+          <div className="flex min-h-0 flex-1 flex-col gap-4">
+            {piece.id ? (
+              <RoomScoreSheetPanel
+                room={room}
+                canEditRoom={canEditRoom}
+                piece={piece}
+              />
+            ) : (
+              <Card className="flex flex-1 flex-col">
+                <CardContent className="flex flex-1 items-center justify-center text-center text-muted-foreground">
+                  No piece loaded for this room.
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
+      </SidebarInset>
 
-        {/* Chat Sidebar */}
-        <ChatSidebar />
-      </div>
+      <ChatSidebar />
 
       <EditRoomDialog
         open={isEditingRoom}

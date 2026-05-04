@@ -173,7 +173,7 @@ export default function AppAuthenticated() {
   return (
     <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6">
       <SidebarProvider
-        className="flex"
+        className="flex h-auto"
         style={
           {
             "--sidebar-width": "19rem",

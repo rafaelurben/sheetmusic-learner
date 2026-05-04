@@ -56,8 +56,8 @@ export default function Player({
   }, [playbackState.playing]);
 
   return (
-    <Card className="flex min-h-0 flex-1 flex-col">
-      <CardContent className="flex min-h-0 flex-1 flex-col gap-4">
+    <Card className="flex min-h-0 flex-1 flex-col py-3">
+      <CardContent className="flex min-h-0 flex-1 flex-col gap-4 px-3">
         <PlayerSheetDisplay
           piece={piece}
           currentSectionId={currentSection?.id}
