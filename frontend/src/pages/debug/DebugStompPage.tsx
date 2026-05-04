@@ -14,7 +14,7 @@ import {
 import { Input } from "@/shadcn/components/ui/input.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
 import { stompService } from "@/service/stompService.ts";
-import type { PublishDestinationName } from "@/interfaces/PublishDestinationName.ts";
+import type { PublishDestinationName } from "@/interfaces/async/helpers/PublishDestinationName.ts";
 import type { RequestDto } from "@/interfaces/async/RequestDto.ts";
 import { toast } from "sonner";
 

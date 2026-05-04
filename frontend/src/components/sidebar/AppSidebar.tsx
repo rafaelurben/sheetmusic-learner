@@ -15,8 +15,8 @@ import { NavUser } from "@/components/sidebar/NavUser.tsx";
 import { useAuth } from "react-oidc-context";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "@/shadcn/components/ui/button";
-import { CreateRoomDialog } from "@/components/sidebar/CreateRoomDialog.tsx";
-import { CreatePieceDialog } from "@/components/sidebar/CreatePieceDialog.tsx";
+import { CreateRoomDialog } from "@/components/dialogs/CreateRoomDialog.tsx";
+import { CreatePieceDialog } from "@/components/dialogs/CreatePieceDialog.tsx";
 
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { type ComponentProps, useMemo, useState } from "react";

@@ -5,8 +5,8 @@ import {
   type StompSubscription,
 } from "@stomp/stompjs";
 import type { EventDto } from "@/interfaces/async/EventDto.ts";
-import type { SubscribeDestinationName } from "@/interfaces/SubscribeDestinationName.ts";
-import type { PublishDestinationName } from "@/interfaces/PublishDestinationName.ts";
+import type { SubscribeDestinationName } from "@/interfaces/async/helpers/SubscribeDestinationName.ts";
+import type { PublishDestinationName } from "@/interfaces/async/helpers/PublishDestinationName.ts";
 import type { RequestDto } from "@/interfaces/async/RequestDto.ts";
 import { toast } from "sonner";
 

@@ -10,8 +10,8 @@ import {
   CardTitle,
 } from "@/shadcn/components/ui/card.tsx";
 import { Button } from "@/shadcn/components/ui/button.tsx";
-import { CreateRoomDialog } from "@/components/sidebar/CreateRoomDialog.tsx";
-import { CreatePieceDialog } from "@/components/sidebar/CreatePieceDialog.tsx";
+import { CreateRoomDialog } from "@/components/dialogs/CreateRoomDialog.tsx";
+import { CreatePieceDialog } from "@/components/dialogs/CreatePieceDialog.tsx";
 
 export default function Home() {
   usePageTitle("Home");

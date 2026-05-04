@@ -8,7 +8,7 @@ import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import React, { useState } from "react";
 import ChatSidebar from "@/pages/room/ChatSidebar.tsx";
-import EditRoomDialog from "@/pages/room/EditRoomDialog.tsx";
+import EditRoomDialog from "@/components/dialogs/EditRoomDialog.tsx";
 import RoomScoreSheetPanel from "@/pages/room/RoomScoreSheetPanel.tsx";
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { useRoomsApi } from "@/api/useAuthenticatedApiClient.ts";

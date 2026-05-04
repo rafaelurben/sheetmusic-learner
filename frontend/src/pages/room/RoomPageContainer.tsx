@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 import { usePageTitle } from "@/zustand/pageTitleStore.ts";
 import { useMainStore } from "@/zustand/mainStore.ts";
-import type { SubscribeDestinationName } from "@/interfaces/SubscribeDestinationName.ts";
+import type { SubscribeDestinationName } from "@/interfaces/async/helpers/SubscribeDestinationName.ts";
 import ErrorPage from "@/pages/error/ErrorPage.tsx";
 import ForbiddenPage from "@/pages/error/ForbiddenPage.tsx";
 
