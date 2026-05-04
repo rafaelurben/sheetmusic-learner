@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/2026-04-19-01-section-name.yaml
   - include:
       file: db/changelog/2026-05-03-01-auditing.yaml
+  - include:
+      file: db/changelog/2026-05-04-seq.xml
