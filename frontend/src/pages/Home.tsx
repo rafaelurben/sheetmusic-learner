@@ -26,72 +26,70 @@ export default function Home() {
   const rooms = useMemo(() => Object.values(roomsRecord), [roomsRecord]);
 
   return (
-    <>
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle>Welcome</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Welcome back! Browse your pieces and rooms, or create a new one to
-              get started.
-            </p>
-          </CardContent>
-        </Card>
+    <div className="grid gap-4 md:grid-cols-2 p-2 pt-0">
+      <Card className="md:col-span-2">
+        <CardHeader>
+          <CardTitle>Welcome</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground">
+            Welcome back! Browse your pieces and rooms, or create a new one to
+            get started.
+          </p>
+        </CardContent>
+      </Card>
 
-        <SearchableObjectList
-          listTitle="Pieces"
-          searchPlaceholder="Search pieces"
-          emptyListText="No pieces available."
-          emptySearchText="No pieces match your search."
-          objects={pieces}
-          searchKeys={[
-            "description",
-            "composer",
-            "difficulty",
-            "year",
-            "bpmRange",
-          ]}
-          toPath={(piece) => `/pieces/${piece.id}`}
-          headerAction={
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-6"
-              onClick={() => {
-                setIsCreatingPiece(true);
-              }}
-              aria-label="Create piece"
-            >
-              <PlusIcon className="size-4" />
-            </Button>
-          }
-        />
+      <SearchableObjectList
+        listTitle="Pieces"
+        searchPlaceholder="Search pieces"
+        emptyListText="No pieces available."
+        emptySearchText="No pieces match your search."
+        objects={pieces}
+        searchKeys={[
+          "description",
+          "composer",
+          "difficulty",
+          "year",
+          "bpmRange",
+        ]}
+        toPath={(piece) => `/pieces/${piece.id}`}
+        headerAction={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-6"
+            onClick={() => {
+              setIsCreatingPiece(true);
+            }}
+            aria-label="Create piece"
+          >
+            <PlusIcon className="size-4" />
+          </Button>
+        }
+      />
 
-        <SearchableObjectList
-          listTitle="Rooms"
-          searchPlaceholder="Search rooms"
-          emptyListText="No rooms available."
-          emptySearchText="No rooms match your search."
-          objects={rooms}
-          searchKeys={[]}
-          toPath={(room) => `/rooms/${room.id}`}
-          headerAction={
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-6"
-              onClick={() => {
-                setIsCreatingRoom(true);
-              }}
-              aria-label="Create room"
-            >
-              <PlusIcon className="size-4" />
-            </Button>
-          }
-        />
-      </div>
+      <SearchableObjectList
+        listTitle="Rooms"
+        searchPlaceholder="Search rooms"
+        emptyListText="No rooms available."
+        emptySearchText="No rooms match your search."
+        objects={rooms}
+        searchKeys={[]}
+        toPath={(room) => `/rooms/${room.id}`}
+        headerAction={
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-6"
+            onClick={() => {
+              setIsCreatingRoom(true);
+            }}
+            aria-label="Create room"
+          >
+            <PlusIcon className="size-4" />
+          </Button>
+        }
+      />
 
       <CreateRoomDialog
         open={isCreatingRoom}
@@ -101,6 +99,6 @@ export default function Home() {
         open={isCreatingPiece}
         onOpenChange={setIsCreatingPiece}
       />
-    </>
+    </div>
   );
 }
