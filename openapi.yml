@@ -185,6 +185,49 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /api/v1/pieces/{id}/history:
+    get:
+      summary: Get piece revision history
+      operationId: getPieceHistory
+      tags:
+        - pieces
+      parameters:
+        - $ref: '#/components/parameters/id'
+      responses:
+        '200':
+          description: Piece revision history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PieceHistoryRevisionDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/v1/pieces/{id}/history/{revisionId}/revert:
+    post:
+      summary: Revert piece to a specific revision
+      operationId: revertPieceToRevision
+      tags:
+        - pieces
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/revisionId'
+      responses:
+        '201':
+          description: Piece reverted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/v1/rooms:
     get:
       summary: Get all accessible rooms
@@ -273,6 +316,13 @@ components:
         type: string
         format: uuid
       description: Unique resource identifier (UUID)
+    revisionId:
+      name: revisionId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Revision number to revert to
 
   responses:
     Unauthorized:
@@ -550,6 +600,18 @@ components:
     PermissionType:
       type: string
       enum: [ READER, EDITOR, OWNER ]
+
+    PieceHistoryRevisionDto:
+      type: object
+      properties:
+        revisionId:
+          type: integer
+        user:
+          $ref: '#/components/schemas/UserDto'
+        timestamp:
+          type: string
+          format: timestamp
+      required: [ revisionId, user, timestamp ]
 
   securitySchemes:
     bearerAuth:
