@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.UUID;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 
 @Entity
 @Table(name = "room_users")
@@ -12,6 +13,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 @Builder
 @IdClass(RoomUser.RoomUserId.class)
 public class RoomUser extends BaseEntity {

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.List;
 import java.util.UUID;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -14,6 +15,7 @@ import org.hibernate.envers.Audited;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 @Builder
 public class Piece extends BaseEntity {
 
@@ -49,15 +51,15 @@ public class Piece extends BaseEntity {
 
   // Relationships
 
-  @OneToMany(mappedBy = "piece", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = ScoreSheet.Fields.piece, cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("position ASC")
   private List<ScoreSheet> scoreSheets;
 
-  @OneToMany(mappedBy = "piece", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = ScoreSheet.Fields.piece, cascade = CascadeType.ALL, orphanRemoval = true)
   @OrderBy("position ASC")
   private List<Section> sections;
 
-  @OneToMany(mappedBy = "piece", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = ScoreSheet.Fields.piece, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<PiecePermission> permissions;
 
   // Helpers

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import java.util.UUID;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.envers.Audited;
 
 @Entity
@@ -14,6 +15,7 @@ import org.hibernate.envers.Audited;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 @Builder
 public class ScoreSheet extends BaseEntity {
 

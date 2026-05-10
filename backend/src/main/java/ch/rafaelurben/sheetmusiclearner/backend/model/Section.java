@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import java.util.UUID;
 import lombok.*;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Length;
 
@@ -16,6 +17,7 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 @Builder
 public class Section extends BaseEntity {
 

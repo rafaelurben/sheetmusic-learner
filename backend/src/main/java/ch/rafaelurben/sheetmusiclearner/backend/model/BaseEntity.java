@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -14,6 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @MappedSuperclass
 @Getter
 @Setter
+@FieldNameConstants
 public abstract class BaseEntity implements Serializable {
 
   @Serial private static final long serialVersionUID = 1L;

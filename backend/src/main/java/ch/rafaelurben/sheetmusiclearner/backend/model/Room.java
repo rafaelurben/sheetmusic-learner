@@ -63,7 +63,7 @@ public class Room extends BaseEntity {
   private Piece piece;
 
   @NotAudited
-  @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = RoomUser.Fields.room, cascade = CascadeType.ALL, orphanRemoval = true)
   private List<RoomUser> roomUsers;
 
   // Helpers
