@@ -18,6 +18,7 @@ import {
   DialogTitle,
 } from "@/shadcn/components/ui/dialog.tsx";
 import { RotateCcw } from "lucide-react";
+import { Badge } from "@/shadcn/components/ui/badge";
 
 interface Props {
   isOpen: boolean;
@@ -129,7 +130,22 @@ export default function PieceHistory({ isOpen, pieceId }: Readonly<Props>) {
               <div className="font-medium">
                 Revision {revision.revisionId}{" "}
                 {revision.revisionId === newestRevisionId && (
-                  <span className="text-xs text-green-500">Current</span>
+                  <Badge
+                    className="ms-1"
+                    variant="default"
+                    title="This is the current revision."
+                  >
+                    Current
+                  </Badge>
+                )}
+                {revision.revisionKind === "REVERT" && (
+                  <Badge
+                    className="ms-1"
+                    variant="destructive"
+                    title="This revision was created by reverting to another revision."
+                  >
+                    Revert
+                  </Badge>
                 )}
               </div>
               <div className="text-sm text-muted-foreground">

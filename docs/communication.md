@@ -8,21 +8,21 @@ Available as REST endpoints.
 
 Endpoint base: `/api/v1/`
 
-| Method | Endpoint                                    | Description                  |
-|--------|---------------------------------------------|------------------------------|
-| GET    | `users/me`                                  | Get the current user.        |
-| GET    | `users/by-email?email=...`                  | Get a user by email.         |
-| GET    | `pieces`                                    | Get all accessible pieces.   |
-| POST   | `pieces`                                    | Create a new piece.          |
-| GET    | `pieces/{id}`                               | Get a specific piece.        |
-| DELETE | `pieces/{id}`                               | Delete a specific piece.     |
-| POST   | `pieces/{id}/score/upload`                  | Upload new score sheets.     |
-| GET    | `pieces/{id}/revisions`                     | Get all revisions of a piece |
-| POST   | `pieces/{id}/revisions/{revisionId}/revert` | Revert a piece to a revision |
-| GET    | `rooms`                                     | Get all accessible rooms     |
-| POST   | `rooms`                                     | Create a new room.           |
-| GET    | `rooms/{id}`                                | Get a specific room.         |
-| DELETE | `rooms/{id}`                                | Delete a specific room.      |
+| Method | Endpoint                                  | Description                  |
+|--------|-------------------------------------------|------------------------------|
+| GET    | `users/me`                                | Get the current user.        |
+| GET    | `users/by-email?email=...`                | Get a user by email.         |
+| GET    | `pieces`                                  | Get all accessible pieces.   |
+| POST   | `pieces`                                  | Create a new piece.          |
+| GET    | `pieces/{id}`                             | Get a specific piece.        |
+| DELETE | `pieces/{id}`                             | Delete a specific piece.     |
+| POST   | `pieces/{id}/score/upload`                | Upload new score sheets.     |
+| GET    | `pieces/{id}/history`                     | Get all revisions of a piece |
+| POST   | `pieces/{id}/history/{revisionId}/revert` | Revert a piece to a revision |
+| GET    | `rooms`                                   | Get all accessible rooms     |
+| POST   | `rooms`                                   | Create a new room.           |
+| GET    | `rooms/{id}`                              | Get a specific room.         |
+| DELETE | `rooms/{id}`                              | Delete a specific room.      |
 
 A detailed description of the REST API endpoints can be found in the [OpenAPI document](../openapi.yml).
 
@@ -193,6 +193,8 @@ are relevant only for those users.
         "piece": {/* PieceDto */}
       }
       ```
+  - History entries returned by the REST API include `revisionKind` (`DEFAULT` for regular revisions and `REVERT`
+    for revisions created by a revert action).
 - `type`: `piece-deleted`
     - Description: The piece was deleted.
     - Payload: *none*

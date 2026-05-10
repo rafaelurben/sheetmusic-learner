@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026051001-1
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            tableName: revinfo
+            columns:
+              - column:
+                  name: kind
+                  type: VARCHAR(255)
+        - sql:
+            sql: UPDATE revinfo SET kind = 'DEFAULT' WHERE kind IS NULL
+        - addNotNullConstraint:
+            tableName: revinfo
+            columnName: kind
+            columnDataType: VARCHAR(255)

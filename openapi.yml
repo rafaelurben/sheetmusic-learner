@@ -601,6 +601,10 @@ components:
       type: string
       enum: [ READER, EDITOR, OWNER ]
 
+    RevisionKind:
+      type: string
+      enum: [ DEFAULT, REVERT ]
+
     PieceHistoryRevisionDto:
       type: object
       properties:
@@ -611,7 +615,9 @@ components:
         timestamp:
           type: string
           format: timestamp
-      required: [ revisionId, user, timestamp ]
+        revisionKind:
+          $ref: '#/components/schemas/RevisionKind'
+      required: [ revisionId, user, timestamp, revisionKind ]
 
   securitySchemes:
     bearerAuth:

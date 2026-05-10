@@ -3,7 +3,9 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PermissionType;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceHistoryRevisionDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RevisionKind;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
+import ch.rafaelurben.sheetmusiclearner.backend.config.auditing.AuditRevisionListener;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.PieceHistoryRevertedEvent;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.PieceMapper;
@@ -29,6 +31,8 @@ import org.hibernate.envers.query.AuditEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -67,6 +71,7 @@ public class PieceHistoryServiceImpl implements PieceHistoryService {
       dto.setRevisionId(revisionNumber.intValue());
       dto.setUser(userDto);
       dto.setTimestamp(Instant.ofEpochMilli(auditRevisionEntry.getTimestamp()).toString());
+      dto.setRevisionKind(auditRevisionEntry.getRevisionKind());
       history.add(dto);
     }
 
@@ -75,6 +80,7 @@ public class PieceHistoryServiceImpl implements PieceHistoryService {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public List<PieceHistoryRevisionDto> getPieceHistoryById(User user, UUID pieceId) {
     Piece piece =
         pieceRepository
@@ -136,52 +142,69 @@ public class PieceHistoryServiceImpl implements PieceHistoryService {
     // Get current piece reference
     Piece currentPiece = entityManager.find(Piece.class, pieceId);
 
-    // Clear sections and scoresheets
-    currentPiece.getScoreSheets().clear();
-    currentPiece.getSections().clear();
-
-    // Restore scoresheets
-    @SuppressWarnings("unchecked")
-    List<ScoreSheet> historicalScoreSheets =
-        auditReader
-            .createQuery()
-            .forEntitiesAtRevision(ScoreSheet.class, revisionId)
-            .add(AuditEntity.relatedId(ScoreSheet.Fields.piece).eq(pieceId))
-            .getResultList();
-    Map<UUID, ScoreSheet> restoredScoreSheetByHistoricalId = new HashMap<>();
-    for (ScoreSheet historicalScoreSheet : historicalScoreSheets) {
-      ScoreSheet newScoreSheet = new ScoreSheet();
-      scoreSheetMapper.updateFromHistoricalVersion(newScoreSheet, historicalScoreSheet);
-      newScoreSheet.setPiece(currentPiece);
-      currentPiece.getScoreSheets().add(newScoreSheet);
-      restoredScoreSheetByHistoricalId.put(historicalScoreSheet.getId(), newScoreSheet);
+    AuditRevisionListener.setRevisionKind(RevisionKind.REVERT);
+    if (TransactionSynchronizationManager.isSynchronizationActive()) {
+      TransactionSynchronizationManager.registerSynchronization(
+          new TransactionSynchronization() {
+            @Override
+            public void afterCompletion(int status) {
+              AuditRevisionListener.clearRevisionKind();
+            }
+          });
     }
 
-    // Restore sections
-    @SuppressWarnings("unchecked")
-    List<Section> historicalSections =
-        auditReader
-            .createQuery()
-            .forEntitiesAtRevision(Section.class, revisionId)
-            .add(AuditEntity.relatedId(Section.Fields.piece).eq(pieceId))
-            .getResultList();
-    for (Section historicalSection : historicalSections) {
-      Section newSection = new Section();
-      sectionMapper.updateFromHistoricalVersion(newSection, historicalSection);
-      newSection.setPiece(currentPiece);
-      if (historicalSection.getScoreSheet() != null) {
-        ScoreSheet restoredScoreSheet =
-            restoredScoreSheetByHistoricalId.get(historicalSection.getScoreSheet().getId());
-        newSection.setScoreSheet(restoredScoreSheet);
+    try {
+      // Clear sections and scoresheets
+      currentPiece.getScoreSheets().clear();
+      currentPiece.getSections().clear();
+
+      // Restore scoresheets
+      @SuppressWarnings("unchecked")
+      List<ScoreSheet> historicalScoreSheets =
+          auditReader
+              .createQuery()
+              .forEntitiesAtRevision(ScoreSheet.class, revisionId)
+              .add(AuditEntity.relatedId(ScoreSheet.Fields.piece).eq(pieceId))
+              .getResultList();
+      Map<UUID, ScoreSheet> restoredScoreSheetByHistoricalId = new HashMap<>();
+      for (ScoreSheet historicalScoreSheet : historicalScoreSheets) {
+        ScoreSheet newScoreSheet = new ScoreSheet();
+        scoreSheetMapper.updateFromHistoricalVersion(newScoreSheet, historicalScoreSheet);
+        newScoreSheet.setPiece(currentPiece);
+        currentPiece.getScoreSheets().add(newScoreSheet);
+        restoredScoreSheetByHistoricalId.put(historicalScoreSheet.getId(), newScoreSheet);
       }
-      currentPiece.getSections().add(newSection);
+
+      // Restore sections
+      @SuppressWarnings("unchecked")
+      List<Section> historicalSections =
+          auditReader
+              .createQuery()
+              .forEntitiesAtRevision(Section.class, revisionId)
+              .add(AuditEntity.relatedId(Section.Fields.piece).eq(pieceId))
+              .getResultList();
+      for (Section historicalSection : historicalSections) {
+        Section newSection = new Section();
+        sectionMapper.updateFromHistoricalVersion(newSection, historicalSection);
+        newSection.setPiece(currentPiece);
+        if (historicalSection.getScoreSheet() != null) {
+          ScoreSheet restoredScoreSheet =
+              restoredScoreSheetByHistoricalId.get(historicalSection.getScoreSheet().getId());
+          newSection.setScoreSheet(restoredScoreSheet);
+        }
+        currentPiece.getSections().add(newSection);
+      }
+
+      // Finish update and persist piece
+
+      pieceMapper.updateFromHistoricalVersion(currentPiece, historicalPiece);
+
+      entityManager.flush();
+    } finally {
+      if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+        AuditRevisionListener.clearRevisionKind();
+      }
     }
-
-    // Finish update and persist piece
-
-    pieceMapper.updateFromHistoricalVersion(currentPiece, historicalPiece);
-
-    entityManager.flush();
     log.info("Piece {} reverted to revision {}", pieceId, revisionId);
 
     messagingService.send(
