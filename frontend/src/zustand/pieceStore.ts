@@ -201,6 +201,13 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
           },
         }));
         return;
+      case "piece-history-reverted":
+        set({
+          piece: event.payload.piece,
+          editingSectionId: null,
+          sectionForm: null,
+        });
+        return;
     }
   },
 }));

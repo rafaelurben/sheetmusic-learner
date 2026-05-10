@@ -25,6 +25,7 @@ import type PlaybackStateChangedPayload from "@/interfaces/async/payload/room/Pl
 import type UserJoinedPayload from "@/interfaces/async/payload/room/UserJoinedPayload.ts";
 import type UserLeftPayload from "@/interfaces/async/payload/room/UserLeftPayload.ts";
 import type ErrorPayload from "@/interfaces/async/payload/user/ErrorPayload.ts";
+import type PieceHistoryRevertedPayload from "./payload/piece/PieceHistoryRevertedPayload";
 
 export type GeneralEventDto =
   | {
@@ -92,6 +93,10 @@ export type PieceEventDto =
   | {
       type: "permission-removed";
       payload: PermissionRemovedPayload;
+    }
+  | {
+      type: "piece-history-reverted";
+      payload: PieceHistoryRevertedPayload;
     }
   | {
       type: "piece-deleted";

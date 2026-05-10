@@ -4,9 +4,11 @@ package ch.rafaelurben.sheetmusiclearner.backend.io.sync.controller;
 import ch.rafaelurben.sheetmusiclearner.backend.api.controller.PiecesApi;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceHistoryRevisionDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
+import ch.rafaelurben.sheetmusiclearner.backend.service.PieceHistoryService;
 import ch.rafaelurben.sheetmusiclearner.backend.service.PieceService;
 import ch.rafaelurben.sheetmusiclearner.backend.service.UserService;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class PiecesController implements PiecesApi {
 
   private final PieceService pieceService;
+  private final PieceHistoryService pieceHistoryService;
   private final UserService userService;
 
   @Override
@@ -52,5 +55,17 @@ public class PiecesController implements PiecesApi {
   public List<ScoreSheetDto> uploadScoreSheets(UUID id, List<MultipartFile> files) {
     User user = userService.getCurrentUserEntity();
     return pieceService.uploadScoreSheets(user, id, files);
+  }
+
+  @Override
+  public List<PieceHistoryRevisionDto> getPieceHistory(UUID id) {
+    User user = userService.getCurrentUserEntity();
+    return pieceHistoryService.getPieceHistoryById(user, id);
+  }
+
+  @Override
+  public void revertPieceToRevision(UUID id, Integer revisionId) {
+    User user = userService.getCurrentUserEntity();
+    pieceHistoryService.restorePieceToRevision(user, id, revisionId);
   }
 }

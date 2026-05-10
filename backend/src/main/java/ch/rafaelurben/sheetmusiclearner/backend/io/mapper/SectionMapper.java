@@ -23,4 +23,11 @@ public interface SectionMapper {
 
   void updateEntityFromUpdateRequest(
       @MappingTarget Section section, PieceSectionUpdateRequestDto updateRequestDto);
+
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "piece", ignore = true)
+  @Mapping(target = "scoreSheet", ignore = true)
+  @Mapping(target = "timestampCreated", ignore = true)
+  @Mapping(target = "timestampUpdated", ignore = true)
+  void updateFromHistoricalVersion(@MappingTarget Section section, Section historicalSection);
 }

@@ -7,6 +7,7 @@ import {
 import { usePiecesApi } from "@/api/useAuthenticatedApiClient.ts";
 import EditPieceDialog from "@/components/dialogs/EditPieceDialog.tsx";
 import PiecePermissions from "@/pages/piece/permissions/PiecePermissions.tsx";
+import PieceHistory from "@/pages/piece/history/PieceHistory.tsx";
 import PieceMetadataCard from "@/pages/piece/PieceMetadataCard.tsx";
 import PieceScoreSheetsCard from "@/pages/piece/scoresheets/PieceScoreSheetsCard.tsx";
 import PieceSectionsCard from "@/pages/piece/sections/PieceSectionsCard.tsx";
@@ -19,7 +20,7 @@ import {
 import { useMainStore } from "@/zustand/mainStore.ts";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import { usePageTitle } from "@/zustand/pageTitleStore.ts";
-import { PlayIcon, UsersIcon } from "lucide-react";
+import { HistoryIcon, PlayIcon, UsersIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import PiecePlayerDialog from "@/pages/piece/PiecePlayerDialog.tsx";
@@ -32,6 +33,7 @@ export default function PiecePage() {
   const piecesApi = usePiecesApi();
 
   const [isPermissionsOpen, setIsPermissionsOpen] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const [isEditingPiece, setIsEditingPiece] = useState(false);
   const [isDeletingPiece, setIsDeletingPiece] = useState(false);
@@ -96,6 +98,18 @@ export default function PiecePage() {
               <UsersIcon className="size-4" />
               Permissions
             </Button>
+            {canEditPiece && (
+              <Button
+                variant="outline"
+                className="gap-2"
+                onClick={() => {
+                  setIsHistoryOpen(true);
+                }}
+              >
+                <HistoryIcon className="size-4" />
+                History
+              </Button>
+            )}
             {canDeletePiece && (
               <DeleteButton
                 title="Delete this piece?"
@@ -142,6 +156,17 @@ export default function PiecePage() {
           />
         </SheetContent>
       </Sheet>
+
+      {canEditPiece && (
+        <Sheet open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
+          <SheetContent className="sm:max-w-full md:max-w-lg">
+            <SheetHeader>
+              <SheetTitle>History</SheetTitle>
+            </SheetHeader>
+            <PieceHistory pieceId={piece.id} isOpen={isHistoryOpen} />
+          </SheetContent>
+        </Sheet>
+      )}
 
       {isPlayerOpen && (
         <PiecePlayerDialog

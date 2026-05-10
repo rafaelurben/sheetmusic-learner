@@ -7,11 +7,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Piece;
 import java.util.List;
-import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValueMappingStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 @Mapper(
     componentModel = MappingConstants.ComponentModel.SPRING,
@@ -30,4 +26,13 @@ public interface PieceMapper {
 
   void updateEntityFromUpdateRequest(
       @MappingTarget Piece piece, PieceUpdateRequestDto updateRequestDto);
+
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "isPublic", ignore = true)
+  @Mapping(target = "scoreSheets", ignore = true)
+  @Mapping(target = "sections", ignore = true)
+  @Mapping(target = "permissions", ignore = true)
+  @Mapping(target = "timestampCreated", ignore = true)
+  @Mapping(target = "timestampUpdated", ignore = true)
+  void updateFromHistoricalVersion(@MappingTarget Piece piece, Piece historicalPiece);
 }
