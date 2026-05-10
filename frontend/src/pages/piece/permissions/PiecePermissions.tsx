@@ -159,7 +159,7 @@ export default function PiecePermissions({
   };
 
   return (
-    <div className="space-y-2 px-4">
+    <div className="space-y-2 px-4 overflow-y-scroll">
       <div
         className={`flex items-center justify-between rounded-md border p-3 ${
           isPublic
