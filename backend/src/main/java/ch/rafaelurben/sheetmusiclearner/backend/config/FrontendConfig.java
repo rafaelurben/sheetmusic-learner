@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
+/** Helper class to read application properties for the frontend configuration. */
 @Getter
 @Configuration
 public class FrontendConfig {

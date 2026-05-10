@@ -5,24 +5,23 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceMetadataDto;
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionAddRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionRemoveRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PiecePermissionUpdateRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetRemoveRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceScoreSheetUpdateRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionAddRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionRemoveRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceSectionUpdateRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.PieceUpdateRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.exceptions.InsufficientPermissionException;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.*;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
 
+/** Service for all piece-related requests. */
 public interface PieceService {
 
+  /** Get all pieces that are readable by a specific user. */
   List<PieceMetadataDto> getAllAccessiblePieces(User user);
 
+  /**
+   * Ensure that a piece is readable by a specific user, otherwise throw an {@link
+   * InsufficientPermissionException}.
+   */
   void ensureReadableByUser(UUID userId, UUID pieceId);
 
   PieceDto createPiece(User user, PieceCreateRequestDto createRequestDto);

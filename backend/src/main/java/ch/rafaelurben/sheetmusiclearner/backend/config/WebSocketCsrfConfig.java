@@ -18,13 +18,16 @@ import org.springframework.security.messaging.context.AuthenticationPrincipalArg
 import org.springframework.security.messaging.context.SecurityContextChannelInterceptor;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+/**
+ * CSRF-specific WebSocket config. Because all STOMP sessions are authenticated by using a JWT token
+ * in the Authorization header, there is no need for CSRF. </br> Disabling CSRF currently not
+ * possible with @EnableWebSocketSecurity </br> <a
+ * href="https://docs.spring.io/spring-security/reference/servlet/integrations/websocket.html#websocket-sameorigin-disable">Docs</a>
+ */
 @Configuration
 @RequiredArgsConstructor
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebSocketCsrfConfig implements WebSocketMessageBrokerConfigurer {
-
-  // CSRF needs to be disabled - currently not possible with @EnableWebSocketSecurity
-  // https://docs.spring.io/spring-security/reference/servlet/integrations/websocket.html#websocket-sameorigin-disable
 
   private final ApplicationContext applicationContext;
   private final AuthorizationManager<Message<?>> authorizationManager;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
+/** Helper class to read S3-related application properties. */
 @Component
 @ConfigurationProperties(prefix = "app.s3")
 @Data

@@ -14,6 +14,10 @@ import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
+/**
+ * Global handler for any exceptions in async controllers. Used to map errors to a {@link
+ * UserErrorEvent} so the frontend can display an appropriate message.
+ */
 @Slf4j
 @ControllerAdvice(basePackages = "ch.rafaelurben.sheetmusiclearner.backend.io.async.controller")
 public class GlobalMessagingExceptionHandler {

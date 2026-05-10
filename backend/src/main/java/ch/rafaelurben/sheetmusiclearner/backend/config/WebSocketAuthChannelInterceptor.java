@@ -30,6 +30,7 @@ import org.springframework.security.oauth2.jwt.JwtValidationException;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.stereotype.Component;
 
+/** This interceptor intercepts STOMP requests in order to authenticate and authorize them. */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -70,6 +71,7 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
     roomUserService.deleteRoomUser(roomUserId);
   }
 
+  /** Basic handler for any STOMP SUBSCRIBE frame. */
   private void handleSubscribe(StompHeaderAccessor accessor) {
     if (!(accessor.getUser() instanceof Authentication authentication)) {
       throw new BadCredentialsException("Missing authentication for STOMP frame");
@@ -93,6 +95,7 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
     }
   }
 
+  /** Basic handler for any STOMP UNSUBSCRIBE frame. */
   private void handleUnsubscribe(StompHeaderAccessor accessor) {
     // Handle /topic/room.xxx
     getSubscriptionKey(accessor)
@@ -100,6 +103,13 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
         .ifPresent(this::handleRoomLeave);
   }
 
+  /**
+   * Actual handler that gets called from the framework. The following STOMP commands are handled:
+   * </br> - {@link StompCommand#CONNECT}: Authenticates session and stores user in session.</br> -
+   * {@link StompCommand#SUBSCRIBE}: Delegates to {@link #handleSubscribe} for authorization or
+   * other tasks.</br> - {@link StompCommand#UNSUBSCRIBE}: Delegates to {@link #handleUnsubscribe}
+   * for cleanup tasks.</br> For other commands, no special handling is done in this interceptor.
+   */
   @Override
   public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
     StompHeaderAccessor accessor =
@@ -157,6 +167,7 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
     return message;
   }
 
+  /** Handler that gets called after completion. Used only for logging purposes. */
   @Override
   public void afterSendCompletion(
       @NonNull Message<?> message, @NonNull MessageChannel channel, boolean sent, Exception ex) {

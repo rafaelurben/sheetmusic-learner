@@ -18,6 +18,9 @@ public interface SectionRepository extends JpaRepository<Section, UUID> {
 
   Optional<Section> findByIdAndPieceId(UUID id, UUID pieceId);
 
+  /**
+   * Clear the scoresheet reference for all sections of a piece that reference a given scoresheet.
+   */
   @Modifying
   @Query(
       "UPDATE Section s SET s.scoreSheet = null WHERE s.piece.id = :pieceId AND s.scoreSheet.id ="

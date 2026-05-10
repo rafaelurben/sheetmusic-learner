@@ -13,6 +13,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import java.util.List;
 import java.util.UUID;
 
+/** Service for all room-related requests. */
 public interface RoomService {
 
   List<RoomMetadataDto> getAllAvailableRooms(User user);

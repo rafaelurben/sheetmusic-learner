@@ -11,6 +11,7 @@ import org.springframework.security.authorization.AuthorizationManager;
 import org.springframework.security.messaging.access.intercept.MessageMatcherDelegatingAuthorizationManager;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+/** Security-specific WebSocket config. */
 @Configuration
 @RequiredArgsConstructor
 public class WebSocketSecurityConfig implements WebSocketMessageBrokerConfigurer {

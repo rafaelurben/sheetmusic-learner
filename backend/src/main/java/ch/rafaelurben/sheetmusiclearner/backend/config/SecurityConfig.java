@@ -18,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
+/** Security config for REST endpoints. */
 @Configuration
 @EnableWebSecurity
 @Slf4j
@@ -42,6 +43,10 @@ public class SecurityConfig {
     return http.build();
   }
 
+  /**
+   * This RestOperation config is used for fetching the OIDC issuer config. (See {@link
+   * #jwtDecoder(RestOperations)} below.)
+   */
   @Bean
   public RestOperations restOperations() {
     log.info("Configuring RestTemplate with 5 second timeouts for OIDC discovery");

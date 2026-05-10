@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+/** Base class for all entities. */
 @MappedSuperclass
 @Getter
 @Setter

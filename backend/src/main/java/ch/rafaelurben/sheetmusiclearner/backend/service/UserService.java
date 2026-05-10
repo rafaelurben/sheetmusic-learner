@@ -5,6 +5,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import org.springframework.security.core.Authentication;
 
+/** Service with user-related utilities. */
 public interface UserService {
 
   /**
@@ -21,8 +22,18 @@ public interface UserService {
     return getCurrentUserEntity(false);
   }
 
+  /**
+   * Gets the user entity for the specified {@link Authentication}. Will be created from the JWT if
+   * it does not exist yet.
+   *
+   * @param update Force an update of the user entity from the JWT.
+   */
   User getUserEntity(Authentication authentication, boolean update);
 
+  /**
+   * Shorthand for {@link #getUserEntity(Authentication, boolean)} with {@code update} set to {@code
+   * false}.
+   */
   default User getUserEntity(Authentication authentication) {
     return getUserEntity(authentication, false);
   }

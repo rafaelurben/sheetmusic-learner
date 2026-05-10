@@ -12,6 +12,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PieceRepository extends JpaRepository<Piece, UUID> {
 
+  /**
+   * Find all pieces a user may read. This includes all public pieces and all pieces for which the
+   * user has explicit permissions.
+   */
   @Query(
       "SELECT p FROM Piece p WHERE p.isPublic = true OR EXISTS (SELECT pp FROM PiecePermission pp"
           + " WHERE pp.piece.id = p.id AND pp.user.id = :userId)")
