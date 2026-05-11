@@ -80,6 +80,8 @@
 - 2026-05-10 - 2026-05-11:
   - Added history/revert feature for pieces
   - Added preview of piece history
+  - Code cleanup
+  - Updated documentation
 
 ## Project milestones
 

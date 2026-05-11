@@ -18,7 +18,7 @@ requirements and are not listed separately to avoid redundancy.
     - [FR-05 — Access control (ACL)](#fr-05--piece-access-control-acl)
     - [FR-06 — Manage sections](#fr-06--manage-sections)
     - [FR-07 — Time signature and tempo information](#fr-07--time-signature-and-tempo-information)
-  - [FR-08 — Realtime collaborative editing](#fr-08--realtime-collaborative-editing)
+    - [FR-08 — Realtime collaborative editing](#fr-08--realtime-collaborative-editing)
     - [OFR-02 — Staff management](#ofr-02--staff-management)
     - [OFR-03 — Edit score](#ofr-03--edit-score)
     - [OFR-04 — Repeat sections](#ofr-04--repeat-sections)
@@ -296,3 +296,42 @@ Code should be written with testability in mind, reducing coupling as much as po
 [1]: https://en.wikipedia.org/wiki/Staff_(music)#Ensemble_staves
 
 [2]: https://de.wikipedia.org/wiki/Notensystem_(Musik)
+
+## Completion status
+
+| ID      | Status | Description                                                                         |
+|---------|--------|-------------------------------------------------------------------------------------|
+| FR-01   | ✅      | Piece list and details - fully implemented with piece metadata display              |
+| FR-02   | ✅      | Create piece - users can create pieces with title and composer                      |
+| FR-03   | ✅      | Upload score - PDF upload converted to PNG sheets and stored in S3                  |
+| FR-04   | ✅      | Edit piece - metadata editing with STOMP real-time sync                             |
+| FR-05   | ✅      | Piece ACL - access control with OWNER/EDITOR/READER permissions                     |
+| FR-06   | ✅      | Manage sections - create/edit/delete sections with metadata                         |
+| FR-07   | ✅      | Time signature & tempo - sections have time signature and BPM fields                |
+| FR-08   | ✅      | Realtime collaborative editing - all changes synced via STOMP/WebSocket             |
+| FR-09   | ✅      | Page navigation - navigate pages via sections as player controls                    |
+| FR-10   | ✅      | Playback with tempo multiplier - player with adjustable tempo                       |
+| FR-11   | ✅      | Visual cursor - current section position and progress displayed                     |
+| FR-12   | ✅      | Create room - users can create rooms from home page                                 |
+| FR-13   | ✅      | Share piece to room - room owner can select piece to share                          |
+| FR-14   | ✅      | List/join/leave rooms - room discovery and implicit join/leave                      |
+| FR-15   | ✅      | Room chat - real-time messaging via STOMP; not persisted                            |
+| FR-16   | ✅      | Owner control & sync - owner can control playback, synced to all users              |
+| FR-17   | ✅      | OAuth sign-in - OIDC authentication with external provider                          |
+| NFR-01  | ✅      | File storage - S3-compatible bucket with AWS SDK implementation                     |
+| NFR-02  | ✅      | Data storage - PostgreSQL with Spring Data JPA and Liquibase migrations             |
+| NFR-03  | ✅      | Realtime communication - STOMP over WebSocket protocol                              |
+| NFR-04  | ✅      | Responsive design - Tailwind CSS for mobile/tablet/desktop                          |
+| NFR-05  | ✅      | Audit logging - Hibernate Envers tracks all entity changes                          |
+| OFR-01  | ❌      | Change room visibility - not implemented, all rooms are public                      |
+| OFR-02  | ❌      | Staff management - not implemented, no staff/instrument separation model            |
+| OFR-03  | ◐      | Edit score - upload of new scoresheets, deletion of existing; no direct replacement |
+| OFR-04  | ❌      | Repeat sections - not implemented, no repeat count field in sections                |
+| OFR-05  | ❌      | Staff view - not implemented as OFR-02 is missing                                   |
+| OFR-06  | ✅      | Visual metronome - animated beat indicator during playback                          |
+| OFR-07  | ✅      | Audio metronome - Web Audio API with click sounds                                   |
+| OFR-08  | ❌      | Full-screen view - not implemented, no fullscreen capabilities                      |
+| ONFR-01 | ✅      | User avatars - implemented via OIDC picture property                                |
+| QR-01   | ✅      | No redundancy - OpenAPI specification ensures single source of truth                |
+| QR-02   | ✅      | Project structure - standard Spring Boot + React/Vite + TypeScript layout           |
+| QR-03   | ✅      | Loose coupling - service layer abstraction, STOMP for async, dependency injection   |
