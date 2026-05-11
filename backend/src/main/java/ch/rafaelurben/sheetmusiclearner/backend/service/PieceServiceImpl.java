@@ -275,12 +275,6 @@ public class PieceServiceImpl implements PieceService {
           permittedUsers, new GeneralPieceNowUnavailableEvent(pieceId).asDto());
     }
     messagingService.send(Destinations.topicPiece(pieceId), new PieceDeletedEvent().asDto());
-
-    Iterable<String> scoreSheetS3Keys =
-        deletedPiece.getScoreSheets().stream().map(ScoreSheet::getS3Key).toList();
-    for (String scoreSheetS3Key : scoreSheetS3Keys) {
-      s3Service.deleteFile(scoreSheetS3Key);
-    }
   }
 
   @Override
@@ -390,8 +384,6 @@ public class PieceServiceImpl implements PieceService {
     messagingService.send(
         Destinations.topicPiece(pieceId),
         new PieceScoreSheetRemovedEvent(scoreSheet.getId()).asDto());
-
-    s3Service.deleteFile(scoreSheet.getS3Key());
   }
 
   @Override
