@@ -1,6 +1,8 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.model;
 
+import ch.rafaelurben.sheetmusiclearner.backend.utils.WithId;
+import ch.rafaelurben.sheetmusiclearner.backend.utils.WithPosition;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import java.util.UUID;
@@ -17,7 +19,7 @@ import org.hibernate.envers.Audited;
 @AllArgsConstructor
 @FieldNameConstants
 @Builder
-public class ScoreSheet extends BaseEntity {
+public class ScoreSheet extends BaseEntity implements WithId<UUID>, WithPosition {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)

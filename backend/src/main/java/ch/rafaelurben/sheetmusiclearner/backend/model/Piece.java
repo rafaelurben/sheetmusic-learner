@@ -1,6 +1,7 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.model;
 
+import ch.rafaelurben.sheetmusiclearner.backend.utils.WithId;
 import jakarta.persistence.*;
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +18,7 @@ import org.hibernate.envers.Audited;
 @AllArgsConstructor
 @FieldNameConstants
 @Builder
-public class Piece extends BaseEntity {
+public class Piece extends BaseEntity implements WithId<UUID> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)

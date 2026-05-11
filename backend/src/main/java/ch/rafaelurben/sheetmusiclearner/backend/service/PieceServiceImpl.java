@@ -36,6 +36,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.repository.RoomUserRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.ScoreSheetRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.SectionRepository;
 import ch.rafaelurben.sheetmusiclearner.backend.repository.UserRepository;
+import ch.rafaelurben.sheetmusiclearner.backend.utils.CollectionUtils;
 import ch.rafaelurben.sheetmusiclearner.backend.utils.Destinations;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -100,21 +101,19 @@ public class PieceServiceImpl implements PieceService {
     return scoreSheetRepository.findMaxPositionByPieceId(pieceId).orElse(-1) + 1;
   }
 
-  private ScoreSheet getScoreSheetEntityById(final UUID pieceId, final UUID scoreSheetId) {
-    return scoreSheetRepository
-        .findByIdAndPieceId(scoreSheetId, pieceId)
-        .orElseThrow(() -> new ObjectNotFoundException("Score sheet not found"));
+  private ScoreSheet getScoreSheetEntityById(final Piece piece, final UUID scoreSheetId) {
+    return CollectionUtils.findByIdOrThrow(
+        piece.getScoreSheets(), scoreSheetId, "Score sheet not found");
   }
 
-  private Section getSectionEntityById(final UUID pieceId, final UUID sectionId) {
-    return sectionRepository
-        .findByIdAndPieceId(sectionId, pieceId)
-        .orElseThrow(() -> new ObjectNotFoundException("Section not found"));
+  private Section getSectionEntityById(final Piece piece, final UUID sectionId) {
+    return CollectionUtils.findByIdOrThrow(piece.getSections(), sectionId, "Section not found");
   }
 
-  private PiecePermission getPiecePermissionEntityByUserId(final UUID pieceId, final UUID userId) {
-    return piecePermissionRepository
-        .findByPieceIdAndUserId(pieceId, userId)
+  private PiecePermission getPiecePermissionEntityByUserId(final Piece piece, final UUID userId) {
+    return piece.getPermissions().stream()
+        .filter(perm -> perm.getUser().getId().equals(userId))
+        .findFirst()
         .orElseThrow(() -> new ObjectNotFoundException("Piece permission not found"));
   }
 
@@ -122,12 +121,6 @@ public class PieceServiceImpl implements PieceService {
     return userRepository
         .findById(userId)
         .orElseThrow(() -> new ObjectNotFoundException("User not found"));
-  }
-
-  private void ensureNotSelfPermissionChange(final User actor, final UUID targetUserId) {
-    if (actor.getId().equals(targetUserId)) {
-      throw new BadRequestException("You cannot modify your own permission");
-    }
   }
 
   private void ensureOwnerWouldRemain(
@@ -158,6 +151,12 @@ public class PieceServiceImpl implements PieceService {
   private void validateSectionName(final String sectionName) {
     if (sectionName == null || sectionName.isBlank()) {
       throw new BadRequestException("Section name must not be blank");
+    }
+  }
+
+  private void validateScoreSheetTitle(final String sheetName) {
+    if (sheetName == null || sheetName.isBlank()) {
+      throw new BadRequestException("Scoresheet title must not be blank");
     }
   }
 
@@ -199,17 +198,14 @@ public class PieceServiceImpl implements PieceService {
   @Transactional
   public PieceDto createPiece(final User user, final PieceCreateRequestDto createRequestDto) {
     Piece piece = pieceMapper.toEntityFromCreateRequest(createRequestDto);
-    piece = pieceRepository.save(piece);
-
     PiecePermission permission =
         PiecePermission.builder()
             .piece(piece)
             .user(user)
             .permissionType(PermissionType.OWNER)
             .build();
-    piecePermissionRepository.save(permission);
-
-    piece = getPieceEntityById(piece.getId()); // Reload to include permissions
+    piece.setPermissions(List.of(permission));
+    piece = pieceRepository.save(piece);
 
     PieceMetadataDto pieceMetadataDto = pieceMapper.toMetadataDto(piece);
     var dto = new GeneralPieceNowAvailableEvent(pieceMetadataDto).asDto();
@@ -231,11 +227,9 @@ public class PieceServiceImpl implements PieceService {
   }
 
   /**
-   * Delete a piece and return the S3 keys of all score sheets that were associated with the piece
-   * before deletion.
+   * Delete a piece.
    *
-   * @return a pair with list of S3 object keys to be deleted and a list of users that were
-   *     permitted.
+   * @return the deleted piece
    */
   @Transactional(rollbackFor = Exception.class)
   protected Piece deletePieceTransaction(final User user, final UUID pieceId) {
@@ -324,40 +318,25 @@ public class PieceServiceImpl implements PieceService {
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
 
-    ScoreSheet scoreSheet = getScoreSheetEntityById(pieceId, updateRequestDto.scoreSheetId());
-    UUID scoreSheetId = scoreSheet.getId();
+    ScoreSheet scoreSheet = getScoreSheetEntityById(piece, updateRequestDto.scoreSheetId());
 
     if (updateRequestDto.title() != null) {
-      if (updateRequestDto.title().isBlank()) {
-        throw new BadRequestException("Score sheet title must not be blank");
-      }
+      validateScoreSheetTitle(updateRequestDto.title());
       scoreSheet.setTitle(updateRequestDto.title());
     }
 
     if (updateRequestDto.position() != null) {
-      List<ScoreSheet> orderedScoreSheets =
-          new ArrayList<>(scoreSheetRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
-      int targetPosition = updateRequestDto.position();
-      if (targetPosition < 0 || targetPosition >= orderedScoreSheets.size()) {
-        throw new BadRequestException("Score sheet position is out of bounds");
-      }
-
-      orderedScoreSheets.removeIf(current -> current.getId().equals(scoreSheetId));
-      orderedScoreSheets.add(targetPosition, scoreSheet);
-
-      for (int index = 0; index < orderedScoreSheets.size(); index++) {
-        orderedScoreSheets.get(index).setPosition(index);
-      }
-      scoreSheetRepository.saveAll(orderedScoreSheets);
+      CollectionUtils.updatePosition(
+          piece.getScoreSheets(), scoreSheet, updateRequestDto.position());
+      pieceRepository.save(piece);
     } else {
-      scoreSheetRepository.save(scoreSheet);
+      pieceRepository.save(piece);
     }
 
-    ScoreSheet updatedScoreSheet = getScoreSheetEntityById(pieceId, scoreSheetId);
-    ScoreSheetDto scoreSheetDto = scoreSheetMapper.toDto(updatedScoreSheet);
+    ScoreSheetDto scoreSheetDto = scoreSheetMapper.toDto(scoreSheet);
     messagingService.send(
         Destinations.topicPiece(pieceId),
-        new PieceScoreSheetUpdatedEvent(updatedScoreSheet.getId(), scoreSheetDto).asDto());
+        new PieceScoreSheetUpdatedEvent(scoreSheetDto.getId(), scoreSheetDto).asDto());
   }
 
   @Override
@@ -367,19 +346,13 @@ public class PieceServiceImpl implements PieceService {
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
 
-    ScoreSheet scoreSheet = getScoreSheetEntityById(pieceId, removeRequestDto.scoreSheetId());
+    ScoreSheet scoreSheet = getScoreSheetEntityById(piece, removeRequestDto.scoreSheetId());
 
     sectionRepository.clearScoreSheetReferences(pieceId, scoreSheet.getId());
 
-    List<ScoreSheet> orderedScoreSheets =
-        new ArrayList<>(scoreSheetRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
-    orderedScoreSheets.removeIf(current -> current.getId().equals(scoreSheet.getId()));
-    for (int index = 0; index < orderedScoreSheets.size(); index++) {
-      orderedScoreSheets.get(index).setPosition(index);
-    }
-    scoreSheetRepository.saveAll(orderedScoreSheets);
+    CollectionUtils.removePositioned(piece.getScoreSheets(), scoreSheet);
 
-    scoreSheetRepository.delete(scoreSheet);
+    pieceRepository.save(piece);
 
     messagingService.send(
         Destinations.topicPiece(pieceId),
@@ -393,57 +366,48 @@ public class PieceServiceImpl implements PieceService {
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
 
-    List<Section> orderedSections =
-        new ArrayList<>(sectionRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
-
-    int targetPosition = addRequestDto.position();
-    if (targetPosition < 0 || targetPosition > orderedSections.size()) {
-      throw new BadRequestException("Section position is out of bounds");
-    }
     validateSectionName(addRequestDto.name());
 
     Section section = sectionMapper.toEntityFromCreateRequest(addRequestDto);
     section.setPiece(piece);
 
     if (addRequestDto.scoreSheetId() != null) {
-      ScoreSheet scoreSheet = getScoreSheetEntityById(pieceId, addRequestDto.scoreSheetId());
+      ScoreSheet scoreSheet = getScoreSheetEntityById(piece, addRequestDto.scoreSheetId());
       section.setScoreSheet(scoreSheet);
     }
 
-    orderedSections.add(targetPosition, section);
-    for (int index = 0; index < orderedSections.size(); index++) {
-      orderedSections.get(index).setPosition(index);
-    }
-
-    List<Section> savedSections = sectionRepository.saveAll(orderedSections);
-    Section createdSection = savedSections.get(targetPosition);
+    CollectionUtils.addPositioned(piece.getSections(), section, addRequestDto.position());
+    piece = pieceRepository.save(piece);
+    section = CollectionUtils.findByPositionOrThrow(piece.getSections(), addRequestDto.position());
 
     messagingService.send(
         Destinations.topicPiece(pieceId),
-        new PieceSectionAddedEvent(sectionMapper.toDto(createdSection)).asDto());
+        new PieceSectionAddedEvent(sectionMapper.toDto(section)).asDto());
   }
 
   private void ensurePermissionModificationAllowed(
-      User user, UUID pieceId, UUID uuid, PermissionType permissionType) {
-    if (uuid == null) {
+      User user, Piece piece, UUID userId, PermissionType permissionType) {
+    if (userId == null) {
       throw new BadRequestException("User id must be provided");
     }
     if (permissionType == null) {
       throw new BadRequestException("Permission type must be provided");
     }
 
-    Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER));
-    ensureNotSelfPermissionChange(user, uuid);
+
+    if (user.getId().equals(userId)) {
+      throw new BadRequestException("You cannot modify your own permission");
+    }
   }
 
   @Override
   @Transactional
   public void addPermission(
       final User user, final UUID pieceId, final PiecePermissionAddRequestDto addRequestDto) {
-    ensurePermissionModificationAllowed(
-        user, pieceId, addRequestDto.userId(), addRequestDto.permissionType());
     Piece piece = getPieceEntityById(pieceId);
+    ensurePermissionModificationAllowed(
+        user, piece, addRequestDto.userId(), addRequestDto.permissionType());
 
     User targetUser = getUserEntityById(addRequestDto.userId());
     boolean hasPermissionAlready =
@@ -458,7 +422,8 @@ public class PieceServiceImpl implements PieceService {
             .user(targetUser)
             .permissionType(addRequestDto.permissionType())
             .build();
-    piecePermissionRepository.save(permission);
+    piece.getPermissions().add(permission);
+    piece = pieceRepository.save(piece);
 
     messagingService.send(
         Destinations.topicPiece(pieceId),
@@ -476,16 +441,16 @@ public class PieceServiceImpl implements PieceService {
   @Transactional
   public void updatePermission(
       final User user, final UUID pieceId, final PiecePermissionUpdateRequestDto updateRequestDto) {
+    Piece piece = getPieceEntityById(pieceId);
     ensurePermissionModificationAllowed(
-        user, pieceId, updateRequestDto.userId(), updateRequestDto.permissionType());
+        user, piece, updateRequestDto.userId(), updateRequestDto.permissionType());
 
-    PiecePermission permission =
-        getPiecePermissionEntityByUserId(pieceId, updateRequestDto.userId());
+    PiecePermission permission = getPiecePermissionEntityByUserId(piece, updateRequestDto.userId());
     ensureOwnerWouldRemain(
         pieceId, permission.getPermissionType(), updateRequestDto.permissionType());
 
     permission.setPermissionType(updateRequestDto.permissionType());
-    piecePermissionRepository.save(permission);
+    pieceRepository.save(piece);
 
     messagingService.send(
         Destinations.topicPiece(pieceId),
@@ -498,14 +463,14 @@ public class PieceServiceImpl implements PieceService {
   @Transactional
   public void removePermission(
       final User user, final UUID pieceId, final PiecePermissionRemoveRequestDto removeRequestDto) {
-    ensurePermissionModificationAllowed(
-        user, pieceId, removeRequestDto.userId(), PermissionType.READER);
     Piece piece = getPieceEntityById(pieceId);
+    ensurePermissionModificationAllowed(
+        user, piece, removeRequestDto.userId(), PermissionType.READER);
 
-    PiecePermission permission =
-        getPiecePermissionEntityByUserId(pieceId, removeRequestDto.userId());
+    PiecePermission permission = getPiecePermissionEntityByUserId(piece, removeRequestDto.userId());
     ensureOwnerWouldRemain(pieceId, permission.getPermissionType(), null);
-    piecePermissionRepository.delete(permission);
+    piece.getPermissions().remove(permission);
+    pieceRepository.save(piece);
 
     messagingService.send(
         Destinations.topicPiece(pieceId),
@@ -529,43 +494,25 @@ public class PieceServiceImpl implements PieceService {
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
 
-    Section section = getSectionEntityById(pieceId, updateRequestDto.sectionId());
-
-    List<Section> orderedSections =
-        new ArrayList<>(sectionRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
-    int currentPosition =
-        orderedSections.stream().map(Section::getId).toList().indexOf(section.getId());
-    if (currentPosition < 0) {
-      throw new ObjectNotFoundException("Section not found");
+    Section section = getSectionEntityById(piece, updateRequestDto.sectionId());
+    if (!section.getPosition().equals(updateRequestDto.position())) {
+      CollectionUtils.updatePosition(piece.getSections(), section, updateRequestDto.position());
     }
 
-    int targetPosition = updateRequestDto.position();
-    if (targetPosition < 0 || targetPosition >= orderedSections.size()) {
-      throw new BadRequestException("Section position is out of bounds");
-    }
-
-    sectionMapper.updateEntityFromUpdateRequest(section, updateRequestDto);
     if (updateRequestDto.scoreSheetId() == null) {
       section.setScoreSheet(null);
     } else {
-      ScoreSheet scoreSheet = getScoreSheetEntityById(pieceId, updateRequestDto.scoreSheetId());
+      ScoreSheet scoreSheet = getScoreSheetEntityById(piece, updateRequestDto.scoreSheetId());
       section.setScoreSheet(scoreSheet);
     }
 
-    orderedSections.removeIf(current -> current.getId().equals(section.getId()));
-    orderedSections.add(targetPosition, section);
+    sectionMapper.updateEntityFromUpdateRequest(section, updateRequestDto);
 
-    for (int index = 0; index < orderedSections.size(); index++) {
-      orderedSections.get(index).setPosition(index);
-    }
+    pieceRepository.save(piece);
 
-    sectionRepository.saveAll(orderedSections);
-
-    Section updatedSection = getSectionEntityById(pieceId, section.getId());
     messagingService.send(
         Destinations.topicPiece(pieceId),
-        new PieceSectionUpdatedEvent(updatedSection.getId(), sectionMapper.toDto(updatedSection))
-            .asDto());
+        new PieceSectionUpdatedEvent(section.getId(), sectionMapper.toDto(section)).asDto());
   }
 
   @Override
@@ -575,17 +522,10 @@ public class PieceServiceImpl implements PieceService {
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
 
-    Section section = getSectionEntityById(pieceId, removeRequestDto.sectionId());
+    Section section = getSectionEntityById(piece, removeRequestDto.sectionId());
 
-    List<Section> orderedSections =
-        new ArrayList<>(sectionRepository.findAllByPieceIdOrderByPositionAsc(pieceId));
-    orderedSections.removeIf(current -> current.getId().equals(section.getId()));
-    for (int index = 0; index < orderedSections.size(); index++) {
-      orderedSections.get(index).setPosition(index);
-    }
-    sectionRepository.saveAll(orderedSections);
-
-    sectionRepository.delete(section);
+    CollectionUtils.removePositioned(piece.getSections(), section);
+    pieceRepository.save(piece);
 
     messagingService.send(
         Destinations.topicPiece(pieceId), new PieceSectionRemovedEvent(section.getId()).asDto());
@@ -599,7 +539,7 @@ public class PieceServiceImpl implements PieceService {
       throw new BadRequestException("At least one file must be provided");
     }
 
-    Piece piece = getPieceEntityById(pieceId);
+    final Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
 
     int startPosition = getNextScoreSheetPosition(pieceId);
@@ -636,8 +576,14 @@ public class PieceServiceImpl implements PieceService {
                 })
             .toList();
 
+    piece.getScoreSheets().addAll(scoreSheets);
+    Piece savedPiece = pieceRepository.save(piece);
+
     List<ScoreSheetDto> scoreSheetDtos =
-        scoreSheetMapper.toDtoList(scoreSheetRepository.saveAll(scoreSheets));
+        scoreSheetMapper.toDtoList(
+            savedPiece.getScoreSheets().stream()
+                .filter(s -> s.getPosition() >= startPosition)
+                .toList());
 
     scoreSheetDtos.forEach(
         scoreSheetDto ->

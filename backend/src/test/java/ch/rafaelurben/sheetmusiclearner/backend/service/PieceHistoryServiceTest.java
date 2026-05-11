@@ -1,6 +1,7 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.service;
 
+import static org.hibernate.Hibernate.initialize;
 import static org.junit.jupiter.api.Assertions.*;
 
 import ch.rafaelurben.sheetmusiclearner.backend.api.dto.*;
@@ -25,8 +26,6 @@ class PieceHistoryServiceTest extends BaseSpringBootTest {
 
   @Autowired private PieceHistoryServiceImpl pieceHistoryService;
   @Autowired private PieceRepository pieceRepository;
-  @Autowired private ScoreSheetRepository scoreSheetRepository;
-  @Autowired private SectionRepository sectionRepository;
   @Autowired private PiecePermissionRepository piecePermissionRepository;
   @Autowired private UserRepository userRepository;
   @Autowired private EntityManager entityManager;
@@ -58,10 +57,8 @@ class PieceHistoryServiceTest extends BaseSpringBootTest {
         .executeWithoutResult(
             ignored -> {
               Piece mutatedPiece = pieceRepository.findById(pieceId).orElseThrow();
-              ScoreSheet mutatedScoreSheet =
-                  scoreSheetRepository.findAllByPieceIdOrderByPositionAsc(pieceId).getFirst();
-              Section mutatedSection =
-                  sectionRepository.findAllByPieceIdOrderByPositionAsc(pieceId).getFirst();
+              ScoreSheet mutatedScoreSheet = mutatedPiece.getScoreSheets().getFirst();
+              Section mutatedSection = mutatedPiece.getSections().getFirst();
 
               mutatedPiece.setTitle("Changed title");
               mutatedPiece.setComposer("Changed composer");
@@ -97,10 +94,17 @@ class PieceHistoryServiceTest extends BaseSpringBootTest {
     PieceDto postRestorePreview =
         pieceHistoryService.previewPieceAtRevision(owner, pieceId, originalRevision);
 
-    Piece restoredPiece = pieceRepository.findById(pieceId).orElseThrow();
-    List<ScoreSheet> restoredScoreSheets =
-        scoreSheetRepository.findAllByPieceIdOrderByPositionAsc(pieceId);
-    List<Section> restoredSections = sectionRepository.findAllByPieceIdOrderByPositionAsc(pieceId);
+    Piece restoredPiece =
+        new TransactionTemplate(transactionManager)
+            .execute(
+                ignored -> {
+                  Piece piece = pieceRepository.findById(pieceId).orElseThrow();
+                  initialize(piece.getSections());
+                  initialize(piece.getScoreSheets());
+                  return piece;
+                });
+    List<ScoreSheet> restoredScoreSheets = restoredPiece.getScoreSheets();
+    List<Section> restoredSections = restoredPiece.getSections();
 
     try {
       assertPreviewPieceContent(preRestorePreview, pieceId);

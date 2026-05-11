@@ -1,6 +1,8 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.model;
 
+import ch.rafaelurben.sheetmusiclearner.backend.utils.WithId;
+import ch.rafaelurben.sheetmusiclearner.backend.utils.WithPosition;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -19,7 +21,7 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @FieldNameConstants
 @Builder
-public class Section extends BaseEntity {
+public class Section extends BaseEntity implements WithId<UUID>, WithPosition {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
