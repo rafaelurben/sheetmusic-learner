@@ -1,4 +1,4 @@
-# sheetmusic-learner communication
+# communication
 
 This document contains a general overview of the communication protocols and endpoints used.
 

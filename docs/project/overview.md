@@ -23,6 +23,7 @@ tempo control. The application is designed to make collaborative music practice 
       - OAuth2/OIDC Authentication/authorization
     - S3 client
     - PostgreSQL (metadata storage)
+  - Hibernate (ORM) including Hibernate Envers (auditing)
   - Liquibase (database migrations)
 - External services:
   - S3-compatible storage

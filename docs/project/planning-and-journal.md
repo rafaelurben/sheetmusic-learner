@@ -1,4 +1,4 @@
-# sheetmusic-learner project planning and journal
+# project planning and journal
 
 ## Project journal
 

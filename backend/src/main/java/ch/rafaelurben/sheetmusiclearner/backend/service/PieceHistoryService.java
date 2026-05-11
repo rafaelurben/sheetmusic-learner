@@ -6,6 +6,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import java.util.List;
 import java.util.UUID;
 
+/** Service for viewing and restoring the history of a piece. */
 public interface PieceHistoryService {
 
   List<PieceHistoryRevisionDto> getPieceHistoryById(User user, UUID pieceId);

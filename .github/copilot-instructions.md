@@ -24,7 +24,7 @@
 - Follow the repo’s existing formatters instead of reformatting by hand: backend formatting is enforced by Spotless and the frontend by ESLint.
 
 ## Pitfalls
-- Local auth depends on the mock OIDC server at `http://localhost:4011`; it does not work on ARM hosts.
+- Local auth depends on the mock OIDC server at `http://localhost:4011`.
 - The frontend Vite proxy expects the backend on `localhost:8080` for both `/api` and `/ws` traffic.
 - The frontend in this repo is React + Vite + TypeScript. It uses shadcn UI components but is not a pure shadcn app. These components must be installed and updated via shadcn CLI.
 - When changing realtime behavior or event payloads, update both the backend publishers/consumers and the frontend event handling code.

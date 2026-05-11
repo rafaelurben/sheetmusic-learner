@@ -1,4 +1,4 @@
-# sheetmusic-learner requirements
+# requirements
 
 The following use-case diagram provides a general overview of the main features and interactions in the
 sheetmusic-learner application:
