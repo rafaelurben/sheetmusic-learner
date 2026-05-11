@@ -82,6 +82,7 @@
   - Added preview of piece history
   - Code cleanup
   - Updated documentation
+  - Added full-screen view for room viewer
 
 ## Project milestones
 

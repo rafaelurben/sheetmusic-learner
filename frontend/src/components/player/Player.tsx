@@ -21,6 +21,7 @@ interface PlayerProps {
     lastPlaySectionPosition?: number | null;
   };
   showControls: boolean;
+  allowFullScreen: boolean;
   onPlay: () => void;
   onPause: () => void;
   onTempoMultiplierChange: (nextTempoMultiplier: number) => void;
@@ -31,6 +32,7 @@ export default function Player({
   piece,
   playbackState,
   showControls,
+  allowFullScreen,
   onPlay,
   onPause,
   onTempoMultiplierChange,
@@ -38,6 +40,7 @@ export default function Player({
 }: Readonly<PlayerProps>) {
   const [sectionStateOverride, setSectionStateOverride] =
     useState<PlayerSectionState | null>(null);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const sortedSections = useSorted(piece.sections);
   const currentSectionPosition =
@@ -48,6 +51,31 @@ export default function Player({
     (section) => section.position === currentSectionPosition,
   );
 
+  const handleToggleFullscreen = () => {
+    if (!allowFullScreen) return;
+
+    if (document.fullscreenElement) {
+      setIsFullScreen(false);
+      void document.exitFullscreen();
+    } else {
+      setIsFullScreen(true);
+      void document.body.requestFullscreen();
+    }
+  };
+
+  useEffect(() => {
+    if (!allowFullScreen) return;
+
+    const handleFullscreenChange = () => {
+      setIsFullScreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, [allowFullScreen]);
+
   useEffect(() => {
     if (!playbackState.playing) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -57,7 +85,13 @@ export default function Player({
 
   return (
     <Card className="flex min-h-0 flex-1 flex-col py-3">
-      <CardContent className="flex min-h-0 flex-1 flex-col gap-4 px-3">
+      <CardContent
+        className={
+          isFullScreen
+            ? "flex flex-1 flex-col gap-4 px-3 fixed top-0 left-0 h-screen w-screen bg-background z-50 p-2"
+            : "flex min-h-0 flex-1 flex-col gap-4 px-3"
+        }
+      >
         <PlayerSheetDisplay
           piece={piece}
           currentSectionId={currentSection?.id}
@@ -74,6 +108,8 @@ export default function Player({
           onPause={onPause}
           onTempoMultiplierChange={onTempoMultiplierChange}
           onSectionChange={onSectionChange}
+          onFullscreenToggle={handleToggleFullscreen}
+          allowFullScreen={allowFullScreen}
         />
 
         <PlayerMetronome

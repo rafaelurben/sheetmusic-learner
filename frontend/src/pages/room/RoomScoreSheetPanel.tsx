@@ -69,6 +69,7 @@ export default function RoomScoreSheetPanel({
         lastPlaySectionPosition: room.lastPlaySectionPosition,
       }}
       showControls={canEditRoom}
+      allowFullScreen={true}
       onPlay={publishPlay}
       onPause={publishPause}
       onTempoMultiplierChange={publishPlaybackConfig}

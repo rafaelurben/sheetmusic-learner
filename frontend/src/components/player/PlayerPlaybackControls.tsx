@@ -6,6 +6,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   CogIcon,
+  Maximize2Icon,
   MetronomeIcon,
   PauseIcon,
   PlayIcon,
@@ -37,6 +38,8 @@ interface PlayerPlaybackControlsProps {
   onPause: () => void;
   onTempoMultiplierChange: (nextTempoMultiplier: number) => void;
   onSectionChange: (nextSectionPosition: number) => void;
+  onFullscreenToggle: () => void;
+  allowFullScreen: boolean;
 }
 
 export default function PlayerPlaybackControls({
@@ -45,10 +48,12 @@ export default function PlayerPlaybackControls({
   tempoMultiplier,
   sections,
   currentSection,
+  allowFullScreen,
   onPlay,
   onPause,
   onTempoMultiplierChange,
   onSectionChange,
+  onFullscreenToggle,
 }: Readonly<PlayerPlaybackControlsProps>) {
   const showMetronome = useMainStore((s) => s.showMetronome);
   const setShowMetronome = useMainStore((s) => s.setShowMetronome);
@@ -81,6 +86,7 @@ export default function PlayerPlaybackControls({
       }
 
       switch (event.key) {
+        case "p":
         case " ":
           event.preventDefault();
           if (playing) {
@@ -102,6 +108,11 @@ export default function PlayerPlaybackControls({
         case "r":
           onSectionChange(0);
           break;
+        case "f":
+          if (allowFullScreen) {
+            onFullscreenToggle();
+          }
+          break;
       }
     };
 
@@ -110,9 +121,11 @@ export default function PlayerPlaybackControls({
       globalThis.removeEventListener("keydown", handleKeyDown);
     };
   }, [
+    allowFullScreen,
     currentSection,
     isNextDisabled,
     isPreviousDisabled,
+    onFullscreenToggle,
     onPause,
     onPlay,
     onSectionChange,
@@ -151,7 +164,6 @@ export default function PlayerPlaybackControls({
           variant="outline"
           size="icon"
           onClick={playing ? onPause : onPlay}
-          className="col-start-3"
           disabled={readonly}
         >
           {playing ? <PauseIcon /> : <PlayIcon />}
@@ -212,6 +224,17 @@ export default function PlayerPlaybackControls({
           </PopoverContent>
         </Popover>
 
+        {allowFullScreen && (
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Open player in full screen"
+            onClick={onFullscreenToggle}
+          >
+            <Maximize2Icon />
+          </Button>
+        )}
+
         <Button
           variant="outline"
           size="icon"
@@ -219,7 +242,6 @@ export default function PlayerPlaybackControls({
           onClick={() => {
             if (currentSection) onSectionChange(currentSection.position + 1);
           }}
-          className="col-start-6"
         >
           <ChevronRightIcon />
         </Button>

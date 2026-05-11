@@ -74,6 +74,7 @@ export default function PiecePlayerDialog({
             onPause={handlePause}
             onTempoMultiplierChange={handleTempoMultiplierChange}
             onSectionChange={handleSectionChange}
+            allowFullScreen={false}
           />
         </div>
       </DialogContent>

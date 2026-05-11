@@ -330,7 +330,7 @@ Code should be written with testability in mind, reducing coupling as much as po
 | OFR-05  | ❌      | Staff view - not implemented as OFR-02 is missing                                   |
 | OFR-06  | ✅      | Visual metronome - animated beat indicator during playback                          |
 | OFR-07  | ✅      | Audio metronome - Web Audio API with click sounds                                   |
-| OFR-08  | ❌      | Full-screen view - not implemented, no fullscreen capabilities                      |
+| OFR-08  | ✅      | Full-screen view - available in room viewer                                         |
 | ONFR-01 | ✅      | User avatars - implemented via OIDC picture property                                |
 | QR-01   | ✅      | No redundancy - OpenAPI specification ensures single source of truth                |
 | QR-02   | ✅      | Project structure - standard Spring Boot + React/Vite + TypeScript layout           |
