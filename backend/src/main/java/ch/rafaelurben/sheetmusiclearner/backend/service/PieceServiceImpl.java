@@ -183,10 +183,16 @@ public class PieceServiceImpl implements PieceService {
 
   @Override
   @Transactional(readOnly = true)
-  public void ensureReadableByUser(UUID userId, UUID pieceId) {
-    User user = getUserEntityById(userId);
+  public void ensureReadableByUser(User user, UUID pieceId) {
     Piece piece = getPieceEntityById(pieceId);
     ensureReadableByUser(user, piece);
+  }
+
+  @Override
+  public void ensureUserPermission(
+      User user, UUID pieceId, Set<PermissionType> acceptablePermissions) {
+    Piece piece = getPieceEntityById(pieceId);
+    ensurePermissionType(user, piece, acceptablePermissions);
   }
 
   @Override

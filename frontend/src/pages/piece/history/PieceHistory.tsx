@@ -2,6 +2,7 @@
  * (C) 2026. - Rafael Urben
  */
 import {
+  type PieceDto,
   type PieceHistoryRevisionDto,
   ResponseError,
 } from "@/api/generated/openapi";
@@ -17,8 +18,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shadcn/components/ui/dialog.tsx";
-import { RotateCcw } from "lucide-react";
+import { EyeIcon, RotateCcw } from "lucide-react";
 import { Badge } from "@/shadcn/components/ui/badge";
+import PiecePlayerDialog from "@/pages/piece/PiecePlayerDialog.tsx";
+import { Spinner } from "@/shadcn/components/ui/spinner.tsx";
 
 interface Props {
   isOpen: boolean;
@@ -34,6 +37,9 @@ export default function PieceHistory({ isOpen, pieceId }: Readonly<Props>) {
     useState<PieceHistoryRevisionDto | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [isReverting, setIsReverting] = useState(false);
+  const [isPreviewPlayerOpen, setIsPreviewPlayerOpen] = useState(false);
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [previewPiece, setPreviewPiece] = useState<PieceDto | null>(null);
 
   const newestRevisionId = useMemo(
     () => (history.length > 0 ? history[0].revisionId : null),
@@ -70,6 +76,18 @@ export default function PieceHistory({ isOpen, pieceId }: Readonly<Props>) {
   const handleRevertClick = (revision: PieceHistoryRevisionDto) => {
     setSelectedRevision(revision);
     setShowConfirmDialog(true);
+  };
+
+  const handlePreviewClick = async (revision: PieceHistoryRevisionDto) => {
+    setSelectedRevision(revision);
+    setIsLoadingPreview(true);
+    const piece = await piecesApi.previewPieceAtRevision({
+      id: pieceId,
+      revisionId: revision.revisionId,
+    });
+    setPreviewPiece(piece);
+    setIsLoadingPreview(false);
+    setIsPreviewPlayerOpen(true);
   };
 
   const handleConfirmRevert = async () => {
@@ -160,6 +178,23 @@ export default function PieceHistory({ isOpen, pieceId }: Readonly<Props>) {
               variant="outline"
               size="sm"
               onClick={() => {
+                void handlePreviewClick(revision);
+              }}
+              disabled={isLoadingPreview}
+              className="ml-2"
+            >
+              {isLoadingPreview &&
+              revision.revisionId === selectedRevision?.revisionId ? (
+                <Spinner />
+              ) : (
+                <EyeIcon className="mr-2 h-4 w-4" />
+              )}
+              Preview
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
                 handleRevertClick(revision);
               }}
               disabled={revision.revisionId === newestRevisionId}
@@ -203,6 +238,14 @@ export default function PieceHistory({ isOpen, pieceId }: Readonly<Props>) {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {isPreviewPlayerOpen && previewPiece && (
+        <PiecePlayerDialog
+          piece={previewPiece}
+          onClosePlayer={() => {
+            setIsPreviewPlayerOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

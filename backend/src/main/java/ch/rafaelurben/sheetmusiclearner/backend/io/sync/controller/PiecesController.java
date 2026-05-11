@@ -64,6 +64,12 @@ public class PiecesController implements PiecesApi {
   }
 
   @Override
+  public PieceDto previewPieceAtRevision(UUID id, Integer revisionId) {
+    User user = userService.getCurrentUserEntity();
+    return pieceHistoryService.previewPieceAtRevision(user, id, revisionId);
+  }
+
+  @Override
   public void revertPieceToRevision(UUID id, Integer revisionId) {
     User user = userService.getCurrentUserEntity();
     pieceHistoryService.restorePieceToRevision(user, id, revisionId);

@@ -83,7 +83,7 @@ public class WebSocketAuthChannelInterceptor implements ChannelInterceptor {
         Destinations.extractPieceIdFromTopicPieceDestination(destination);
     if (optionalPieceId.isPresent()) {
       User user = userService.getUserEntity(authentication);
-      pieceService.ensureReadableByUser(user.getId(), optionalPieceId.get());
+      pieceService.ensureReadableByUser(user, optionalPieceId.get());
       return;
     }
 

@@ -1,14 +1,12 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.service;
 
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceCreateRequestDto;
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceDto;
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceMetadataDto;
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.ScoreSheetDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.*;
 import ch.rafaelurben.sheetmusiclearner.backend.exceptions.InsufficientPermissionException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.*;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +20,13 @@ public interface PieceService {
    * Ensure that a piece is readable by a specific user, otherwise throw an {@link
    * InsufficientPermissionException}.
    */
-  void ensureReadableByUser(UUID userId, UUID pieceId);
+  void ensureReadableByUser(User user, UUID pieceId);
+
+  /**
+   * Ensure that user has one of the listed permissions for a piece, otherwise throw an {@link
+   * InsufficientPermissionException}.
+   */
+  void ensureUserPermission(User user, UUID pieceId, Set<PermissionType> acceptablePermissions);
 
   PieceDto createPiece(User user, PieceCreateRequestDto createRequestDto);
 

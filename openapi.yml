@@ -209,6 +209,29 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
+  /api/v1/pieces/{id}/history/{revisionId}/preview:
+    get:
+      summary: Preview piece at a specific revision
+      operationId: previewPieceAtRevision
+      tags:
+        - pieces
+      parameters:
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/revisionId'
+      responses:
+        '200':
+          description: Piece preview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PieceDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
   /api/v1/pieces/{id}/history/{revisionId}/revert:
     post:
       summary: Revert piece to a specific revision

@@ -1,12 +1,8 @@
 /* (C) 2026 - Rafael Urben */
 package ch.rafaelurben.sheetmusiclearner.backend.service;
 
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PermissionType;
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceHistoryRevisionDto;
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RevisionKind;
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.UserDto;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.*;
 import ch.rafaelurben.sheetmusiclearner.backend.config.auditing.AuditRevisionListener;
-import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundException;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.PieceHistoryRevertedEvent;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.PieceMapper;
 import ch.rafaelurben.sheetmusiclearner.backend.io.mapper.ScoreSheetMapper;
@@ -27,8 +23,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.query.AuditEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -82,65 +76,41 @@ public class PieceHistoryServiceImpl implements PieceHistoryService {
   @Override
   @Transactional(readOnly = true)
   public List<PieceHistoryRevisionDto> getPieceHistoryById(User user, UUID pieceId) {
-    Piece piece =
-        pieceRepository
-            .findById(pieceId)
-            .orElseThrow(() -> new ObjectNotFoundException("Piece not found: " + pieceId));
-
-    pieceService.ensureReadableByUser(user.getId(), piece.getId());
-    // Check if user has EDITOR or OWNER permission
-    boolean hasEditPermission =
-        piece.getPermissions().stream()
-            .anyMatch(
-                p ->
-                    p.getUser().getId().equals(user.getId())
-                        && (p.getPermissionType() == PermissionType.EDITOR
-                            || p.getPermissionType() == PermissionType.OWNER));
-
-    if (!piece.isPublic() && !hasEditPermission) {
-      throw new AccessDeniedException("Access denied to piece: " + pieceId);
-    }
-
+    pieceService.ensureUserPermission(
+        user, pieceId, Set.of(PermissionType.EDITOR, PermissionType.OWNER));
     return loadHistoryRevisions(pieceId);
+  }
+
+  private Piece getHistoricalPiece(
+      final AuditReader auditReader, final UUID pieceId, final Number revisionId) {
+    return Optional.ofNullable(auditReader.find(Piece.class, pieceId, revisionId))
+        .orElseThrow(
+            () ->
+                new IllegalArgumentException(
+                    "Revision not found: " + revisionId + " for piece: " + pieceId));
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public PieceDto previewPieceAtRevision(User user, UUID pieceId, Integer revisionId) {
+    pieceService.ensureUserPermission(
+        user, pieceId, Set.of(PermissionType.EDITOR, PermissionType.OWNER));
+
+    AuditReader auditReader = AuditReaderFactory.get(entityManager);
+
+    Piece historicalPiece = getHistoricalPiece(auditReader, pieceId, revisionId);
+    return pieceMapper.toDto(historicalPiece);
   }
 
   @Override
   @Transactional
   public void restorePieceToRevision(User user, UUID pieceId, Integer revisionId) {
-    Piece piece =
-        pieceRepository
-            .findById(pieceId)
-            .orElseThrow(() -> new ObjectNotFoundException("Piece not found: " + pieceId));
-
-    // Check if user has OWNER permission
-    boolean hasOwnerPermission =
-        piece.getPermissions().stream()
-            .anyMatch(
-                p ->
-                    p.getUser().getId().equals(user.getId())
-                        && p.getPermissionType() == PermissionType.OWNER);
-
-    if (!hasOwnerPermission) {
-      throw new AccessDeniedException("Only owner can revert piece history: " + pieceId);
-    }
+    pieceService.ensureUserPermission(user, pieceId, Set.of(PermissionType.OWNER));
 
     AuditReader auditReader = AuditReaderFactory.get(entityManager);
 
-    // Get the piece at the specified revision
-    Piece historicalPiece = null;
-    try {
-      historicalPiece = auditReader.find(Piece.class, pieceId, revisionId);
-    } catch (Exception e) {
-      log.error("Error fetching historical piece", e);
-    }
-
-    if (historicalPiece == null) {
-      throw new IllegalArgumentException(
-          "Revision not found: " + revisionId + " for piece: " + pieceId);
-    }
-
-    // Get current piece reference
-    Piece currentPiece = entityManager.find(Piece.class, pieceId);
+    Piece historicalPiece = getHistoricalPiece(auditReader, pieceId, revisionId);
+    Piece currentPiece = pieceRepository.getReferenceById(pieceId);
 
     AuditRevisionListener.setRevisionKind(RevisionKind.REVERT);
     if (TransactionSynchronizationManager.isSynchronizationActive()) {
@@ -159,15 +129,8 @@ public class PieceHistoryServiceImpl implements PieceHistoryService {
       currentPiece.getSections().clear();
 
       // Restore scoresheets
-      @SuppressWarnings("unchecked")
-      List<ScoreSheet> historicalScoreSheets =
-          auditReader
-              .createQuery()
-              .forEntitiesAtRevision(ScoreSheet.class, revisionId)
-              .add(AuditEntity.relatedId(ScoreSheet.Fields.piece).eq(pieceId))
-              .getResultList();
       Map<UUID, ScoreSheet> restoredScoreSheetByHistoricalId = new HashMap<>();
-      for (ScoreSheet historicalScoreSheet : historicalScoreSheets) {
+      for (ScoreSheet historicalScoreSheet : historicalPiece.getScoreSheets()) {
         ScoreSheet newScoreSheet = new ScoreSheet();
         scoreSheetMapper.updateFromHistoricalVersion(newScoreSheet, historicalScoreSheet);
         newScoreSheet.setPiece(currentPiece);
@@ -176,14 +139,7 @@ public class PieceHistoryServiceImpl implements PieceHistoryService {
       }
 
       // Restore sections
-      @SuppressWarnings("unchecked")
-      List<Section> historicalSections =
-          auditReader
-              .createQuery()
-              .forEntitiesAtRevision(Section.class, revisionId)
-              .add(AuditEntity.relatedId(Section.Fields.piece).eq(pieceId))
-              .getResultList();
-      for (Section historicalSection : historicalSections) {
+      for (Section historicalSection : historicalPiece.getSections()) {
         Section newSection = new Section();
         sectionMapper.updateFromHistoricalVersion(newSection, historicalSection);
         newSection.setPiece(currentPiece);

@@ -70,7 +70,7 @@ class PieceServiceTest extends BaseSpringBootTest {
     User user = persistUser();
     Piece piece = persistPiece(true);
 
-    assertDoesNotThrow(() -> pieceService.ensureReadableByUser(user.getId(), piece.getId()));
+    assertDoesNotThrow(() -> pieceService.ensureReadableByUser(user, piece.getId()));
   }
 
   @Test
@@ -79,7 +79,7 @@ class PieceServiceTest extends BaseSpringBootTest {
     Piece piece = persistPiece(false);
     persistPermission(piece, user, PermissionType.READER);
 
-    assertDoesNotThrow(() -> pieceService.ensureReadableByUser(user.getId(), piece.getId()));
+    assertDoesNotThrow(() -> pieceService.ensureReadableByUser(user, piece.getId()));
   }
 
   @Test
@@ -93,19 +93,18 @@ class PieceServiceTest extends BaseSpringBootTest {
             Room.builder().title("Room").owner(owner).piece(piece).roomUsers(List.of()).build());
     persistRoomUser(room, user);
 
-    assertDoesNotThrow(() -> pieceService.ensureReadableByUser(user.getId(), piece.getId()));
+    assertDoesNotThrow(() -> pieceService.ensureReadableByUser(user, piece.getId()));
   }
 
   @Test
   void testEnsureReadableByUserPrivatePieceNoPermissionThrows() {
     User user = persistUser();
     Piece piece = persistPiece(false);
-    UUID userId = user.getId();
     UUID pieceId = piece.getId();
 
     assertThrows(
         InsufficientPermissionException.class,
-        () -> pieceService.ensureReadableByUser(userId, pieceId));
+        () -> pieceService.ensureReadableByUser(user, pieceId));
   }
 
   @Test

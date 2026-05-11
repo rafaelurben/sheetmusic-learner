@@ -77,8 +77,9 @@
     - Less scrollbars
     - More compact piece metadata card
   - Some code cleanup
-- 2026-05-10:
+- 2026-05-10 - 2026-05-11:
   - Added history/revert feature for pieces
+  - Added preview of piece history
 
 ## Project milestones
 

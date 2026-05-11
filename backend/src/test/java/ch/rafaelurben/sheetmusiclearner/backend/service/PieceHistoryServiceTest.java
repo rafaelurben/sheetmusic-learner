@@ -3,24 +3,15 @@ package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PermissionType;
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.PieceHistoryRevisionDto;
-import ch.rafaelurben.sheetmusiclearner.backend.api.dto.RevisionKind;
+import ch.rafaelurben.sheetmusiclearner.backend.api.dto.*;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.PieceHistoryRevertedEvent;
-import ch.rafaelurben.sheetmusiclearner.backend.model.Piece;
-import ch.rafaelurben.sheetmusiclearner.backend.model.PiecePermission;
-import ch.rafaelurben.sheetmusiclearner.backend.model.ScoreSheet;
-import ch.rafaelurben.sheetmusiclearner.backend.model.Section;
-import ch.rafaelurben.sheetmusiclearner.backend.model.User;
-import ch.rafaelurben.sheetmusiclearner.backend.repository.PiecePermissionRepository;
-import ch.rafaelurben.sheetmusiclearner.backend.repository.PieceRepository;
-import ch.rafaelurben.sheetmusiclearner.backend.repository.ScoreSheetRepository;
-import ch.rafaelurben.sheetmusiclearner.backend.repository.SectionRepository;
-import ch.rafaelurben.sheetmusiclearner.backend.repository.UserRepository;
+import ch.rafaelurben.sheetmusiclearner.backend.model.*;
+import ch.rafaelurben.sheetmusiclearner.backend.repository.*;
 import ch.rafaelurben.sheetmusiclearner.backend.testsupport.BaseSpringBootTest;
 import ch.rafaelurben.sheetmusiclearner.backend.testsupport.TestUsers;
 import ch.rafaelurben.sheetmusiclearner.backend.utils.Destinations;
 import jakarta.persistence.EntityManager;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -95,10 +86,16 @@ class PieceHistoryServiceTest extends BaseSpringBootTest {
 
     entityManager.clear();
 
+    PieceDto preRestorePreview =
+        pieceHistoryService.previewPieceAtRevision(owner, pieceId, originalRevision);
+
     assertDoesNotThrow(
         () -> pieceHistoryService.restorePieceToRevision(owner, pieceId, originalRevision));
 
     entityManager.clear();
+
+    PieceDto postRestorePreview =
+        pieceHistoryService.previewPieceAtRevision(owner, pieceId, originalRevision);
 
     Piece restoredPiece = pieceRepository.findById(pieceId).orElseThrow();
     List<ScoreSheet> restoredScoreSheets =
@@ -106,6 +103,8 @@ class PieceHistoryServiceTest extends BaseSpringBootTest {
     List<Section> restoredSections = sectionRepository.findAllByPieceIdOrderByPositionAsc(pieceId);
 
     try {
+      assertPreviewPieceContent(preRestorePreview, pieceId);
+      assertEquals(preRestorePreview, postRestorePreview);
       assertRestoredPiece(restoredPiece);
       assertRestoredChildren(restoredScoreSheets, restoredSections);
       assertPermissionsPreserved(pieceId, owner.getId(), editor.getId());
@@ -181,6 +180,51 @@ class PieceHistoryServiceTest extends BaseSpringBootTest {
         () -> assertEquals(RevisionKind.REVERT, history.getFirst().getRevisionKind()),
         () -> assertEquals(RevisionKind.DEFAULT, history.get(1).getRevisionKind()),
         () -> assertEquals(RevisionKind.DEFAULT, history.getLast().getRevisionKind()));
+  }
+
+  private void assertPreviewPieceContent(PieceDto preview, UUID pieceId) {
+    assertAll(
+        () -> assertEquals(pieceId, preview.getId()),
+        () -> assertEquals("Original title", preview.getTitle()),
+        () -> assertEquals("Original composer", preview.getComposer()),
+        () -> assertEquals("2026", preview.getYear()),
+        () -> assertEquals("Original description", preview.getDescription()),
+        () -> assertEquals("Easy", preview.getDifficulty()),
+        () -> assertEquals("60-80", preview.getBpmRange()),
+        () -> assertFalse(preview.getIsPublic()),
+        () -> assertEquals(1, preview.getScoreSheets().size()),
+        () -> assertEquals(1, preview.getSections().size()));
+
+    assertPreviewScoreSheet(preview);
+    assertPreviewSection(preview);
+  }
+
+  private void assertPreviewScoreSheet(PieceDto preview) {
+    ScoreSheetDto previewScoreSheet = preview.getScoreSheets().getFirst();
+
+    assertAll(
+        () -> assertEquals(0, previewScoreSheet.getPosition()),
+        () -> assertEquals("Original sheet title", previewScoreSheet.getTitle()),
+        () ->
+            assertEquals(
+                URI.create("https://example.test/original-sheet.png"),
+                previewScoreSheet.getImageUrl()));
+  }
+
+  private void assertPreviewSection(PieceDto preview) {
+    SectionDto previewSection = preview.getSections().getFirst();
+
+    assertAll(
+        () -> assertEquals(0, previewSection.getPosition()),
+        () -> assertEquals("Original section", previewSection.getName()),
+        () -> assertEquals(4, previewSection.getTimeSignatureNumerator()),
+        () -> assertEquals(4, previewSection.getTimeSignatureDenominator()),
+        () -> assertEquals(8, previewSection.getBarCount()),
+        () -> assertEquals(120, previewSection.getBpm()),
+        () -> assertEquals(0.1f, previewSection.getPosX1(), 0.0001f),
+        () -> assertEquals(0.2f, previewSection.getPosY1(), 0.0001f),
+        () -> assertEquals(0.3f, previewSection.getPosX2(), 0.0001f),
+        () -> assertEquals(0.4f, previewSection.getPosY2(), 0.0001f));
   }
 
   private User persistUser(String label) {
