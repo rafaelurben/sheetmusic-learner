@@ -85,6 +85,18 @@
   - Added full-screen view for room viewer
 - 2026-05-16:
   - Added clearer error message if file upload size limit is exceeded.
+  - Update documentation
+
+### Bigger pain points
+
+- Authentication for STOMP connections: The STOMP protocol does not provide a built-in way to handle authentication
+  and authorization. I had to implement a custom solution to authenticate users when they establish a WebSocket
+  connection and to check their permissions for each subscription. This was a bit tricky and required some
+  workarounds, especially for handling permission changes while a user is connected.
+- Responsiveness of the player: Because sheet dimensions are unknown and can very, fitting the overlays over the
+  sheets and making sure everything is properly aligned and responsive was a bit tricky. I tried using a CSS only
+  solution for this, but it was not working reliably, so I had to use JavaScript to calculate the positions and
+  sizes of the overlay based on the dimensions of the sheet.
 
 ## Project milestones
 
