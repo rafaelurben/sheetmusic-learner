@@ -83,6 +83,8 @@
   - Code cleanup
   - Updated documentation
   - Added full-screen view for room viewer
+- 2026-05-16:
+  - Added clearer error message if file upload size limit is exceeded.
 
 ## Project milestones
 

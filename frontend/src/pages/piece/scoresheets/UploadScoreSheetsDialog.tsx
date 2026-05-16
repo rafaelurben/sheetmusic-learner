@@ -17,6 +17,7 @@ import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { toast } from "sonner";
 import { Spinner } from "@/shadcn/components/ui/spinner.tsx";
+import { ResponseError } from "@/api/generated/openapi";
 
 GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -258,8 +259,12 @@ export default function UploadScoreSheetsDialog({
       );
       handleOpenChange(false);
     } catch (error) {
+      if (error instanceof ResponseError && error.response.status === 413) {
+        toast.error("File upload failed. Total file size exceeded.");
+      } else {
+        toast.error("Failed to upload score sheets.");
+      }
       console.error("Failed to upload score sheets:", error);
-      toast.error("Failed to upload score sheets.");
     } finally {
       setIsUploading(false);
     }
