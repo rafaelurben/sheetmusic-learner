@@ -8,6 +8,7 @@ import {
   CogIcon,
   Maximize2Icon,
   MetronomeIcon,
+  Minimize2Icon,
   PauseIcon,
   PlayIcon,
   RabbitIcon,
@@ -39,6 +40,7 @@ interface PlayerPlaybackControlsProps {
   onTempoMultiplierChange: (nextTempoMultiplier: number) => void;
   onSectionChange: (nextSectionPosition: number) => void;
   onFullscreenToggle: () => void;
+  isFullScreen: boolean;
   allowFullScreen: boolean;
 }
 
@@ -49,6 +51,7 @@ export default function PlayerPlaybackControls({
   sections,
   currentSection,
   allowFullScreen,
+  isFullScreen,
   onPlay,
   onPause,
   onTempoMultiplierChange,
@@ -231,7 +234,7 @@ export default function PlayerPlaybackControls({
             aria-label="Open player in full screen"
             onClick={onFullscreenToggle}
           >
-            <Maximize2Icon />
+            {isFullScreen ? <Minimize2Icon /> : <Maximize2Icon />}
           </Button>
         )}
 

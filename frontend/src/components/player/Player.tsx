@@ -109,6 +109,7 @@ export default function Player({
           onTempoMultiplierChange={onTempoMultiplierChange}
           onSectionChange={onSectionChange}
           onFullscreenToggle={handleToggleFullscreen}
+          isFullScreen={isFullScreen}
           allowFullScreen={allowFullScreen}
         />
 

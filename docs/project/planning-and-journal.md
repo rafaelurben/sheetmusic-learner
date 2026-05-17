@@ -86,6 +86,8 @@
 - 2026-05-16:
   - Added clearer error message if file upload size limit is exceeded.
   - Update documentation
+- 2026-05-17:
+  - Fixed small issues with responsiveness and mobile UI
 
 ### Bigger pain points
 

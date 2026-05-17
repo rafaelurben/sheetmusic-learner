@@ -126,7 +126,7 @@ export default function PieceHistory({ isOpen, pieceId }: Readonly<Props>) {
 
   if (history.length === 0) {
     return (
-      <div className="text-center py-8 text-muted-foreground w-full">
+      <div className="text-center py-8 px-24 text-muted-foreground w-full">
         No history available
       </div>
     );

@@ -159,7 +159,7 @@ export default function PiecePage() {
 
       {canEditPiece && (
         <Sheet open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
-          <SheetContent className="sm:max-w-full md:max-w-lg">
+          <SheetContent className="w-auto sm:max-w-full md:max-w-lg">
             <SheetHeader>
               <SheetTitle>History</SheetTitle>
             </SheetHeader>

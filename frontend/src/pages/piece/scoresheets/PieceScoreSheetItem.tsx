@@ -96,7 +96,14 @@ export default function PieceScoreSheetItem({
   return (
     <div className="space-y-2 rounded-md shadow-sm border-2 p-3 bg-card text-card-foreground flex flex-col">
       <div className="flex justify-center">
-        <div ref={imageWrapperRef} className="relative inline-block">
+        <div
+          ref={imageWrapperRef}
+          className={
+            sectionOverlayCoordinates
+              ? "relative inline-block touch-none"
+              : "relative inline-block"
+          }
+        >
           <img
             src={scoreSheet.imageUrl}
             alt={scoreSheet.title}

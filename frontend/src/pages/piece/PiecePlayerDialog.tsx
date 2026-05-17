@@ -61,7 +61,7 @@ export default function PiecePlayerDialog({
 
   return (
     <Dialog open={true} onOpenChange={onClosePlayer}>
-      <DialogContent className="flex h-screen w-screen flex-col overflow-scroll p-4 sm:max-w-6xl">
+      <DialogContent className="flex h-screen w-screen flex-col overflow-scroll p-4 max-w-[unset] sm:max-w-[unset]">
         <DialogHeader>
           <DialogTitle>Play: {piece.title}</DialogTitle>
         </DialogHeader>

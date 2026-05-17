@@ -321,11 +321,11 @@ export default function PlayerMetronome({
   ).toFixed(0);
 
   return (
-    <div className="flex items-center gap-4 justify-center">
+    <div className="flex items-center gap-4 justify-center flex-wrap">
       <div className="text-sm text-muted-foreground">{statusBar}</div>
       <span>·</span>
       <div
-        className="flex items-center gap-2"
+        className="flex items-center gap-2 flex-wrap"
         style={
           {
             "--metronome-animation-duration": `${flashAnimationDuration}ms`,
