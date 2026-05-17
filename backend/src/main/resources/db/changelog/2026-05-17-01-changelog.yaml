@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1779053607488-1
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - modifyDataType:
+            columnName: avatar_url
+            newDataType: VARCHAR(2048)
+            tableName: users
+        - modifyDataType:
+            columnName: avatar_url
+            newDataType: VARCHAR(2048)
+            tableName: users_aud
