@@ -1,0 +1,6 @@
+{
+  "short_name": "sheetmusic",
+  "name": "sheetmusic-learner",
+  "start_url": "/",
+  "display": "standalone"
+}
