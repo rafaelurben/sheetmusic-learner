@@ -38,7 +38,7 @@ function useAuthenticatedApiClient<T extends BaseAPI>(
               toast.error(
                 "Not authenticated. Assuming your session expired...",
               );
-              void auth.signoutRedirect();
+              void auth.signinRedirect();
             } else if (response.status === 403) {
               toast.error("Access denied!");
             } else if (response.status === 404) {

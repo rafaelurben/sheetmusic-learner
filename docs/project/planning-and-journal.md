@@ -88,6 +88,7 @@
   - Update documentation
 - 2026-05-17:
   - Fixed small issues with responsiveness and mobile UI
+  - Fixed wrong redirect after session expiration
   - Added PWA manifest
 
 ### Bigger pain points
