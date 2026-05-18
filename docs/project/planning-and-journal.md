@@ -94,6 +94,7 @@
 - 2026-05-18:
   - Small UI improvements
   - Added score sheet preview
+  - Fixed aspect ratio handling
 
 ### Bigger pain points
 

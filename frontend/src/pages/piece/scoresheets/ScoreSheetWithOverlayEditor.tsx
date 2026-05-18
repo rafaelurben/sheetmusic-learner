@@ -27,13 +27,13 @@ export default function ScoreSheetWithOverlayEditor({
   const [draggingCorner, setDraggingCorner] = useState<DragCorner | null>(null);
   const [aspectRatio, setAspectRatio] = useState(1);
 
-  useEffect(() => {
+  const updateAspectRatio = () => {
     if (imageRef.current) {
       setAspectRatio(
         imageRef.current.naturalWidth / imageRef.current.naturalHeight,
       );
     }
-  }, []);
+  };
 
   useEffect(() => {
     if (!draggingCorner || !sectionOverlayCoordinates) return;
@@ -88,8 +88,8 @@ export default function ScoreSheetWithOverlayEditor({
       }}
       className={
         sectionOverlayCoordinates
-          ? "relative inline-block touch-none"
-          : "relative inline-block"
+          ? "max-w-full max-h-full relative inline-block touch-none"
+          : "max-w-full max-h-full relative inline-block"
       }
     >
       <img
@@ -97,6 +97,7 @@ export default function ScoreSheetWithOverlayEditor({
         src={scoreSheet.imageUrl}
         alt={scoreSheet.title}
         className="max-h-full max-w-full rounded-md border bg-muted"
+        onLoad={updateAspectRatio}
       />
 
       {sectionOverlayCoordinates && (

@@ -4,7 +4,7 @@
 import type { PieceDto } from "@/api/generated/openapi";
 import type { PlayerSectionState } from "@/interfaces/player/playerSectionState.ts";
 import { useSorted } from "@/service/hooks.ts";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useRef, useState } from "react";
 
 interface PlayerSheetDisplayProps {
   piece: PieceDto;
@@ -46,45 +46,15 @@ export default function PlayerSheetDisplay({
       } as CSSProperties & Record<string, string>)
     : undefined;
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLImageElement>(null);
-
-  const [highlightRect, setHighlightRect] = useState({
-    width: 0,
-    height: 0,
-    offsetX: 0,
-    offsetY: 0,
-  });
-
-  useEffect(() => {
-    const update = () => {
-      const container = containerRef.current;
-      const img = imgRef.current;
-      if (!container || !img) return;
-
-      const c = container.getBoundingClientRect();
-      const i = img.getBoundingClientRect();
-
-      setHighlightRect({
-        width: i.width,
-        height: i.height,
-        offsetX: i.left - c.left,
-        offsetY: i.top - c.top,
-      });
-    };
-
-    const ro = new ResizeObserver(update);
-    if (containerRef.current) ro.observe(containerRef.current);
-    if (imgRef.current) ro.observe(imgRef.current);
-
-    update();
-    const updateTimeout = setTimeout(update, 100);
-
-    return () => {
-      ro.disconnect();
-      clearTimeout(updateTimeout);
-    };
-  }, []);
+  const imageRef = useRef<HTMLImageElement>(null);
+  const [aspectRatio, setAspectRatio] = useState(1);
+  const updateAspectRatio = () => {
+    if (imageRef.current) {
+      setAspectRatio(
+        imageRef.current.naturalWidth / imageRef.current.naturalHeight,
+      );
+    }
+  };
 
   return (
     <div className="flex min-h-0 flex-1 items-center justify-center">
@@ -94,54 +64,46 @@ export default function PlayerSheetDisplay({
         </div>
       ) : (
         <div
-          ref={containerRef}
-          className="relative max-w-full max-h-full h-full"
+          style={{
+            aspectRatio: aspectRatio,
+          }}
+          className="relative inline-block max-w-full max-h-full"
         >
           <img
-            ref={imgRef}
+            ref={imageRef}
             src={displayedScoreSheet.imageUrl}
             alt={displayedScoreSheet.title}
-            className="block max-w-full max-h-full min-h-0 m-0 object-contain rounded-lg border bg-muted"
+            className="max-h-full max-w-full rounded-lg border bg-muted"
+            onLoad={updateAspectRatio}
           />
 
           {highlightedSection && (
             <div
-              id="section-highlight-container"
-              className="absolute"
+              id="section-highlight"
+              className="pointer-events-none absolute overflow-hidden rounded-md border-2 border-section-highlight bg-section-highlight/10 shadow-sm"
               style={{
-                left: highlightRect.offsetX,
-                top: highlightRect.offsetY,
-                width: highlightRect.width,
-                height: highlightRect.height,
+                left: toPercent(highlightedSection.posX1),
+                top: toPercent(highlightedSection.posY1),
+                width: toPercent(
+                  highlightedSection.posX2 - highlightedSection.posX1,
+                ),
+                height: toPercent(
+                  highlightedSection.posY2 - highlightedSection.posY1,
+                ),
               }}
             >
-              <div
-                id="section-highlight"
-                className="pointer-events-none absolute overflow-hidden rounded-md border-2 border-section-highlight bg-section-highlight/10 shadow-sm"
-                style={{
-                  left: toPercent(highlightedSection.posX1),
-                  top: toPercent(highlightedSection.posY1),
-                  width: toPercent(
-                    highlightedSection.posX2 - highlightedSection.posX1,
-                  ),
-                  height: toPercent(
-                    highlightedSection.posY2 - highlightedSection.posY1,
-                  ),
-                }}
-              >
-                {progressBarStyle && (
-                  /* NOTE: key is required to restart animation on section change. */
+              {progressBarStyle && (
+                /* NOTE: key is required to restart animation on section change. */
+                <div
+                  key={currentSectionId}
+                  className="overflow-hidden absolute inset-x-0 bottom-0 h-1 bg-section-highlight/30"
+                >
                   <div
-                    key={currentSectionId}
-                    className="overflow-hidden absolute inset-x-0 bottom-0 h-1 bg-section-highlight/30"
-                  >
-                    <div
-                      className="section-progress-fill h-full w-full bg-section-highlight-foreground/90"
-                      style={progressBarStyle}
-                    />
-                  </div>
-                )}
-              </div>
+                    className="section-progress-fill h-full w-full bg-section-highlight-foreground/90"
+                    style={progressBarStyle}
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
