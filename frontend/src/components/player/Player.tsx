@@ -54,7 +54,7 @@ export default function Player({
   const handleToggleFullscreen = () => {
     if (!allowFullScreen) return;
 
-    if (document.fullscreenElement) {
+    if (isFullScreen) {
       setIsFullScreen(false);
       void document.exitFullscreen();
     } else {
