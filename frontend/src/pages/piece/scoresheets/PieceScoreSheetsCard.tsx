@@ -35,6 +35,8 @@ export default function PieceScoreSheetsCard({
   const piece = usePieceStore((state) => state.piece);
   const sectionForm = usePieceStore((state) => state.sectionForm);
   const setSectionForm = usePieceStore((state) => state.setSectionForm);
+  const previewSheetId = usePieceStore((state) => state.previewSheetId);
+  const setPreviewSheetId = usePieceStore((state) => state.setPreviewSheetId);
 
   const [isUploadScoreSheetsOpen, setIsUploadScoreSheetsOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -141,6 +143,13 @@ export default function PieceScoreSheetsCard({
                         scoreSheetId: scoreSheet.id,
                       };
                     });
+                  }}
+                  isPreview={previewSheetId === scoreSheet.id}
+                  onPreview={() => {
+                    setPreviewSheetId(scoreSheet.id);
+                  }}
+                  onPreviewClose={() => {
+                    setPreviewSheetId(null);
                   }}
                   sectionOverlayCoordinates={
                     sectionForm && scoreSheet.id === activeSectionScoreSheetId

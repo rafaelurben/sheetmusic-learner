@@ -4,18 +4,16 @@
 
 import type { ScoreSheetDto } from "@/api/generated/openapi";
 import { Button } from "@/shadcn/components/ui/button.tsx";
-import { CircleCheckIcon, CircleIcon, PencilIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { CircleCheckIcon, CircleIcon, EyeIcon, PencilIcon } from "lucide-react";
 import DeleteButton from "@/components/deleteButton.tsx";
-
-type DragCorner = "top-left" | "bottom-right";
-
-interface SectionCoordinates {
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-}
+import ScoreSheetWithOverlayEditor from "@/pages/piece/scoresheets/ScoreSheetWithOverlayEditor.tsx";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/shadcn/components/ui/dialog.tsx";
+import type SectionCoordinates from "@/interfaces/SectionCoordinates.ts";
 
 interface PieceScoreSheetItemProps {
   scoreSheet: ScoreSheetDto;
@@ -23,14 +21,13 @@ interface PieceScoreSheetItemProps {
   showSelectActions: boolean;
   isSelected: boolean;
   onSelect: () => void;
+  isPreview: boolean;
+  onPreview: () => void;
+  onPreviewClose: () => void;
   sectionOverlayCoordinates: SectionCoordinates | null;
   onSectionOverlayCoordinatesChange: (nextOverlay: SectionCoordinates) => void;
   onRename: (scoreSheetId: string, currentTitle: string) => void;
   onDelete: (scoreSheetId: string) => void;
-}
-
-function clamp01(value: number): number {
-  return Math.min(1, Math.max(0, value));
 }
 
 export default function PieceScoreSheetItem({
@@ -39,153 +36,85 @@ export default function PieceScoreSheetItem({
   showSelectActions,
   isSelected,
   onSelect,
+  isPreview,
+  onPreview,
+  onPreviewClose,
   sectionOverlayCoordinates,
   onSectionOverlayCoordinatesChange,
   onRename,
   onDelete,
 }: Readonly<PieceScoreSheetItemProps>) {
-  const imageWrapperRef = useRef<HTMLDivElement | null>(null);
-  const [draggingCorner, setDraggingCorner] = useState<DragCorner | null>(null);
-
-  useEffect(() => {
-    if (!draggingCorner || !sectionOverlayCoordinates) return;
-
-    const handlePointerMove = (event: PointerEvent) => {
-      const wrapper = imageWrapperRef.current;
-      if (!wrapper) return;
-
-      const rect = wrapper.getBoundingClientRect();
-      if (rect.width <= 0 || rect.height <= 0) return;
-
-      const relativePosition = {
-        x: clamp01((event.clientX - rect.left) / rect.width),
-        y: clamp01((event.clientY - rect.top) / rect.height),
-      };
-
-      onSectionOverlayCoordinatesChange({
-        ...sectionOverlayCoordinates,
-        ...(draggingCorner === "top-left"
-          ? {
-              x1: Math.min(relativePosition.x, sectionOverlayCoordinates.x2),
-              y1: Math.min(relativePosition.y, sectionOverlayCoordinates.y2),
-            }
-          : {
-              x2: Math.max(relativePosition.x, sectionOverlayCoordinates.x1),
-              y2: Math.max(relativePosition.y, sectionOverlayCoordinates.y1),
-            }),
-      });
-    };
-
-    const handlePointerUp = () => {
-      setDraggingCorner(null);
-    };
-
-    globalThis.addEventListener("pointermove", handlePointerMove);
-    globalThis.addEventListener("pointerup", handlePointerUp);
-
-    return () => {
-      globalThis.removeEventListener("pointermove", handlePointerMove);
-      globalThis.removeEventListener("pointerup", handlePointerUp);
-    };
-  }, [
-    draggingCorner,
-    onSectionOverlayCoordinatesChange,
-    sectionOverlayCoordinates,
-  ]);
-
   return (
     <div className="space-y-2 rounded-md shadow-sm border-2 p-3 bg-card text-card-foreground flex flex-col">
-      <div className="flex justify-center">
-        <div
-          ref={imageWrapperRef}
-          className={
-            sectionOverlayCoordinates
-              ? "relative inline-block touch-none"
-              : "relative inline-block"
-          }
-        >
-          <img
-            src={scoreSheet.imageUrl}
-            alt={scoreSheet.title}
-            className="max-h-72 max-w-full rounded-md border bg-muted"
-          />
+      <div className="flex justify-center max-h-72">
+        <ScoreSheetWithOverlayEditor
+          scoreSheet={scoreSheet}
+          sectionOverlayCoordinates={sectionOverlayCoordinates}
+          onSectionOverlayCoordinatesChange={onSectionOverlayCoordinatesChange}
+        />
+      </div>
 
-          {sectionOverlayCoordinates && (
+      <div
+        className="flex items-center justify-between gap-2 mt-auto"
+        id={`score-sheet-item-${scoreSheet.id}`}
+      >
+        <div className="text-sm font-medium">{scoreSheet.title}</div>
+        <div className="flex items-center gap-1">
+          {showEditDeleteActions && (
             <>
-              <div
-                className="pointer-events-none absolute border-2 border-section-highlight bg-section-highlight/30"
-                style={{
-                  left: `${sectionOverlayCoordinates.x1 * 100}%`,
-                  top: `${sectionOverlayCoordinates.y1 * 100}%`,
-                  width: `${(sectionOverlayCoordinates.x2 - sectionOverlayCoordinates.x1) * 100}%`,
-                  height: `${(sectionOverlayCoordinates.y2 - sectionOverlayCoordinates.y1) * 100}%`,
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-7"
+                onClick={() => {
+                  onRename(scoreSheet.id, scoreSheet.title);
                 }}
-              />
-              <button
-                type="button"
-                className="absolute z-10 size-4 -translate-x-1/2 -translate-y-1/2 cursor-nwse-resize rounded-full border border-section-highlight bg-section-highlight shadow"
-                style={{
-                  left: `${sectionOverlayCoordinates.x1 * 100}%`,
-                  top: `${sectionOverlayCoordinates.y1 * 100}%`,
+              >
+                <PencilIcon className="size-4" />
+              </Button>
+              <DeleteButton
+                variant="ghost"
+                title="Delete this score sheet?"
+                action={() => {
+                  onDelete(scoreSheet.id);
                 }}
-                onPointerDown={(event) => {
-                  event.preventDefault();
-                  setDraggingCorner("top-left");
-                }}
-                aria-label="Move top-left corner"
-              />
-              <button
-                type="button"
-                className="absolute z-10 size-4 -translate-x-1/2 -translate-y-1/2 cursor-se-resize rounded-full border border-section-highlight bg-section-highlight shadow"
-                style={{
-                  left: `${sectionOverlayCoordinates.x2 * 100}%`,
-                  top: `${sectionOverlayCoordinates.y2 * 100}%`,
-                }}
-                onPointerDown={(event) => {
-                  event.preventDefault();
-                  setDraggingCorner("bottom-right");
-                }}
-                aria-label="Move bottom-right corner"
               />
             </>
           )}
+          {showSelectActions && (
+            <Button
+              variant={isSelected ? "default" : "outline"}
+              size="icon-xs"
+              disabled={isSelected}
+              onClick={onSelect}
+            >
+              {isSelected ? <CircleCheckIcon /> : <CircleIcon />}
+            </Button>
+          )}
+          <Button variant="default" size="icon-xs" onClick={onPreview}>
+            <EyeIcon className="size-4" />
+          </Button>
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-2 mt-auto">
-        <div className="text-sm font-medium">{scoreSheet.title}</div>
-        {showEditDeleteActions && (
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-7"
-              onClick={() => {
-                onRename(scoreSheet.id, scoreSheet.title);
-              }}
-            >
-              <PencilIcon className="size-4" />
-            </Button>
-            <DeleteButton
-              variant="ghost"
-              title="Delete this score sheet?"
-              action={() => {
-                onDelete(scoreSheet.id);
-              }}
-            />
-          </div>
-        )}
-        {showSelectActions && (
-          <Button
-            variant={isSelected ? "default" : "outline"}
-            size="icon-xs"
-            disabled={isSelected}
-            onClick={onSelect}
-          >
-            {isSelected ? <CircleCheckIcon /> : <CircleIcon />}
-          </Button>
-        )}
-      </div>
+      {isPreview && (
+        <Dialog open={true} onOpenChange={onPreviewClose}>
+          <DialogContent className="flex h-screen w-screen flex-col overflow-scroll p-4 max-w-[unset] sm:max-w-[unset]">
+            <DialogHeader>
+              <DialogTitle>Score sheet: {scoreSheet.title}</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-1 justify-center min-h-0">
+              <ScoreSheetWithOverlayEditor
+                scoreSheet={scoreSheet}
+                sectionOverlayCoordinates={sectionOverlayCoordinates}
+                onSectionOverlayCoordinatesChange={
+                  onSectionOverlayCoordinatesChange
+                }
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

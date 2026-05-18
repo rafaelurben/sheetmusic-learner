@@ -44,9 +44,6 @@ export default function PieceSectionsCard({
   const setEditingSectionId = usePieceStore(
     (state) => state.setEditingSectionId,
   );
-  const clearEditingSectionId = usePieceStore(
-    (state) => state.clearEditingSectionId,
-  );
   const sectionForm = usePieceStore((state) => state.sectionForm);
   const setSectionForm = usePieceStore((state) => state.setSectionForm);
 
@@ -154,7 +151,7 @@ export default function PieceSectionsCard({
 
   const startCreating = () => {
     setIsCreating(true);
-    clearEditingSectionId();
+    setEditingSectionId(null);
     setSectionForm(createDefaultForm());
   };
 
@@ -253,7 +250,7 @@ export default function PieceSectionsCard({
                   });
                 }}
                 onCancelEdit={() => {
-                  clearEditingSectionId();
+                  setEditingSectionId(null);
                   setSectionForm(null);
                   setIsCreating(false);
                 }}

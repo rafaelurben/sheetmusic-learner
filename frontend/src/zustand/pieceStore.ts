@@ -18,12 +18,13 @@ interface PieceStoreState {
   piece: PieceDto;
   initialLoadComplete: boolean;
   editingSectionId: string | null;
+  previewSheetId: string | null;
   sectionForm: SectionFormState | null;
 
   reset: () => void;
   setPiece: (piece: PieceDto) => void;
   setEditingSectionId: (sectionId: string | null) => void;
-  clearEditingSectionId: () => void;
+  setPreviewSheetId: (sheetId: string | null) => void;
   setSectionForm: (
     sectionForm: SetStateAction<SectionFormState | null>,
   ) => void;
@@ -35,6 +36,7 @@ const initialState = {
   piece: {} as PieceDto,
   initialLoadComplete: false,
   editingSectionId: null,
+  previewSheetId: null,
   sectionForm: null,
 };
 
@@ -49,8 +51,8 @@ export const usePieceStore = create<PieceStoreState>((set) => ({
   setEditingSectionId: (editingSectionId) => {
     set({ editingSectionId });
   },
-  clearEditingSectionId: () => {
-    set({ editingSectionId: null, sectionForm: null });
+  setPreviewSheetId: (previewSheetId) => {
+    set({ previewSheetId });
   },
   setSectionForm: (sectionForm) => {
     set((state) => ({

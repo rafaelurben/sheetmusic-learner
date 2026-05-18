@@ -91,6 +91,9 @@
   - Fixed wrong redirect after session expiration
   - Fixed: Increased avatarUrl column size in database to prevent errors with long URLs
   - Added PWA manifest
+- 2026-05-18:
+  - Small UI improvements
+  - Added score sheet preview
 
 ### Bigger pain points
 
