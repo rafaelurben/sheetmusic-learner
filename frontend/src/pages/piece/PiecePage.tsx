@@ -84,9 +84,9 @@ export default function PiecePage() {
               onClick={() => {
                 setIsPlayerOpen(true);
               }}
+              aria-description="Play in dialog"
             >
               <PlayIcon className="size-4" />
-              Play
             </Button>
             <Button
               variant="outline"

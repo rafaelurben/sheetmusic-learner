@@ -163,8 +163,8 @@ export default function PieceSectionItem({
               </Select>
             </div>
 
-            <div className="flex items-end gap-2">
-              <div className="flex-1">
+            <div className="flex items-end gap-2 flex-wrap">
+              <div className="basis-20 grow-3">
                 <PieceSectionTimeSelector
                   numerator={sectionForm.timeSignatureNumerator}
                   denominator={sectionForm.timeSignatureDenominator}
@@ -180,7 +180,7 @@ export default function PieceSectionItem({
                 />
               </div>
 
-              <div className="flex-1">
+              <div className="basis-12 grow-2">
                 <Label className="text-xs text-muted-foreground">Bars</Label>
                 <Input
                   type="number"
@@ -198,7 +198,7 @@ export default function PieceSectionItem({
                 />
               </div>
 
-              <div className="flex-1">
+              <div className="basis-12 grow-2">
                 <Label className="text-xs text-muted-foreground">BPM</Label>
                 <Input
                   type="number"
@@ -214,6 +214,9 @@ export default function PieceSectionItem({
               </div>
 
               <div className="flex gap-1 self-end">
+                <Button size="icon-sm" onClick={handleSaveEditedSection}>
+                  <CheckIcon />
+                </Button>
                 <Button variant="outline" size="icon-sm" onClick={onCancelEdit}>
                   <XIcon />
                 </Button>
@@ -223,9 +226,6 @@ export default function PieceSectionItem({
                     action={handleDeleteSection}
                   />
                 )}
-                <Button size="icon-sm" onClick={handleSaveEditedSection}>
-                  <CheckIcon />
-                </Button>
               </div>
             </div>
           </>
@@ -263,7 +263,7 @@ export default function PieceSectionItem({
 
               {canEdit && (
                 <div className="flex gap-1 self-end">
-                  {isDraggable && (
+                  {isDraggable ? (
                     <Button
                       type="button"
                       variant="ghost"
@@ -279,6 +279,16 @@ export default function PieceSectionItem({
                       onDragEnd={() => {
                         onDragEnd?.();
                       }}
+                    >
+                      <GripVerticalIcon />
+                    </Button>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      disabled={true}
+                      size="icon-sm"
+                      aria-label="Drag section"
                     >
                       <GripVerticalIcon />
                     </Button>

@@ -52,7 +52,7 @@ export default function PieceSectionTimeSelector({
       <Label className="text-xs text-muted-foreground">Time</Label>
 
       {useCustom ? (
-        <div className="mt-2 flex">
+        <div className="mt-1 flex">
           <Input
             type="number"
             min={0}
@@ -98,7 +98,7 @@ export default function PieceSectionTimeSelector({
             });
           }}
         >
-          <SelectTrigger className="mt-1">
+          <SelectTrigger className="mt-1 w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
