@@ -55,7 +55,7 @@ export default function PieceScoreSheetItem({
       </div>
 
       <div
-        className="flex items-center justify-between gap-2 mt-auto"
+        className="flex items-center justify-between gap-2 mt-auto flex-wrap"
         id={`score-sheet-item-${scoreSheet.id}`}
       >
         <div className="text-sm font-medium">{scoreSheet.title}</div>
