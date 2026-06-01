@@ -29,6 +29,7 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    allowedHosts: ["vite.local"],
     proxy: {
       "/api": {
         target: "http://localhost:8080",

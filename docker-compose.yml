@@ -44,7 +44,8 @@ services:
         }
       SERVER_CORS_ALLOWED_ORIGINS_INLINE: |
         [
-          "http://localhost:5173"
+          "http://localhost:5173",
+          "https://vite.local"
         ]
       LOGIN_OPTIONS_INLINE: |
         {
@@ -167,8 +168,8 @@ services:
             "Description": "Client for sheetmusic-learner",
             "AllowedGrantTypes": ["authorization_code"],
             "AllowAccessTokensViaBrowser": true,
-            "RedirectUris": ["http://localhost:5173"],
-            "PostLogoutRedirectUris": ["http://localhost:5173"],
+            "RedirectUris": ["http://localhost:5173", "https://vite.local"],
+            "PostLogoutRedirectUris": ["http://localhost:5173", "https://vite.local"],
             "AllowedScopes": ["openid", "profile", "email", "api"],
             "AlwaysIncludeUserClaimsInIdToken": true,
             "AlwaysSendClientClaims": true,
