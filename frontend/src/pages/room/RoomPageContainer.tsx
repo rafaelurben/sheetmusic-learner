@@ -23,6 +23,7 @@ export default function RoomPageContainer() {
   const { id } = useParams();
   const [notFound, setNotFound] = useState(false);
   const [notAllowed, setNotAllowed] = useState(false);
+  const connected = useMainStore((state) => state.connected);
   const roomFromMainStore = useMainStore((state) =>
     id ? state.rooms[id] : undefined,
   );
@@ -118,7 +119,7 @@ export default function RoomPageContainer() {
           }
         });
     }
-  }, [id, setRoom, roomsApi]);
+  }, [id, setRoom, roomsApi, connected]); // refresh on connected change
 
   // Sync Piece API
   useEffect(() => {
@@ -149,6 +150,7 @@ export default function RoomPageContainer() {
     piecesApi,
     setPiece,
     resetPieceStore,
+    connected, // refresh on connected change
   ]);
 
   // Async piece store sub

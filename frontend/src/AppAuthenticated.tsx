@@ -68,7 +68,7 @@ export default function AppAuthenticated() {
       .catch((err: unknown) => {
         console.error("Failed to fetch rooms:", err);
       });
-  }, [addPiece, addRoom, piecesApi, roomsApi]);
+  }, [addPiece, addRoom, piecesApi, roomsApi, connected]); // refresh on connected change
 
   // Global subscriptions
   useEffect(() => {

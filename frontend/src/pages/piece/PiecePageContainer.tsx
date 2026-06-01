@@ -20,6 +20,7 @@ export default function PiecePageContainer() {
   const { id } = useParams();
   const [notFound, setNotFound] = useState(false);
   const [notAllowed, setNotAllowed] = useState(false);
+  const connected = useMainStore((state) => state.connected);
   const pieceFromMainStore = useMainStore((state) =>
     id ? state.pieces[id] : undefined,
   );
@@ -50,7 +51,7 @@ export default function PiecePageContainer() {
           }
         });
     }
-  }, [id, piecesApi, setPiece]);
+  }, [id, piecesApi, setPiece, connected]); // refresh on connected change
 
   useEffect(() => {
     if (!id || !initialLoadComplete || notFound) return;
