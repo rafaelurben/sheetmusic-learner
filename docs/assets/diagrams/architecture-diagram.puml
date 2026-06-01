@@ -1,0 +1,27 @@
+@startuml architecture
+
+actor "User Browser" as Browser
+
+rectangle "External IdP\n(OIDC)" as IdP
+rectangle "External S3\n(Cloud Storage)" as S3
+
+package "Server Infrastructure" <<server>> {
+  package "Docker Containers" {
+    rectangle "Frontend\n(React)" as Frontend <<container>>
+    rectangle "Backend\n(Spring Boot)" as Backend <<container>>
+    rectangle "Database\n(PostgreSQL)" as Database <<container>>
+  }
+}
+
+Browser --> IdP : OIDC auth
+IdP --> Browser : auth tokens
+Browser -> Frontend : HTTP / STOMP Requests
+Frontend --> Backend : "Proxied requests (/api/*, /ws)"
+
+Backend -> Database : SQL Queries
+Backend --> S3 : Upload/manage files
+Backend --> IdP : fetch JWK
+Browser --> S3 : Download files
+
+@enduml
+

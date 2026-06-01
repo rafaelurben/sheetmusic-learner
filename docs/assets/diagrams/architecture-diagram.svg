@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" contentStyleType="text/css"
+     data-diagram-type="DESCRIPTION" height="488px" preserveAspectRatio="none"
+     style="width:792px;height:488px;background:#FFFFFF;" version="1.1" viewBox="0 0 792 488" width="792px"
+     zoomAndPan="magnify"><?plantuml $version$?>
+    <defs/>
+    <g><!--cluster Server Infrastructure-->
+        <g class="cluster" data-qualified-name="Server Infrastructure" data-source-line="6" id="ent0004">
+            <path d="M359.33,6 L528.0839,6 A3.75,3.75 0 0 1 530.5839,8.5 L537.5839,28.2969 L775.33,28.2969 A2.5,2.5 0 0 1 777.83,30.7969 L777.83,355.99 A2.5,2.5 0 0 1 775.33,358.49 L359.33,358.49 A2.5,2.5 0 0 1 356.83,355.99 L356.83,8.5 A2.5,2.5 0 0 1 359.33,6"
+                  fill="none" style="stroke:#000000;stroke-width:1.5;"/>
+            <line style="stroke:#000000;stroke-width:1.5;" x1="356.83" x2="537.5839" y1="28.2969" y2="28.2969"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing"
+                  textLength="167.7539" x="360.83" y="20.9951">Server Infrastructure
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
+                  textLength="61.4482" x="540.6059" y="43.292">&#171;server&#187;
+            </text>
+        </g><!--cluster Docker Containers-->
+        <g class="cluster" data-qualified-name="Server Infrastructure.Docker Containers" data-source-line="7"
+           id="ent0005">
+            <path d="M383.33,65 L529.9491,65 A3.75,3.75 0 0 1 532.4491,67.5 L539.4491,87.2969 L751.33,87.2969 A2.5,2.5 0 0 1 753.83,89.7969 L753.83,331.99 A2.5,2.5 0 0 1 751.33,334.49 L383.33,334.49 A2.5,2.5 0 0 1 380.83,331.99 L380.83,67.5 A2.5,2.5 0 0 1 383.33,65"
+                  fill="none" style="stroke:#000000;stroke-width:1.5;"/>
+            <line style="stroke:#000000;stroke-width:1.5;" x1="380.83" x2="539.4491" y1="87.2969" y2="87.2969"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" font-weight="700" lengthAdjust="spacing"
+                  textLength="145.6191" x="384.83" y="79.9951">Docker Containers
+            </text>
+        </g><!--entity Frontend-->
+        <g class="entity" data-qualified-name="Server Infrastructure.Docker Containers.Frontend" data-source-line="8"
+           id="ent0006">
+            <rect fill="#F1F1F1" height="68.8906" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="105.4668" x="398.1" y="100"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
+                  textLength="83.4668" x="409.1" y="122.9951">&#171;container&#187;
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="63.1094"
+                  x="419.2787" y="139.292">Frontend
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="51.0303"
+                  x="419.2787" y="155.5889">(React)
+            </text>
+        </g><!--entity Backend-->
+        <g class="entity" data-qualified-name="Server Infrastructure.Docker Containers.Backend" data-source-line="9"
+           id="ent0007">
+            <rect fill="#F1F1F1" height="68.8906" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="112.7773" x="396.44" y="249.6"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
+                  textLength="83.4668" x="411.0953" y="272.5951">&#171;container&#187;
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="60.3613"
+                  x="406.44" y="288.892">Backend
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="92.7773"
+                  x="406.44" y="305.1889">(Spring Boot)
+            </text>
+        </g><!--entity Database-->
+        <g class="entity" data-qualified-name="Server Infrastructure.Docker Containers.Database" data-source-line="10"
+           id="ent0008">
+            <rect fill="#F1F1F1" height="68.8906" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="111.6768" x="625.99" y="249.6"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" font-style="italic" lengthAdjust="spacing"
+                  textLength="83.4668" x="640.095" y="272.5951">&#171;container&#187;
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="66.8008"
+                  x="635.99" y="288.892">Database
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="91.6768"
+                  x="635.99" y="305.1889">(PostgreSQL)
+            </text>
+        </g><!--entity Browser-->
+        <g class="entity" data-qualified-name="Browser" data-source-line="1" id="ent0001">
+            <ellipse cx="131.8297" cy="104.8" fill="#F1F1F1" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/>
+            <path d="M131.8297,112.8 L131.8297,139.8 M118.8297,120.8 L144.8297,120.8 M131.8297,139.8 L118.8297,154.8 M131.8297,139.8 L144.8297,154.8"
+                  fill="none" style="stroke:#181818;stroke-width:0.5;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="93.3994"
+                  x="85.13" y="169.2951">User Browser
+            </text>
+        </g><!--entity IdP-->
+        <g class="entity" data-qualified-name="IdP" data-source-line="3" id="ent0002">
+            <rect fill="#F1F1F1" height="52.5938" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="104.2393" x="53.71" y="421.49"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="84.2393"
+                  x="63.71" y="444.4851">External IdP
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="46.6279"
+                  x="63.71" y="460.782">(OIDC)
+            </text>
+        </g><!--entity S3-->
+        <g class="entity" data-qualified-name="S3" data-source-line="4" id="ent0003">
+            <rect fill="#F1F1F1" height="52.5938" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;"
+                  width="130.1406" x="266.76" y="421.49"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="80.5752"
+                  x="276.76" y="444.4851">External S3
+            </text>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="110.1406"
+                  x="276.76" y="460.782">(Cloud Storage)
+            </text>
+        </g><!--link Browser to IdP-->
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0002" data-link-type="dependency"
+           data-source-line="14" id="lnk9">
+            <path d="M128.7,173 C123.33,237.21 112.9563,361.4674 108.3763,416.2874" fill="none" id="Browser-to-IdP"
+                  style="stroke:#181818;stroke-width:1;"/>
+            <polygon fill="#181818"
+                     points="107.96,421.27,112.6954,412.6343,108.3763,416.2874,104.7232,411.9682,107.96,421.27"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="66.8281"
+                  x="123.26" y="288.6069">OIDC auth
+            </text>
+        </g><!--link IdP to Browser-->
+        <g class="link" data-entity-1="ent0002" data-entity-2="ent0001" data-link-type="dependency"
+           data-source-line="15" id="lnk10">
+            <path d="M69.3,421 C52.69,407 34.77,388.13 25.83,366.49 C6,318.47 6.84,297.95 25.83,249.6 C37.84,219.01 58.6162,195.0978 81.0362,174.8878"
+                  fill="none" id="IdP-to-Browser" style="stroke:#181818;stroke-width:1;"/>
+            <polygon fill="#181818" points="84.75,171.54,75.3869,174.5949,81.0362,174.8878,80.7433,180.537,84.75,171.54"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="77.2637"
+                  x="26.83" y="288.6069">auth tokens
+            </text>
+        </g><!--link Browser to Frontend-->
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0006" data-link-type="dependency"
+           data-source-line="16" id="lnk11">
+            <path d="M178.9,134.45 C237.31,134.45 331.64,134.45 392.71,134.45" fill="none" id="Browser-to-Frontend"
+                  style="stroke:#181818;stroke-width:1;"/>
+            <polygon fill="#181818" points="397.71,134.45,388.71,130.45,392.71,134.45,388.71,138.45,397.71,134.45"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="155.9175"
+                  x="210.82" y="127.5169">HTTP / STOMP Requests
+            </text>
+        </g><!--link Frontend to Backend-->
+        <g class="link" data-entity-1="ent0006" data-entity-2="ent0007" data-link-type="dependency"
+           data-source-line="17" id="lnk12">
+            <path d="M451.29,169.31 C451.62,193.31 451.9812,220.3705 452.3112,244.3405" fill="none"
+                  id="Frontend-to-Backend" style="stroke:#181818;stroke-width:1;"/>
+            <polygon fill="#181818"
+                     points="452.38,249.34,456.2557,240.2858,452.3112,244.3405,448.2565,240.3959,452.38,249.34"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="188.7158"
+                  x="452.95" y="215.6669">Proxied requests (/api/*, /ws)
+            </text>
+        </g><!--link Backend to Database-->
+        <g class="link" data-entity-1="ent0007" data-entity-2="ent0008" data-link-type="dependency"
+           data-source-line="19" id="lnk13">
+            <path d="M509.44,284.04 C544.94,284.04 585.51,284.04 620.88,284.04" fill="none" id="Backend-to-Database"
+                  style="stroke:#181818;stroke-width:1;"/>
+            <polygon fill="#181818" points="625.88,284.04,616.88,280.04,620.88,284.04,616.88,288.04,625.88,284.04"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="80.0566"
+                  x="527.61" y="277.1069">SQL Queries
+            </text>
+        </g><!--link Backend to S3-->
+        <g class="link" data-entity-1="ent0007" data-entity-2="ent0003" data-link-type="dependency"
+           data-source-line="20" id="lnk14">
+            <path d="M439.15,318.67 C429.28,340.66 414.58,369.32 396.83,391.49 C388.22,402.24 381.1332,409.2816 370.7032,417.9616"
+                  fill="none" id="Backend-to-S3" style="stroke:#181818;stroke-width:1;"/>
+            <polygon fill="#181818"
+                     points="366.86,421.16,376.3365,418.4775,370.7032,417.9616,371.2191,412.3283,366.86,421.16"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="133.7197"
+                  x="409.37" y="387.5569">Upload/manage files
+            </text>
+        </g><!--link Backend to IdP-->
+        <g class="link" data-entity-1="ent0007" data-entity-2="ent0002" data-link-type="dependency"
+           data-source-line="21" id="lnk15">
+            <path d="M416.03,318.98 C397.05,335.1 372.89,353.6 348.83,366.49 C348.29,366.78 234.4483,404.3535 163.1583,427.8735"
+                  fill="none" id="Backend-to-IdP" style="stroke:#181818;stroke-width:1;"/>
+            <polygon fill="#181818"
+                     points="158.41,429.44,168.2101,430.4188,163.1583,427.8735,165.7036,422.8216,158.41,429.44"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="62.4038"
+                  x="324.26" y="387.5569">fetch JWK
+            </text>
+        </g><!--link Browser to S3-->
+        <g class="link" data-entity-1="ent0001" data-entity-2="ent0003" data-link-type="dependency"
+           data-source-line="22" id="lnk16">
+            <path d="M154.26,172.92 C167.31,195.04 183.88,223.7 197.83,249.6 C231.27,311.68 225.75,335.66 268.83,391.49 C277.1,402.2 283.8864,409.173 293.9964,417.853"
+                  fill="none" id="Browser-to-S3" style="stroke:#181818;stroke-width:1;"/>
+            <polygon fill="#181818"
+                     points="297.79,421.11,293.5671,412.2124,293.9964,417.853,288.3558,418.2822,297.79,421.11"
+                     style="stroke:#181818;stroke-width:1;stroke-linejoin:miter;stroke-miterlimit:10;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="95.3228"
+                  x="251.94" y="288.6069">Download files
+            </text>
+        </g>
+        <?plantuml-src VP7BRi8m44Nt_egHLr0LPS4kGbb0MfK-HC2WRhfndI54f3QrdO9KyU-TlA2bLLUnPywzupkHoXiBVENGmjYQFNqvIDUT6REelDHPWS1l3XwjbWLCq-H5zsRJUDAlORh_oOaXOPF2b2a86YCpR7WnP6mdrPOAm0NQ3ne-rMihdRUbygL53gEHgnjH19yCu8J7Hcq9dnZjPQxHEbxt0RuzuDPI5tLAqnSebM-cTbMoLfqwYYwrOnhKICNEvZg3iJ6jGTlwNnzBBr-bGp98ZFEPHJ5_RFHTwvV1aHqPQpSEWq5KBHH2g1OCilGRLjshUiU4THcyeVUuip8wPmpXRhbC802nd3qbiC3t4frtx0JKTcsW47XYpI77b98q8FG2kSk3gsi8zgxFwNajIx9JZX0e6ynBj3cwCq68659pjIkCJ8CtgQi_jywB2wX9kKQlDd3__F1Z0xL1RFQwicYqNm00?>
+    </g>
+</svg>

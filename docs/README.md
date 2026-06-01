@@ -1,5 +1,8 @@
 # sheetmusic-learner docs
 
+- [Architecture](architecture.md)
+  - Overview of the system architecture
+  - File structure
 - [Communication protocol](communication.md)
   - Synchronous REST API
   - Asynchronous STOMP over WebSocket
