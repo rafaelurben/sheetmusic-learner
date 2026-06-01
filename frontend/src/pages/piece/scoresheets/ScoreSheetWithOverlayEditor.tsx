@@ -88,8 +88,8 @@ export default function ScoreSheetWithOverlayEditor({
       }}
       className={
         sectionOverlayCoordinates
-          ? "max-w-full max-h-full relative inline-block touch-none"
-          : "max-w-full max-h-full relative inline-block"
+          ? "max-w-full max-h-full my-auto relative inline-block touch-none"
+          : "max-w-full max-h-full my-auto relative inline-block"
       }
     >
       <img

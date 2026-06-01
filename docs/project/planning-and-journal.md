@@ -95,6 +95,9 @@
   - Small UI improvements
   - Added score sheet preview
   - Fixed aspect ratio handling
+- 2026-06-01:
+  - Reload data after WebSocket reconnect to prevent stale data after connection loss
+  - Fixed section highlight alignment on score sheet preview
 
 ### Bigger pain points
 
