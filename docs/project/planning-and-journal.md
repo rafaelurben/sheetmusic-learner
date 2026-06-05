@@ -98,6 +98,9 @@
 - 2026-06-01:
   - Reload data after WebSocket reconnect to prevent stale data after connection loss
   - Fixed section highlight alignment on score sheet preview
+- 2026-06-05 - 2026-06-06:
+  - Prepare for presentation
+  - Fix devcontainer setup and README instructions
 
 ### Bigger pain points
 
@@ -107,8 +110,8 @@
   workarounds, especially for handling permission changes while a user is connected.
 - Responsiveness of the player: Because sheet dimensions are unknown and can very, fitting the overlays over the
   sheets and making sure everything is properly aligned and responsive was a bit tricky. I tried using a CSS only
-  solution for this, but it was not working reliably, so I had to use JavaScript to calculate the positions and
-  sizes of the overlay based on the dimensions of the sheet.
+  solution for this, but it was not working reliably, so I had to use JavaScript to calculate the aspect ratio of the
+  sheet. The final solution also required using some fixed heights.
 
 ## Project milestones
 

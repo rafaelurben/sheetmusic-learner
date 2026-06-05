@@ -18,10 +18,10 @@
     5433,
     4011,
     9000,
-    9001
+    9090
   ],
   "containerEnv": {
-    "SPRING_PROFILES_ACTIVE": "local",
+    "SPRING_PROFILES_ACTIVE": "local"
   },
   "customizations": {
     "jetbrains": {
@@ -32,9 +32,5 @@
     "docker": "docker compose up -d",
     "backend": "cd backend && mvn verify -DskipTests",
     "frontend": "cd frontend && npm ci && npm run generate:openapi"
-  },
-  "postAttachCommand": {
-    "backend": "cd backend && mvn spring-boot:start",
-    "frontend": "cd frontend && npm run dev"
   }
 }

@@ -13,8 +13,22 @@ An application for collaboratively learning sheetmusic.
 ### Devcontainer
 
 This repository contains a fully configured devcontainer setup.
-The [devcontainer config](./.devcontainer/devcontainer.json) handles all configurations, installations and running of
-the application.
+The [devcontainer config](./.devcontainer/devcontainer.json) handles all configurations and installation of
+the application. VS Code works best: Just run the action "Dev Containers: Clone Repository in Container Volume" and
+select this repository.
+
+After the container is built, manually starting the application is required via the following commands: (run in two
+separate terminal windows)
+
+```bash
+cd backend && mvn spring-boot:run
+cd frontend && npm run dev
+```
+
+The frontend should be available on http://localhost:5173. You can log in using one of the mock users below.
+
+**Known bug**: The application will show internal server errors after the first login. This is caused by a race
+condition in the backend. It will not impact the functionality.
 
 ### Dependencies
 
@@ -25,7 +39,7 @@ the application.
 
 ### Services
 
-The [docker-compose.yml](docker-compose.yml) configuration contains two services for easy local development:
+The [docker-compose.yml](docker-compose.yml) configuration contains three services for easy local development:
 
 1. A postgres database running on port 5433
     - Warning: This is not the default port for postgres!
@@ -38,6 +52,9 @@ The [docker-compose.yml](docker-compose.yml) configuration contains two services
         - `bart` (bart.simpson@dummy.tpto.ch)
         - `donald` (donald.duck@dummy.tpto.ch)
 3. A local minio instance running on port 9000 for object storage
+    - Web console available on port 9090: http://localhost:9090
+    - Username: `minio-admin`
+    - Password: `minio-admin`
 
 ### Commands
 
@@ -46,7 +63,7 @@ The [docker-compose.yml](docker-compose.yml) configuration contains two services
     - Stop: `docker compose down`
 - **Backend**:
     - Install: `cd backend && mvn verify -DskipTests`
-    - Run: `cd backend && mvn spring-boot:start`
+  - Run: `cd backend && mvn spring-boot:run`
 - **Frontend**:
     - Install: `cd frontend && npm ci && npm run generate:openapi`
     - Run: `cd frontend && npm run dev`
