@@ -8,7 +8,7 @@ import {
 } from "@/api/generated/openapi";
 import { usePiecesApi } from "@/api/useAuthenticatedApiClient.ts";
 import { Button } from "@/shadcn/components/ui/button.tsx";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -46,32 +46,31 @@ export default function PieceHistory({ isOpen, pieceId }: Readonly<Props>) {
     [history],
   );
 
+  const fetchHistory = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const historyData = await piecesApi.getPieceHistory({ id: pieceId });
+      setHistory(historyData);
+    } catch (error: unknown) {
+      console.error("Failed to fetch piece history:", error);
+      if (error instanceof ResponseError) {
+        if (error.response.status === 403) {
+          toast.error(
+            "You don't have permission to view this piece's history.",
+          );
+        } else {
+          toast.error("Failed to fetch piece history.");
+        }
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [pieceId, piecesApi]);
+
   useEffect(() => {
     if (!isOpen) return;
-
-    const fetchHistory = async () => {
-      try {
-        setIsLoading(true);
-        const historyData = await piecesApi.getPieceHistory({ id: pieceId });
-        setHistory(historyData);
-      } catch (error: unknown) {
-        console.error("Failed to fetch piece history:", error);
-        if (error instanceof ResponseError) {
-          if (error.response.status === 403) {
-            toast.error(
-              "You don't have permission to view this piece's history.",
-            );
-          } else {
-            toast.error("Failed to fetch piece history.");
-          }
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     void fetchHistory();
-  }, [isOpen, pieceId, piecesApi]);
+  }, [fetchHistory, isOpen]);
 
   const handleRevertClick = (revision: PieceHistoryRevisionDto) => {
     setSelectedRevision(revision);
@@ -117,6 +116,7 @@ export default function PieceHistory({ isOpen, pieceId }: Readonly<Props>) {
       }
     } finally {
       setIsReverting(false);
+      void fetchHistory();
     }
   };
 

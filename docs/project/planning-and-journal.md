@@ -103,6 +103,7 @@
   - Fix devcontainer setup and README instructions
 - 2026-06-14:
   - Fix a local docker setup issue with S3 mock and increase the file upload size limit
+  - Automatically reload history after reverting
 
 ### Bigger pain points
 
