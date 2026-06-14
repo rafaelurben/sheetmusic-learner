@@ -77,3 +77,5 @@ cd frontend && npm ci && npm run build && cd ..
 cd backend && mvn verify -DskipTests && cd ..
 docker compose -f docker-compose-full.yml up --build --wait --detach
 ```
+
+Depending on your OS, you may need to add `host.docker.internal` to your host file, pointing to `127.0.0.1`.

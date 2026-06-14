@@ -101,6 +101,8 @@
 - 2026-06-05 - 2026-06-06:
   - Prepare for presentation
   - Fix devcontainer setup and README instructions
+- 2026-06-14:
+  - Fix a local docker setup issue with S3 mock and increase the file upload size limit
 
 ### Bigger pain points
 

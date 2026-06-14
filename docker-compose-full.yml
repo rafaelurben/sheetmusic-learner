@@ -1,7 +1,3 @@
-volumes:
-  postgres-data:
-  minio-data:
-
 include:
   - docker-compose.yml
 
@@ -26,5 +22,3 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: local,local-docker
-      APP_OIDC_ISSUER: http://host.docker.internal:4011
-      APP_S3_PUBLIC_BASE_URL: http://localhost:9000
