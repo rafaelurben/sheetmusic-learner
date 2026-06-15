@@ -10,6 +10,9 @@ env:
   CI_REGISTRY: ${{ vars.CI_REGISTRY || secrets.CI_REGISTRY }}
   CI_REGISTRY_IMAGE_BASE: ${{ vars.CI_REGISTRY_IMAGE_BASE || secrets.CI_REGISTRY_IMAGE_BASE }}
 
+permissions:
+  contents: read
+
 jobs:
   checks-backend:
     name: checks::backend
