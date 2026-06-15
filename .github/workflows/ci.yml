@@ -1,0 +1,228 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+env:
+  CI_REGISTRY: ${{ vars.CI_REGISTRY || secrets.CI_REGISTRY }}
+  CI_REGISTRY_IMAGE_BASE: ${{ vars.CI_REGISTRY_IMAGE_BASE || secrets.CI_REGISTRY_IMAGE_BASE }}
+
+jobs:
+  checks-backend:
+    name: checks::backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      - name: Run backend formatting check
+        run: mvn -B -f backend/pom.xml spotless:check
+
+  checks-backend-tests:
+    name: checks::backend-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      - name: Run backend tests
+        run: mvn -B -f backend/pom.xml test
+      - name: Upload backend test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-surefire-reports
+          path: backend/target/surefire-reports/
+          if-no-files-found: warn
+
+  checks-frontend-tests:
+    name: checks::frontend-tests
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Cache npm data
+        uses: actions/cache@v4
+        with:
+          path: frontend/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            npm-${{ runner.os }}-
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm ci --cache .npm --prefer-offline
+          npm run generate:openapi
+          npm run test:ci
+      - name: Upload frontend test and coverage reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-test-results
+          path: |
+            frontend/test-results/
+            frontend/coverage/
+          if-no-files-found: warn
+
+  checks-frontend:
+    name: checks::frontend
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Cache npm data
+        uses: actions/cache@v4
+        with:
+          path: frontend/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            npm-${{ runner.os }}-
+      - name: Run frontend checks
+        run: |
+          cd frontend
+          npm ci --cache .npm --prefer-offline
+          npm run generate:openapi
+          npm run lint
+          npm run typescript-check
+
+  build-backend:
+    name: build::backend
+    runs-on: ubuntu-latest
+    needs:
+      - checks-backend
+      - checks-backend-tests
+      - checks-frontend
+      - checks-frontend-tests
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      - name: Build backend package
+        run: mvn -B -f backend/pom.xml -DskipTests package
+      - name: Upload backend build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jar
+          path: backend/target/backend-*.jar
+          if-no-files-found: error
+
+  build-frontend:
+    name: build::frontend
+    runs-on: ubuntu-latest
+    needs:
+      - checks-backend
+      - checks-backend-tests
+      - checks-frontend
+      - checks-frontend-tests
+    container:
+      image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Cache npm data
+        uses: actions/cache@v4
+        with:
+          path: frontend/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
+          restore-keys: |
+            npm-${{ runner.os }}-
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm ci --cache .npm --prefer-offline
+          npm run build
+      - name: Upload frontend build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: |
+            frontend/dist
+            frontend/nginx.conf
+          if-no-files-found: error
+
+  docker-backend:
+    name: docker::backend
+    runs-on: ubuntu-latest
+    needs:
+      - build-backend
+    if: github.ref_name == 'main' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v5
+      - name: Download backend artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: backend-jar
+          path: backend/target
+      - name: Prepare backend image tags
+        id: backend-tags
+        run: |
+          IMAGE="${CI_REGISTRY_IMAGE_BASE}/sheetmusic-learner/sheetmusic-learner-backend"
+          echo "sha_tag=${IMAGE}:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            echo "latest_tag=${IMAGE}:latest" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Login to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.CI_REGISTRY }}
+          username: ${{ secrets.CI_REGISTRY_USER }}
+          password: ${{ secrets.CI_REGISTRY_PASSWORD }}
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: backend/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.backend-tags.outputs.sha_tag }}
+            ${{ steps.backend-tags.outputs.latest_tag }}
+
+  docker-frontend:
+    name: docker::frontend
+    runs-on: ubuntu-latest
+    needs:
+      - build-frontend
+    if: github.ref_name == 'main' || github.event_name == 'workflow_dispatch'
+    steps:
+      - uses: actions/checkout@v5
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: frontend-build
+          path: frontend
+      - name: Prepare frontend image tags
+        id: frontend-tags
+        run: |
+          IMAGE="${CI_REGISTRY_IMAGE_BASE}/sheetmusic-learner/sheetmusic-learner-frontend"
+          echo "sha_tag=${IMAGE}:${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+          if [ "${GITHUB_REF_NAME}" = "main" ]; then
+            echo "latest_tag=${IMAGE}:latest" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Login to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.CI_REGISTRY }}
+          username: ${{ secrets.CI_REGISTRY_USER }}
+          password: ${{ secrets.CI_REGISTRY_PASSWORD }}
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: frontend/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.frontend-tags.outputs.sha_tag }}
+            ${{ steps.frontend-tags.outputs.latest_tag }}
