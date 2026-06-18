@@ -17,7 +17,7 @@ jobs:
     name: checks::backend
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -30,7 +30,7 @@ jobs:
     name: checks::backend-tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -40,7 +40,7 @@ jobs:
         run: mvn -B -f backend/pom.xml test
       - name: Upload backend test reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: backend-surefire-reports
           path: backend/target/surefire-reports/
@@ -52,9 +52,9 @@ jobs:
     container:
       image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - name: Cache npm data
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: frontend/.npm
           key: npm-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
@@ -68,7 +68,7 @@ jobs:
           npm run test:ci
       - name: Upload frontend test and coverage reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: frontend-test-results
           path: |
@@ -82,9 +82,9 @@ jobs:
     container:
       image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - name: Cache npm data
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: frontend/.npm
           key: npm-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
@@ -107,7 +107,7 @@ jobs:
       - checks-frontend
       - checks-frontend-tests
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -116,7 +116,7 @@ jobs:
       - name: Build backend package
         run: mvn -B -f backend/pom.xml -DskipTests package
       - name: Upload backend build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: backend-jar
           path: backend/target/backend-*.jar
@@ -133,9 +133,9 @@ jobs:
     container:
       image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - name: Cache npm data
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: frontend/.npm
           key: npm-${{ runner.os }}-${{ hashFiles('frontend/package-lock.json') }}
@@ -147,7 +147,7 @@ jobs:
           npm ci --cache .npm --prefer-offline
           npm run build
       - name: Upload frontend build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: frontend-build
           path: |
@@ -162,9 +162,9 @@ jobs:
       - build-backend
     if: github.ref_name == 'main' || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - name: Download backend artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7.0.0
         with:
           name: backend-jar
           path: backend/target
@@ -177,13 +177,13 @@ jobs:
             echo "latest_tag=${IMAGE}:latest" >> "$GITHUB_OUTPUT"
           fi
       - name: Login to registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ vars.CI_REGISTRY }}
           username: ${{ vars.CI_REGISTRY_USER }}
           password: ${{ secrets.CI_REGISTRY_PASSWORD }}
       - name: Build and push backend image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: backend/Dockerfile
@@ -199,9 +199,9 @@ jobs:
       - build-frontend
     if: github.ref_name == 'main' || github.event_name == 'workflow_dispatch'
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6.0.3
       - name: Download frontend artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v7.0.0
         with:
           name: frontend-build
           path: frontend
@@ -214,13 +214,13 @@ jobs:
             echo "latest_tag=${IMAGE}:latest" >> "$GITHUB_OUTPUT"
           fi
       - name: Login to registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ${{ vars.CI_REGISTRY }}
           username: ${{ vars.CI_REGISTRY_USER }}
           password: ${{ secrets.CI_REGISTRY_PASSWORD }}
       - name: Build and push frontend image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: frontend/Dockerfile
