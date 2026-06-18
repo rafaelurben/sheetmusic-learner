@@ -39,6 +39,10 @@ export default defineConfig([
           allowNumber: true,
         },
       ],
+      // Turn off duplicate react-x rule (already in react-hooks)
+      "react-x/set-state-in-effect": "off",
+      "react-x/purity": "off",
+      "react-x/exhaustive-deps": "off",
     },
   },
 ]);

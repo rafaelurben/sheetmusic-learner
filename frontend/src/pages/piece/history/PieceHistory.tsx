@@ -69,6 +69,7 @@ export default function PieceHistory({ isOpen, pieceId }: Readonly<Props>) {
 
   useEffect(() => {
     if (!isOpen) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void fetchHistory();
   }, [fetchHistory, isOpen]);
 
