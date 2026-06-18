@@ -5,7 +5,7 @@ volumes:
 services:
   postgresdb:
     container_name: postgresdb
-    image: postgres:18.2-trixie
+    image: postgres:18.4-trixie
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql

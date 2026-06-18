@@ -3,5 +3,7 @@
   "extends": [
     "local>rafaelurben/renovate-config"
   ],
-  "ignoreDeps": ["oidc-server-mock"]
+  "ignoreDeps": [
+    "ghcr.io/soluto/oidc-server-mock"
+  ]
 }
