@@ -210,6 +210,7 @@ export default function PlayerMetronome({
   useEffect(() => {
     if (!showMetronome || !playing) {
       // hide visuals when not shown or not playing
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveBarIndex(null);
       setActiveBeatIndex(null);
       setActiveSectionPosition(null);

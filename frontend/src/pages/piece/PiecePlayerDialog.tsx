@@ -8,6 +8,13 @@ import {
 } from "@/shadcn/components/ui/dialog";
 import { useState } from "react";
 
+interface PlaybackState {
+  playing: boolean;
+  tempoMultiplier: number;
+  lastPlayTimestamp: string | null;
+  lastPlaySectionPosition: number | null;
+}
+
 interface PiecePlayerDialogProps {
   piece: PieceDto;
   onClosePlayer: () => void;
@@ -17,11 +24,11 @@ export default function PiecePlayerDialog({
   piece,
   onClosePlayer,
 }: Readonly<PiecePlayerDialogProps>) {
-  const [playbackState, setPlaybackState] = useState({
+  const [playbackState, setPlaybackState] = useState<PlaybackState>({
     playing: false,
     tempoMultiplier: 1,
-    lastPlayTimestamp: null as string | null,
-    lastPlaySectionPosition: 0 as number | null,
+    lastPlayTimestamp: null,
+    lastPlaySectionPosition: 0,
   });
 
   const handlePlay = () => {

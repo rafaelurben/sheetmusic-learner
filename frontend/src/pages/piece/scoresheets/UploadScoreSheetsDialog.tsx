@@ -51,7 +51,6 @@ async function convertPdfToPages(file: File): Promise<ConvertedPdfPage[]> {
   const arrayBuffer = await file.arrayBuffer();
   const documentTask = getDocument({
     data: arrayBuffer,
-    isEvalSupported: false,
     useSystemFonts: true,
     stopAtErrors: true,
   });
