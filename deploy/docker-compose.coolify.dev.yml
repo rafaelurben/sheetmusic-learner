@@ -1,7 +1,7 @@
 # Preset for Coolify
 services:
   postgresdb:
-    image: postgres:18.2-trixie
+    image: postgres:18.4-trixie
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-sheetmusic_learner}

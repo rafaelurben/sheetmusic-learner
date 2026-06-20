@@ -15,7 +15,7 @@ workflow:
 
 checks::backend:
   stage: checks
-  image: maven:3.9.11-eclipse-temurin-25
+  image: maven:3.9.16-eclipse-temurin-25
   cache:
     key: maven-$CI_COMMIT_REF_SLUG
     paths:
@@ -25,7 +25,7 @@ checks::backend:
 
 checks::backend-tests:
   stage: checks
-  image: maven:3.9.11-eclipse-temurin-25
+  image: maven:3.9.16-eclipse-temurin-25
   cache:
     key: maven-$CI_COMMIT_REF_SLUG
     paths:
@@ -80,7 +80,7 @@ checks::frontend:
 
 build::backend:
   stage: build
-  image: maven:3.9.11-eclipse-temurin-25
+  image: maven:3.9.16-eclipse-temurin-25
   cache:
     key: maven-$CI_COMMIT_REF_SLUG
     paths:
