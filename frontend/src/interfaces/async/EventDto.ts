@@ -139,7 +139,4 @@ export type UserEventDto =
   | GeneralEventDto;
 
 export type EventDto =
-  | GeneralEventDto
-  | PieceEventDto
-  | RoomEventDto
-  | UserEventDto;
+  GeneralEventDto | PieceEventDto | RoomEventDto | UserEventDto;
