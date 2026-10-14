@@ -181,6 +181,20 @@ jobs:
       registry-host: ${{ vars.CI_REGISTRY }}
       deployment-repository: rafaelurben/cloud-deployments
       deployment-source-root: deploy
+      environments: >-
+        {
+          "dev": {
+            "url": "https://dev.noten-lernen.ch",
+            "enabled": true
+          },
+          "staging": {
+            "enabled": false
+          },
+          "prod": {
+            "url": "https://noten-lernen.ch",
+            "enabled": true
+          }
+        }
       images: >-
         [
           {
