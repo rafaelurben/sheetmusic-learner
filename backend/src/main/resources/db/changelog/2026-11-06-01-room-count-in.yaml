@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20261106-01-add-room-count-in
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            tableName: rooms
+            columns:
+              - column:
+                  name: count_in
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+        - addColumn:
+            tableName: rooms_aud
+            columns:
+              - column:
+                  name: count_in
+                  type: BOOLEAN

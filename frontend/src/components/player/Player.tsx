@@ -17,6 +17,7 @@ interface PlayerProps {
   playbackState: {
     playing: boolean;
     tempoMultiplier: number;
+    countIn: boolean;
     lastPlayTimestamp?: string | null;
     lastPlaySectionPosition?: number | null;
   };
@@ -25,6 +26,7 @@ interface PlayerProps {
   onPlay: () => void;
   onPause: () => void;
   onTempoMultiplierChange: (nextTempoMultiplier: number) => void;
+  onCountInChange: (nextCountIn: boolean) => void;
   onSectionChange: (nextSectionPosition: number) => void;
 }
 
@@ -36,6 +38,7 @@ export default function Player({
   onPlay,
   onPause,
   onTempoMultiplierChange,
+  onCountInChange,
   onSectionChange,
 }: Readonly<PlayerProps>) {
   const [sectionStateOverride, setSectionStateOverride] =
@@ -104,9 +107,11 @@ export default function Player({
           playing={playbackState.playing}
           readonly={!showControls}
           tempoMultiplier={playbackState.tempoMultiplier}
+          countIn={playbackState.countIn}
           onPlay={onPlay}
           onPause={onPause}
           onTempoMultiplierChange={onTempoMultiplierChange}
+          onCountInChange={onCountInChange}
           onSectionChange={onSectionChange}
           onFullscreenToggle={handleToggleFullscreen}
           isFullScreen={isFullScreen}
@@ -118,6 +123,7 @@ export default function Player({
           lastPlayTimestamp={playbackState.lastPlayTimestamp}
           lastPlaySectionPosition={playbackState.lastPlaySectionPosition}
           tempoMultiplier={playbackState.tempoMultiplier}
+          countIn={playbackState.countIn}
           sortedSections={sortedSections}
           onSectionStateChange={setSectionStateOverride}
           onPlaybackEnded={onPause}

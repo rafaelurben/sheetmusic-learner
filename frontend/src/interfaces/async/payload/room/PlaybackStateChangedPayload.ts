@@ -6,4 +6,5 @@ export default interface PlaybackStateChangedPayload {
   lastPlaySectionPosition: number | null;
   lastPlayTimestamp: string | null;
   tempoMultiplier: number;
+  countIn: boolean;
 }

@@ -208,7 +208,12 @@ public class RoomServiceImpl implements RoomService {
           "Playback configuration can only be changed while playback is paused");
     }
 
-    room.setTempoMultiplier(dto.tempoMultiplier());
+    if (dto.tempoMultiplier() != null) {
+      room.setTempoMultiplier(dto.tempoMultiplier());
+    }
+    if (dto.countIn() != null) {
+      room.setCountIn(dto.countIn());
+    }
     room = roomRepository.save(room);
 
     messagingService.send(

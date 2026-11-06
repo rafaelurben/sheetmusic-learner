@@ -13,6 +13,7 @@ import {
   PlayIcon,
   RabbitIcon,
   SlidersHorizontalIcon,
+  TimerIcon,
 } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
@@ -34,11 +35,13 @@ interface PlayerPlaybackControlsProps {
   playing: boolean;
   readonly?: boolean;
   tempoMultiplier: number;
+  countIn: boolean;
   sections: SectionDto[];
   currentSection: SectionDto | undefined;
   onPlay: () => void;
   onPause: () => void;
   onTempoMultiplierChange: (nextTempoMultiplier: number) => void;
+  onCountInChange: (nextCountIn: boolean) => void;
   onSectionChange: (nextSectionPosition: number) => void;
   onFullscreenToggle: () => void;
   isFullScreen: boolean;
@@ -49,6 +52,7 @@ export default function PlayerPlaybackControls({
   playing,
   readonly = false,
   tempoMultiplier,
+  countIn,
   sections,
   currentSection,
   allowFullScreen,
@@ -56,6 +60,7 @@ export default function PlayerPlaybackControls({
   onPlay,
   onPause,
   onTempoMultiplierChange,
+  onCountInChange,
   onSectionChange,
   onFullscreenToggle,
 }: Readonly<PlayerPlaybackControlsProps>) {
@@ -214,6 +219,21 @@ export default function PlayerPlaybackControls({
                 disabled={playing || readonly}
                 className="w-full"
               />
+              <div className="flex items-center justify-between">
+                <Label
+                  className="text-sm font-medium flex items-center gap-2"
+                  htmlFor="playback-count-in"
+                >
+                  <TimerIcon size="1rem" />
+                  Count in
+                </Label>
+                <Switch
+                  id="playback-count-in"
+                  checked={countIn}
+                  onCheckedChange={onCountInChange}
+                  disabled={playing || readonly}
+                />
+              </div>
             </div>
           </PopoverContent>
         </Popover>

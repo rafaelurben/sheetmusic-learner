@@ -5,8 +5,10 @@ import { type CSSProperties, useCallback, useEffect, useState } from "react";
 import type { SectionDto } from "@/api/generated/openapi";
 import { metronomeService } from "@/service/metronomeService.ts";
 import {
+  calculateCountInDurationMs,
   calculateSectionTimings,
   convertSectionToMetronomePlaylist,
+  createCountInMetronomePlaylist,
 } from "@/service/metronomeUtils.ts";
 import type { PlayerPlaylistItem } from "@/interfaces/player/playerPlaylistItem.ts";
 import type { PlayerSectionState } from "@/interfaces/player/playerSectionState.ts";
@@ -18,6 +20,7 @@ interface PlayerMetronomeProps {
   lastPlayTimestamp?: string | null;
   lastPlaySectionPosition?: number | null;
   tempoMultiplier: number;
+  countIn: boolean;
   sortedSections: SectionDto[];
   onSectionStateChange: (override: PlayerSectionState | null) => void;
   onPlaybackEnded: () => void;
@@ -30,6 +33,7 @@ export default function PlayerMetronome({
   lastPlayTimestamp,
   lastPlaySectionPosition,
   tempoMultiplier,
+  countIn,
   sortedSections,
   onSectionStateChange,
   onPlaybackEnded,
@@ -91,6 +95,7 @@ export default function PlayerMetronome({
   >(null);
   const [activeBarIndex, setActiveBarIndex] = useState<number | null>(null);
   const [activeBeatIndex, setActiveBeatIndex] = useState<number | null>(null);
+  const [isCountIn, setIsCountIn] = useState(countIn);
 
   // Audio metronome
   useEffect(() => {
@@ -102,8 +107,16 @@ export default function PlayerMetronome({
       ? new Date(lastPlayTimestamp)
       : new Date();
     const playbackSections = sortedSections.slice(lastPlaySectionPosition ?? 0);
+    if (playbackSections.length === 0) {
+      return;
+    }
 
     const playlist: PlayerPlaylistItem[] = [];
+    if (countIn) {
+      playlist.push(
+        ...createCountInMetronomePlaylist(playbackSections[0], tempoMultiplier),
+      );
+    }
     for (const section of playbackSections) {
       playlist.push(
         ...convertSectionToMetronomePlaylist(section, tempoMultiplier),
@@ -120,6 +133,7 @@ export default function PlayerMetronome({
     };
   }, [
     audioContextReady,
+    countIn,
     lastPlaySectionPosition,
     lastPlayTimestamp,
     playing,
@@ -137,11 +151,18 @@ export default function PlayerMetronome({
       ? new Date(lastPlayTimestamp)
       : new Date();
     const playbackSections = sortedSections.slice(lastPlaySectionPosition ?? 0);
+    if (playbackSections.length === 0) {
+      return;
+    }
+
+    const countInDurationMs = countIn
+      ? calculateCountInDurationMs(playbackSections[0], tempoMultiplier)
+      : 0;
 
     // Visual: Section changes
     const timings = calculateSectionTimings(playbackSections, tempoMultiplier);
     const nowMs = Date.now();
-    const globalOffsetMs = playTimestamp.getTime() - nowMs;
+    const globalOffsetMs = playTimestamp.getTime() - nowMs + countInDurationMs;
     const timeoutHandles: number[] = [];
 
     for (const timing of timings) {
@@ -153,7 +174,8 @@ export default function PlayerMetronome({
         setTimeout(() => {
           onSectionStateChange({
             sectionPosition: timing.sectionPosition,
-            startTimeMs: playTimestamp.getTime() + timing.offsetMs,
+            startTimeMs:
+              playTimestamp.getTime() + countInDurationMs + timing.offsetMs,
             durationMs: timing.durationMs,
           });
         }, offsetMs),
@@ -169,7 +191,10 @@ export default function PlayerMetronome({
         setTimeout(() => {
           onSectionStateChange({
             sectionPosition: currentTiming.sectionPosition,
-            startTimeMs: playTimestamp.getTime() + currentTiming.offsetMs,
+            startTimeMs:
+              playTimestamp.getTime() +
+              countInDurationMs +
+              currentTiming.offsetMs,
             durationMs: currentTiming.durationMs,
           });
         }, 0),
@@ -197,6 +222,7 @@ export default function PlayerMetronome({
       onSectionStateChange(null);
     };
   }, [
+    countIn,
     lastPlaySectionPosition,
     lastPlayTimestamp,
     onPlaybackEnded,
@@ -211,6 +237,7 @@ export default function PlayerMetronome({
     if (!showMetronome || !playing) {
       // hide visuals when not shown or not playing
       // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsCountIn(countIn);
       setActiveBarIndex(null);
       setActiveBeatIndex(null);
       setActiveSectionPosition(null);
@@ -221,11 +248,53 @@ export default function PlayerMetronome({
       ? new Date(lastPlayTimestamp)
       : new Date();
     const playbackSections = sortedSections.slice(lastPlaySectionPosition ?? 0);
+    if (playbackSections.length === 0) {
+      return;
+    }
 
-    const timings = calculateSectionTimings(playbackSections, tempoMultiplier);
-    const globalOffsetMs = playTimestamp.getTime() - Date.now();
+    const countInDurationMs = countIn
+      ? calculateCountInDurationMs(playbackSections[0], tempoMultiplier)
+      : 0;
 
     const timeoutHandles: number[] = [];
+
+    // Schedule count-in beats if enabled
+    if (countIn && playbackSections.length > 0) {
+      const firstSection = playbackSections[0];
+      const beatDurationMs = 60000 / firstSection.bpm / tempoMultiplier;
+      const countInBeats = firstSection.timeSignatureNumerator;
+      const countInStartOffsetMs = playTimestamp.getTime() - Date.now();
+
+      for (let beatIndex = 0; beatIndex < countInBeats; beatIndex++) {
+        const offsetMs = countInStartOffsetMs + beatIndex * beatDurationMs;
+
+        if (offsetMs <= 0 && offsetMs + beatDurationMs > 0) {
+          setIsCountIn(true);
+          setActiveSectionPosition(firstSection.position);
+          setActiveBarIndex(null);
+          setActiveBeatIndex(beatIndex);
+          continue;
+        }
+
+        if (offsetMs < 0) {
+          continue;
+        }
+
+        timeoutHandles.push(
+          setTimeout(() => {
+            setIsCountIn(true);
+            setActiveSectionPosition(firstSection.position);
+            setActiveBarIndex(null);
+            setActiveBeatIndex(beatIndex);
+          }, offsetMs),
+        );
+      }
+    }
+
+    // Schedule section beats
+    const timings = calculateSectionTimings(playbackSections, tempoMultiplier);
+    const globalOffsetMs =
+      playTimestamp.getTime() - Date.now() + countInDurationMs;
 
     for (let si = 0; si < playbackSections.length; si++) {
       const section = playbackSections[si];
@@ -244,6 +313,7 @@ export default function PlayerMetronome({
           const barIndex = Math.floor(
             beatIndex / section.timeSignatureNumerator,
           );
+          setIsCountIn(false);
           setActiveSectionPosition(section.position);
           setActiveBarIndex(barIndex);
           setActiveBeatIndex(beatInBar);
@@ -261,6 +331,7 @@ export default function PlayerMetronome({
             const barIndex = Math.floor(
               beatIndex / section.timeSignatureNumerator,
             );
+            setIsCountIn(false);
             setActiveSectionPosition(section.position);
             setActiveBarIndex(barIndex);
             setActiveBeatIndex(beatIndex % section.timeSignatureNumerator);
@@ -274,6 +345,7 @@ export default function PlayerMetronome({
       timeoutHandles.forEach((h) => {
         clearTimeout(h);
       });
+      setIsCountIn(false);
       setActiveBarIndex(null);
       setActiveBeatIndex(null);
       setActiveSectionPosition(null);
@@ -281,6 +353,7 @@ export default function PlayerMetronome({
   }, [
     showMetronome,
     playing,
+    countIn,
     audioContextReady,
     sortedSections,
     lastPlayTimestamp,
@@ -313,7 +386,9 @@ export default function PlayerMetronome({
   const statusBar = [
     `${displaySection.timeSignatureNumerator}/${displaySection.timeSignatureDenominator}`,
     `${effectiveBpm} bpm`,
-    `Bar ${activeBarIndex === null ? 1 : activeBarIndex + 1}/${displaySection.barCount}`,
+    isCountIn
+      ? "Count in"
+      : `Bar ${activeBarIndex === null ? 1 : activeBarIndex + 1}/${displaySection.barCount}`,
   ].join(" · ");
 
   const flashAnimationDuration = Math.min(

@@ -602,11 +602,14 @@ components:
           type: number
           format: float
           default: 1.0
+        countIn:
+          type: boolean
+          default: true
         roomUsers:
           type: array
           items:
             $ref: '#/components/schemas/UserDto'
-      required: [ id, title, ownerId, tempoMultiplier, roomUsers ]
+      required: [ id, title, ownerId, tempoMultiplier, countIn, roomUsers ]
 
     RoomCreateRequestDto:
       type: object

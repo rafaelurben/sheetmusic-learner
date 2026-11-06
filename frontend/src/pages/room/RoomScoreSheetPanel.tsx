@@ -43,6 +43,19 @@ export default function RoomScoreSheetPanel({
     [canEditRoom, room.id, room.playing],
   );
 
+  const publishCountIn = useCallback(
+    (nextCountIn: boolean) => {
+      if (!canEditRoom || room.playing) {
+        return;
+      }
+
+      stompPublishingService.roomControlPlaybackConfig(room.id, {
+        countIn: nextCountIn,
+      });
+    },
+    [canEditRoom, room.id, room.playing],
+  );
+
   const publishPlay = useCallback(() => {
     if (!canEditRoom) {
       return;
@@ -65,6 +78,7 @@ export default function RoomScoreSheetPanel({
       playbackState={{
         playing: room.playing ?? false,
         tempoMultiplier: room.tempoMultiplier,
+        countIn: room.countIn,
         lastPlayTimestamp: room.lastPlayTimestamp,
         lastPlaySectionPosition: room.lastPlaySectionPosition,
       }}
@@ -73,6 +87,7 @@ export default function RoomScoreSheetPanel({
       onPlay={publishPlay}
       onPause={publishPause}
       onTempoMultiplierChange={publishPlaybackConfig}
+      onCountInChange={publishCountIn}
       onSectionChange={publishSectionPosition}
     />
   );

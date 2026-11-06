@@ -6,6 +6,37 @@ import type { SectionDto } from "@/api/generated/openapi";
 import type { PlayerPlaylistItem } from "@/interfaces/player/playerPlaylistItem.ts";
 import type { PlayerSectionTiming } from "@/interfaces/player/playerSectionTiming.ts";
 
+export function createCountInMetronomePlaylist(
+  firstSection: SectionDto,
+  tempoMultiplier = 1,
+): PlayerPlaylistItem[] {
+  const items: PlayerPlaylistItem[] = [];
+  const beatDuration = 60 / firstSection.bpm / tempoMultiplier;
+  items.push({
+    sound: "metronome",
+    gain: 2,
+    duration: beatDuration,
+  });
+  for (let beat = 1; beat < firstSection.timeSignatureNumerator; beat++) {
+    items.push({
+      sound: "metronome",
+      gain: 0.5,
+      duration: beatDuration,
+    });
+  }
+  return items;
+}
+
+export function calculateCountInDurationMs(
+  firstSection: SectionDto,
+  tempoMultiplier = 1,
+): number {
+  return (
+    firstSection.timeSignatureNumerator *
+    (60_000 / firstSection.bpm / tempoMultiplier)
+  );
+}
+
 export function convertSectionToMetronomePlaylist(
   section: SectionDto,
   tempoMultiplier = 1,
