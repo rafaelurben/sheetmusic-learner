@@ -4,8 +4,10 @@
 import type { SectionDto } from "@/api/generated/openapi";
 import { describe, expect, it } from "vitest";
 import {
+  calculateCountInDurationMs,
   calculateSectionTimings,
   convertSectionToMetronomePlaylist,
+  createCountInMetronomePlaylist,
 } from "@/service/metronomeUtils";
 
 function createSection(overrides: Partial<SectionDto> = {}): SectionDto {
@@ -54,6 +56,58 @@ describe("convertSectionToMetronomePlaylist", () => {
     );
 
     expect(playlist[0]?.duration).toBe(0.5);
+  });
+});
+
+describe("createCountInMetronomePlaylist", () => {
+  it("creates exactly 1 bar of metronome beats matching time signature", () => {
+    const playlist = createCountInMetronomePlaylist(
+      createSection({ bpm: 120, timeSignatureNumerator: 4 }),
+    );
+
+    expect(playlist).toHaveLength(4);
+    expect(playlist[0]).toEqual({
+      sound: "metronome",
+      gain: 2,
+      duration: 0.5,
+    });
+    for (const i of [1, 2, 3]) {
+      expect(playlist[i]).toEqual({
+        sound: "metronome",
+        gain: 0.5,
+        duration: 0.5,
+      });
+    }
+  });
+
+  it("applies tempo multiplier to count-in beat durations", () => {
+    const playlist = createCountInMetronomePlaylist(
+      createSection({ bpm: 60, timeSignatureNumerator: 3 }),
+      2,
+    );
+
+    expect(playlist).toHaveLength(3);
+    expect(playlist[0]?.duration).toBe(0.5);
+  });
+});
+
+describe("calculateCountInDurationMs", () => {
+  it("calculates exactly 1 bar duration in milliseconds", () => {
+    const duration = calculateCountInDurationMs(
+      createSection({ bpm: 120, timeSignatureNumerator: 4 }),
+    );
+
+    expect(duration).toBe(2000);
+  });
+
+  it("scales duration with tempo multiplier", () => {
+    const duration = calculateCountInDurationMs(
+      createSection({ bpm: 60, timeSignatureNumerator: 3 }),
+      1.5,
+    );
+
+    // 3 * (60_000 / 60 / 1.5) = 3 * (1000 / 1.5) = 2000
+    expect(duration).toBe(2000);
   });
 });
 

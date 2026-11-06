@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/shadcn/components/ui/dialog";
+import { useMainStore } from "@/zustand/mainStore.ts";
 import { useState } from "react";
 
 interface PlaybackState {
@@ -13,6 +14,7 @@ interface PlaybackState {
   tempoMultiplier: number;
   lastPlayTimestamp: string | null;
   lastPlaySectionPosition: number | null;
+  countIn: boolean;
 }
 
 interface PiecePlayerDialogProps {
@@ -24,11 +26,15 @@ export default function PiecePlayerDialog({
   piece,
   onClosePlayer,
 }: Readonly<PiecePlayerDialogProps>) {
+  const globalCountIn = useMainStore((state) => state.countIn);
+  const setGlobalCountIn = useMainStore((state) => state.setCountIn);
+
   const [playbackState, setPlaybackState] = useState<PlaybackState>({
     playing: false,
     tempoMultiplier: 1,
     lastPlayTimestamp: null,
     lastPlaySectionPosition: 0,
+    countIn: globalCountIn,
   });
 
   const handlePlay = () => {
@@ -58,6 +64,18 @@ export default function PiecePlayerDialog({
     }));
   };
 
+  const handleCountInChange = (countIn: boolean) => {
+    if (playbackState.playing) {
+      return;
+    }
+
+    setPlaybackState((currentState) => ({
+      ...currentState,
+      countIn: countIn,
+    }));
+    setGlobalCountIn(countIn);
+  };
+
   const handleSectionChange = (nextSectionPosition: number) => {
     setPlaybackState((currentState) => ({
       ...currentState,
@@ -80,6 +98,7 @@ export default function PiecePlayerDialog({
             onPlay={handlePlay}
             onPause={handlePause}
             onTempoMultiplierChange={handleTempoMultiplierChange}
+            onCountInChange={handleCountInChange}
             onSectionChange={handleSectionChange}
             allowFullScreen={false}
           />

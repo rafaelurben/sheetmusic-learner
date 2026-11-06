@@ -39,6 +39,10 @@ public class Room extends BaseEntity {
   @Builder.Default
   private Float tempoMultiplier = 1.0f;
 
+  @Column(name = "count_in", nullable = false)
+  @Builder.Default
+  private Boolean countIn = true;
+
   // Playback state
 
   @Column(name = "playing", nullable = false)
@@ -70,5 +74,9 @@ public class Room extends BaseEntity {
 
   public boolean isPlaying() {
     return Boolean.TRUE.equals(playing);
+  }
+
+  public boolean isCountIn() {
+    return Boolean.TRUE.equals(countIn);
   }
 }

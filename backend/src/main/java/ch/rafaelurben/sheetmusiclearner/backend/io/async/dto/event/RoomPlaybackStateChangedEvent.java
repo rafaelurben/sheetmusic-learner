@@ -8,7 +8,8 @@ public record RoomPlaybackStateChangedEvent(
     boolean playing,
     Integer lastPlaySectionPosition,
     Instant lastPlayTimestamp,
-    float tempoMultiplier) {
+    float tempoMultiplier,
+    boolean countIn) {
 
   public static final String TYPE_DISCRIMINATOR = "playback-state-changed";
 
@@ -17,7 +18,8 @@ public record RoomPlaybackStateChangedEvent(
         room.getPlaying(),
         room.getLastPlaySectionPosition(),
         room.getLastPlayTimestamp(),
-        room.getTempoMultiplier());
+        room.getTempoMultiplier(),
+        room.isCountIn());
   }
 
   public EventDto<RoomPlaybackStateChangedEvent> asDto() {

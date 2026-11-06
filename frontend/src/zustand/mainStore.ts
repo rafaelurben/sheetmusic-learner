@@ -13,6 +13,7 @@ export interface MainStoreState {
   connected: boolean | null;
   audioContextReady: boolean;
   showMetronome: boolean;
+  countIn: boolean;
   rooms: Record<string, RoomMetadataDto>;
   pieces: Record<string, PieceMetadataDto>;
   currentUser: UserDto | null;
@@ -20,6 +21,7 @@ export interface MainStoreState {
   setConnected: (value: boolean) => void;
   setAudioContextReady: (value: boolean) => void;
   setShowMetronome: (value: boolean) => void;
+  setCountIn: (value: boolean) => void;
   setCurrentUser: (user: UserDto) => void;
 
   addRoom: (room: RoomMetadataDto) => void;
@@ -36,6 +38,7 @@ export const useMainStore = create<MainStoreState>((set) => ({
   connected: null,
   audioContextReady: false,
   showMetronome: false,
+  countIn: true,
   currentUser: null,
   setConnected: (value) => {
     set({ connected: value });
@@ -45,6 +48,9 @@ export const useMainStore = create<MainStoreState>((set) => ({
   },
   setShowMetronome: (value) => {
     set({ showMetronome: value });
+  },
+  setCountIn: (value) => {
+    set({ countIn: value });
   },
   setCurrentUser: (user) => {
     set({ currentUser: user });

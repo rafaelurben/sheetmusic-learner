@@ -2,6 +2,7 @@
 package ch.rafaelurben.sheetmusiclearner.backend.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -52,18 +53,28 @@ class RoomServiceTest extends BaseSpringBootTest {
   void testControlPlaybackConfig() {
     UUID roomId = UUID.randomUUID();
     User owner = TestUsers.createUser(UUID.randomUUID());
-    Room room = Room.builder().id(roomId).owner(owner).playing(false).tempoMultiplier(1.0f).build();
+    Room room =
+        Room.builder()
+            .id(roomId)
+            .owner(owner)
+            .playing(false)
+            .tempoMultiplier(1.0f)
+            .countIn(false)
+            .build();
 
     when(roomRepository.findById(roomId)).thenReturn(Optional.of(room));
     when(roomRepository.save(any(Room.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
     roomService.controlPlaybackConfig(
-        owner, roomId, new RoomControlPlaybackConfigRequestDto(1.25f));
+        owner, roomId, new RoomControlPlaybackConfigRequestDto(1.25f, true));
 
     getMessageAsserter()
         .assertSend(
             Destinations.topicRoom(roomId),
             RoomPlaybackStateChangedEvent.class,
-            payload -> assertEquals(1.25f, payload.tempoMultiplier()));
+            payload -> {
+              assertEquals(1.25f, payload.tempoMultiplier());
+              assertTrue(payload.countIn());
+            });
   }
 }
