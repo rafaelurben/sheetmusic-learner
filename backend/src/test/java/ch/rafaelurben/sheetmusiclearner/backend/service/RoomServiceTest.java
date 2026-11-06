@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.RoomChatMessageEvent;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.RoomPlaybackStateChangedEvent;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPauseRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPlaybackConfigRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.model.Room;
 import ch.rafaelurben.sheetmusiclearner.backend.model.User;
@@ -75,6 +76,50 @@ class RoomServiceTest extends BaseSpringBootTest {
             payload -> {
               assertEquals(1.25f, payload.tempoMultiplier());
               assertTrue(payload.countIn());
+            });
+  }
+
+  @Test
+  void testControlPauseWithSectionPosition() {
+    UUID roomId = UUID.randomUUID();
+    User owner = TestUsers.createUser(UUID.randomUUID());
+    Room room =
+        Room.builder().id(roomId).owner(owner).playing(true).lastPlaySectionPosition(0).build();
+
+    when(roomRepository.findById(roomId)).thenReturn(Optional.of(room));
+    when(roomRepository.save(any(Room.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    roomService.controlPause(owner, roomId, new RoomControlPauseRequestDto(3));
+
+    getMessageAsserter()
+        .assertSend(
+            Destinations.topicRoom(roomId),
+            RoomPlaybackStateChangedEvent.class,
+            payload -> {
+              assertEquals(false, payload.playing());
+              assertEquals(3, payload.lastPlaySectionPosition());
+            });
+  }
+
+  @Test
+  void testControlPauseWithoutSectionPosition() {
+    UUID roomId = UUID.randomUUID();
+    User owner = TestUsers.createUser(UUID.randomUUID());
+    Room room =
+        Room.builder().id(roomId).owner(owner).playing(true).lastPlaySectionPosition(2).build();
+
+    when(roomRepository.findById(roomId)).thenReturn(Optional.of(room));
+    when(roomRepository.save(any(Room.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    roomService.controlPause(owner, roomId, null);
+
+    getMessageAsserter()
+        .assertSend(
+            Destinations.topicRoom(roomId),
+            RoomPlaybackStateChangedEvent.class,
+            payload -> {
+              assertEquals(false, payload.playing());
+              assertEquals(2, payload.lastPlaySectionPosition());
             });
   }
 }

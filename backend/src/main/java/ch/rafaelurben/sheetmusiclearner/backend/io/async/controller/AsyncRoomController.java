@@ -3,6 +3,7 @@ package ch.rafaelurben.sheetmusiclearner.backend.io.async.controller;
 
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPauseRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPlaybackConfigRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPositionRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
@@ -66,11 +67,12 @@ public class AsyncRoomController {
   }
 
   @MessageMapping("/room.{roomId}/control/pause")
-  public void handleControlPause(@DestinationVariable UUID roomId) {
-    log.debug("Received control/pause for room {}", roomId);
+  public void handleControlPause(
+      @DestinationVariable UUID roomId, @Payload(required = false) RoomControlPauseRequestDto dto) {
+    log.debug("Received control/pause for room {}: {}", roomId, dto);
     User user = userService.getCurrentUserEntity();
 
-    roomService.controlPause(user, roomId);
+    roomService.controlPause(user, roomId, dto);
   }
 
   @MessageMapping("/room.{roomId}/control/position")

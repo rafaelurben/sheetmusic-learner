@@ -11,6 +11,7 @@ import ch.rafaelurben.sheetmusiclearner.backend.exceptions.ObjectNotFoundExcepti
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.event.*;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChangePieceRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomChatMessageRequestDto;
+import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPauseRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPlaybackConfigRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomControlPositionRequestDto;
 import ch.rafaelurben.sheetmusiclearner.backend.io.async.dto.request.RoomUpdateRequestDto;
@@ -173,11 +174,14 @@ public class RoomServiceImpl implements RoomService {
   }
 
   @Override
-  public void controlPause(User user, UUID roomId) {
+  public void controlPause(User user, UUID roomId, RoomControlPauseRequestDto dto) {
     Room room = getRoomById(roomId);
     ensureUserIsOwner(user, room);
 
     room.setPlaying(false);
+    if (dto != null && dto.sectionPosition() != null) {
+      room.setLastPlaySectionPosition(dto.sectionPosition());
+    }
     room = roomRepository.save(room);
 
     messagingService.send(

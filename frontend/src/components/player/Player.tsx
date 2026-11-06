@@ -24,7 +24,7 @@ interface PlayerProps {
   showControls: boolean;
   allowFullScreen: boolean;
   onPlay: () => void;
-  onPause: () => void;
+  onPause: (sectionPosition?: number) => void;
   onTempoMultiplierChange: (nextTempoMultiplier: number) => void;
   onCountInChange: (nextCountIn: boolean) => void;
   onSectionChange: (nextSectionPosition: number) => void;
@@ -53,6 +53,10 @@ export default function Player({
   const currentSection = sortedSections.find(
     (section) => section.position === currentSectionPosition,
   );
+
+  const handleManualPause = () => {
+    onPause(currentSectionPosition);
+  };
 
   const handleToggleFullscreen = () => {
     if (!allowFullScreen) return;
@@ -120,7 +124,7 @@ export default function Player({
           tempoMultiplier={playbackState.tempoMultiplier}
           countIn={playbackState.countIn}
           onPlay={onPlay}
-          onPause={onPause}
+          onPause={handleManualPause}
           onTempoMultiplierChange={onTempoMultiplierChange}
           onCountInChange={onCountInChange}
           onSectionChange={onSectionChange}

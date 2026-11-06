@@ -208,7 +208,8 @@ public class PieceServiceImpl implements PieceService {
     piece = pieceRepository.save(piece);
 
     PieceMetadataDto pieceMetadataDto = pieceMapper.toMetadataDto(piece);
-    var dto = new GeneralPieceNowAvailableEvent(pieceMetadataDto).asDto();
+    EventDto<GeneralPieceNowAvailableEvent> dto =
+        new GeneralPieceNowAvailableEvent(pieceMetadataDto).asDto();
     if (piece.isPublic()) {
       messagingService.send(Destinations.topicGeneral(), dto);
     } else {
