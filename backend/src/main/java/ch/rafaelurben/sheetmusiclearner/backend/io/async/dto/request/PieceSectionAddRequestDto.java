@@ -10,6 +10,7 @@ public record PieceSectionAddRequestDto(
     int timeSignatureDenominator,
     int barCount,
     int bpm,
+    int repeatCount,
     UUID scoreSheetId,
     Float posX1,
     Float posY1,

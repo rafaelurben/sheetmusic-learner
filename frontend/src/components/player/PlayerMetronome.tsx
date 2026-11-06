@@ -95,6 +95,13 @@ export default function PlayerMetronome({
   >(null);
   const [activeBarIndex, setActiveBarIndex] = useState<number | null>(null);
   const [activeBeatIndex, setActiveBeatIndex] = useState<number | null>(null);
+  const [activeRepeatIndex, setActiveRepeatIndex] = useState<number | null>(
+    null,
+  );
+  const [activeRepeatCount, setActiveRepeatCount] = useState<number | null>(
+    null,
+  );
+  const [activeWillRepeat, setActiveWillRepeat] = useState<boolean>(false);
   const [isCountIn, setIsCountIn] = useState(countIn);
 
   // Audio metronome
@@ -118,9 +125,12 @@ export default function PlayerMetronome({
       );
     }
     for (const section of playbackSections) {
-      playlist.push(
-        ...convertSectionToMetronomePlaylist(section, tempoMultiplier),
-      );
+      const repeats = Math.max(1, section.repeatCount);
+      for (let rep = 0; rep < repeats; rep++) {
+        playlist.push(
+          ...convertSectionToMetronomePlaylist(section, tempoMultiplier),
+        );
+      }
     }
     const stopMetronome = metronomeService.playMetronomePlaylist(
       playlist,
@@ -177,6 +187,9 @@ export default function PlayerMetronome({
             startTimeMs:
               playTimestamp.getTime() + countInDurationMs + timing.offsetMs,
             durationMs: timing.durationMs,
+            repeatIndex: timing.repeatIndex,
+            repeatCount: timing.repeatCount,
+            willRepeat: timing.willRepeat,
           });
         }, offsetMs),
       );
@@ -196,6 +209,9 @@ export default function PlayerMetronome({
               countInDurationMs +
               currentTiming.offsetMs,
             durationMs: currentTiming.durationMs,
+            repeatIndex: currentTiming.repeatIndex,
+            repeatCount: currentTiming.repeatCount,
+            willRepeat: currentTiming.willRepeat,
           });
         }, 0),
       );
@@ -241,6 +257,9 @@ export default function PlayerMetronome({
       setActiveBarIndex(null);
       setActiveBeatIndex(null);
       setActiveSectionPosition(null);
+      setActiveRepeatIndex(null);
+      setActiveRepeatCount(null);
+      setActiveWillRepeat(false);
       return;
     }
 
@@ -273,6 +292,9 @@ export default function PlayerMetronome({
           setActiveSectionPosition(firstSection.position);
           setActiveBarIndex(null);
           setActiveBeatIndex(beatIndex);
+          setActiveRepeatIndex(null);
+          setActiveRepeatCount(null);
+          setActiveWillRepeat(false);
           continue;
         }
 
@@ -286,6 +308,9 @@ export default function PlayerMetronome({
             setActiveSectionPosition(firstSection.position);
             setActiveBarIndex(null);
             setActiveBeatIndex(beatIndex);
+            setActiveRepeatIndex(null);
+            setActiveRepeatCount(null);
+            setActiveWillRepeat(false);
           }, offsetMs),
         );
       }
@@ -296,9 +321,11 @@ export default function PlayerMetronome({
     const globalOffsetMs =
       playTimestamp.getTime() - Date.now() + countInDurationMs;
 
-    for (let si = 0; si < playbackSections.length; si++) {
-      const section = playbackSections[si];
-      const timing = timings[si];
+    for (const timing of timings) {
+      const section = playbackSections.find((s) => s.id === timing.sectionId);
+      if (!section) {
+        continue;
+      }
       const beatDurationMs = 60000 / section.bpm / tempoMultiplier;
       const sectionBeatCount =
         section.barCount * section.timeSignatureNumerator;
@@ -317,6 +344,9 @@ export default function PlayerMetronome({
           setActiveSectionPosition(section.position);
           setActiveBarIndex(barIndex);
           setActiveBeatIndex(beatInBar);
+          setActiveRepeatIndex(timing.repeatIndex);
+          setActiveRepeatCount(timing.repeatCount);
+          setActiveWillRepeat(timing.willRepeat);
           continue;
         }
 
@@ -335,6 +365,9 @@ export default function PlayerMetronome({
             setActiveSectionPosition(section.position);
             setActiveBarIndex(barIndex);
             setActiveBeatIndex(beatIndex % section.timeSignatureNumerator);
+            setActiveRepeatIndex(timing.repeatIndex);
+            setActiveRepeatCount(timing.repeatCount);
+            setActiveWillRepeat(timing.willRepeat);
           }, offsetMs),
         );
       }
@@ -349,6 +382,9 @@ export default function PlayerMetronome({
       setActiveBarIndex(null);
       setActiveBeatIndex(null);
       setActiveSectionPosition(null);
+      setActiveRepeatIndex(null);
+      setActiveRepeatCount(null);
+      setActiveWillRepeat(false);
     };
   }, [
     showMetronome,
@@ -383,13 +419,27 @@ export default function PlayerMetronome({
 
   const effectiveBpm = Math.round(displaySection.bpm * tempoMultiplier);
 
-  const statusBar = [
+  const statusBarParts = [
     `${displaySection.timeSignatureNumerator}/${displaySection.timeSignatureDenominator}`,
     `${effectiveBpm} bpm`,
     isCountIn
       ? "Count in"
       : `Bar ${activeBarIndex === null ? 1 : activeBarIndex + 1}/${displaySection.barCount}`,
-  ].join(" · ");
+  ];
+
+  if (
+    !isCountIn &&
+    (activeWillRepeat ||
+      (activeRepeatIndex !== null &&
+        activeRepeatCount !== null &&
+        activeRepeatCount > 1))
+  ) {
+    statusBarParts.push(
+      `Repeat ${(activeRepeatIndex ?? 0) + 1}/${activeRepeatCount ?? displaySection.repeatCount}`,
+    );
+  }
+
+  const statusBar = statusBarParts.join(" · ");
 
   const flashAnimationDuration = Math.min(
     (60000 / displaySection.bpm / tempoMultiplier) * 0.7,
@@ -398,7 +448,9 @@ export default function PlayerMetronome({
 
   return (
     <div className="flex items-center gap-4 justify-center flex-wrap">
-      <div className="text-sm text-muted-foreground">{statusBar}</div>
+      <div className="flex items-center gap-2 text-sm text-muted-foreground flex-wrap justify-center">
+        {statusBar}
+      </div>
       <span>·</span>
       <div
         className="flex items-center gap-2 flex-wrap"

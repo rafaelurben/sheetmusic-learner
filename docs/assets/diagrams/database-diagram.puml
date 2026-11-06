@@ -60,6 +60,7 @@ entity "Section" as section {
   time_signature_denominator: number
   bar_count: number
   bpm: number
+  repeat_count: number
   pos_x1: float
   pos_y1: float
   pos_x2: float

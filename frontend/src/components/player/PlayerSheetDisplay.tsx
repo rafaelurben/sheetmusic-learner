@@ -5,6 +5,7 @@ import type { PieceDto } from "@/api/generated/openapi";
 import type { PlayerSectionState } from "@/interfaces/player/playerSectionState.ts";
 import { useSorted } from "@/service/hooks.ts";
 import { type CSSProperties, useRef, useState } from "react";
+import { RepeatIcon } from "lucide-react";
 
 interface PlayerSheetDisplayProps {
   piece: PieceDto;
@@ -93,16 +94,26 @@ export default function PlayerSheetDisplay({
               }}
             >
               {progressBarStyle && (
-                /* NOTE: key is required to restart animation on section change. */
-                <div
-                  key={currentSectionId}
-                  className="overflow-hidden absolute inset-x-0 bottom-0 h-1 bg-section-highlight/30"
-                >
+                <>
+                  {/* NOTE: key is required to restart animation on section change and repeat. */}
                   <div
-                    className="section-progress-fill h-full w-full bg-section-highlight-foreground/90"
-                    style={progressBarStyle}
-                  />
-                </div>
+                    key={`${currentSectionId}-${sectionPlaybackState?.repeatIndex ?? 0}`}
+                    className="overflow-hidden absolute inset-x-0 bottom-0 h-1 bg-section-highlight/30"
+                  >
+                    <div
+                      className="section-progress-fill h-full w-full bg-section-highlight-foreground/90"
+                      style={progressBarStyle}
+                    />
+                  </div>
+                  {sectionPlaybackState?.willRepeat && (
+                    <div
+                      className="absolute bottom-1 right-1 flex items-center justify-center rounded bg-section-highlight/90 p-0.5 text-section-highlight-foreground shadow-sm"
+                      title="This section will repeat"
+                    >
+                      <RepeatIcon className="size-2" />
+                    </div>
+                  )}
+                </>
               )}
             </div>
           )}

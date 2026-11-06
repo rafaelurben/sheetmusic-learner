@@ -524,6 +524,10 @@ components:
           type: integer
         bpm:
           type: integer
+        repeatCount:
+          type: integer
+          minimum: 1
+          default: 1
         scoreSheetId:
           type:
             - string
@@ -541,7 +545,7 @@ components:
         posY2:
           type: number
           format: float
-      required: [ id, position, name, timeSignatureNumerator, timeSignatureDenominator, barCount, bpm, scoreSheetId, posX1, posY1, posX2, posY2 ]
+      required: [ id, position, name, timeSignatureNumerator, timeSignatureDenominator, barCount, bpm, repeatCount, scoreSheetId, posX1, posY1, posX2, posY2 ]
 
     PiecePermissionDto:
       type: object

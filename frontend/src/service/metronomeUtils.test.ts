@@ -19,6 +19,7 @@ function createSection(overrides: Partial<SectionDto> = {}): SectionDto {
     timeSignatureDenominator: 4,
     barCount: 2,
     bpm: 120,
+    repeatCount: 1,
     scoreSheetId: null,
     posX1: 0,
     posY1: 0,
@@ -152,18 +153,80 @@ describe("calculateSectionTimings", () => {
       sectionPosition: 1,
       offsetMs: 0,
       durationMs: DURATION_1,
+      repeatIndex: 0,
+      repeatCount: 1,
+      willRepeat: false,
     });
     expect(timings[1]).toEqual({
       sectionId: "b",
       sectionPosition: 2,
       offsetMs: DURATION_1,
       durationMs: DURATION_2,
+      repeatIndex: 0,
+      repeatCount: 1,
+      willRepeat: false,
     });
     expect(timings[2]).toEqual({
       sectionId: "c",
       sectionPosition: 3,
       offsetMs: DURATION_1 + DURATION_2,
       durationMs: DURATION_3,
+      repeatIndex: 0,
+      repeatCount: 1,
+      willRepeat: false,
+    });
+  });
+
+  it("repeats sections according to repeatCount and tracks willRepeat", () => {
+    const sections: SectionDto[] = [
+      createSection({
+        id: "repeat-sec",
+        position: 0,
+        barCount: 2,
+        bpm: 120,
+        timeSignatureNumerator: 4,
+        timeSignatureDenominator: 4,
+        repeatCount: 2,
+      }),
+      createSection({
+        id: "single-sec",
+        position: 1,
+        barCount: 1,
+        bpm: 120,
+        timeSignatureNumerator: 4,
+        timeSignatureDenominator: 4,
+        repeatCount: 1,
+      }),
+    ];
+
+    const timings = calculateSectionTimings(sections);
+    expect(timings).toHaveLength(3);
+    expect(timings[0]).toEqual({
+      sectionId: "repeat-sec",
+      sectionPosition: 0,
+      offsetMs: 0,
+      durationMs: 4000,
+      repeatIndex: 0,
+      repeatCount: 2,
+      willRepeat: true,
+    });
+    expect(timings[1]).toEqual({
+      sectionId: "repeat-sec",
+      sectionPosition: 0,
+      offsetMs: 4000,
+      durationMs: 4000,
+      repeatIndex: 1,
+      repeatCount: 2,
+      willRepeat: false,
+    });
+    expect(timings[2]).toEqual({
+      sectionId: "single-sec",
+      sectionPosition: 1,
+      offsetMs: 8000,
+      durationMs: 2000,
+      repeatIndex: 0,
+      repeatCount: 1,
+      willRepeat: false,
     });
   });
 

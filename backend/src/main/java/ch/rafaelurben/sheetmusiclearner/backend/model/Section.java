@@ -48,6 +48,11 @@ public class Section extends BaseEntity implements WithId<UUID>, WithPosition {
   @Column(name = "bpm")
   private Integer bpm;
 
+  @Column(name = "repeat_count", nullable = false)
+  @Min(1)
+  @Builder.Default
+  private Integer repeatCount = 1;
+
   @Column(name = "pos_x1")
   @Min(0)
   @Max(1)

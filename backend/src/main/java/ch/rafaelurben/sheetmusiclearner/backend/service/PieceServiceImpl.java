@@ -367,6 +367,9 @@ public class PieceServiceImpl implements PieceService {
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));
 
     validateSectionName(addRequestDto.name());
+    if (addRequestDto.repeatCount() < 1) {
+      throw new BadRequestException("Repeat count must be greater than or equal to 1");
+    }
 
     Section section = sectionMapper.toEntityFromCreateRequest(addRequestDto);
     section.setPiece(piece);
@@ -490,6 +493,9 @@ public class PieceServiceImpl implements PieceService {
       throw new BadRequestException("Section id must be provided");
     }
     validateSectionName(updateRequestDto.name());
+    if (updateRequestDto.repeatCount() < 1) {
+      throw new BadRequestException("Repeat count must be greater than or equal to 1");
+    }
 
     Piece piece = getPieceEntityById(pieceId);
     ensurePermissionType(user, piece, EnumSet.of(PermissionType.OWNER, PermissionType.EDITOR));

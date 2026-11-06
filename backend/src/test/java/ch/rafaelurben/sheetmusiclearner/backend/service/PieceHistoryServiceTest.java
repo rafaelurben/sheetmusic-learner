@@ -159,6 +159,7 @@ class PieceHistoryServiceTest extends BaseSpringBootTest {
         () -> assertEquals(4, restoredSection.getTimeSignatureDenominator()),
         () -> assertEquals(8, restoredSection.getBarCount()),
         () -> assertEquals(120, restoredSection.getBpm()),
+        () -> assertEquals(1, restoredSection.getRepeatCount()),
         () -> assertEquals(restoredScoreSheet.getId(), restoredSection.getScoreSheet().getId()));
   }
 
@@ -225,6 +226,7 @@ class PieceHistoryServiceTest extends BaseSpringBootTest {
         () -> assertEquals(4, previewSection.getTimeSignatureDenominator()),
         () -> assertEquals(8, previewSection.getBarCount()),
         () -> assertEquals(120, previewSection.getBpm()),
+        () -> assertEquals(1, previewSection.getRepeatCount()),
         () -> assertEquals(0.1f, previewSection.getPosX1(), 0.0001f),
         () -> assertEquals(0.2f, previewSection.getPosY1(), 0.0001f),
         () -> assertEquals(0.3f, previewSection.getPosX2(), 0.0001f),

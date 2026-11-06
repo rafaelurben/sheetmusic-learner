@@ -12,6 +12,7 @@ export interface SectionFormState {
   timeSignatureDenominator: number | null;
   barCount: number | null;
   bpm: number | null;
+  repeatCount: number | null;
   scoreSheetId: string;
   posX1: number;
   posY1: number;
@@ -42,6 +43,8 @@ export function buildSectionPayloadFromForm(
     timeSignatureDenominator: form.timeSignatureDenominator,
     barCount: form.barCount,
     bpm: form.bpm,
+    repeatCount:
+      form.repeatCount && form.repeatCount >= 1 ? form.repeatCount : 1,
     scoreSheetId:
       form.scoreSheetId === UNASSIGNED_SCORE_SHEET_VALUE
         ? null
