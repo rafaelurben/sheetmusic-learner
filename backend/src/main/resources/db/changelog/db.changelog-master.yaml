@@ -19,3 +19,5 @@ databaseChangeLog:
       file: db/changelog/2026-05-17-01-changelog.yaml
   - include:
       file: db/changelog/2026-11-06-01-room-count-in.yaml
+  - include:
+      file: db/changelog/2026-11-06-02-section-repeat-count.yaml

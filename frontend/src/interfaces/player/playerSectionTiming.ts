@@ -7,4 +7,7 @@ export interface PlayerSectionTiming {
   durationMs: number;
   sectionId: string;
   sectionPosition: number;
+  repeatIndex: number;
+  repeatCount: number;
+  willRepeat: boolean;
 }

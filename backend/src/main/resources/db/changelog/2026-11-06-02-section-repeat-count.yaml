@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20261106-02-add-section-repeat-count
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            tableName: sections
+            columns:
+              - column:
+                  name: repeat_count
+                  type: INTEGER
+                  defaultValueNumeric: 1
+                  constraints:
+                    nullable: false
+        - addColumn:
+            tableName: sections_aud
+            columns:
+              - column:
+                  name: repeat_count
+                  type: INTEGER
+                  defaultValueNumeric: 1

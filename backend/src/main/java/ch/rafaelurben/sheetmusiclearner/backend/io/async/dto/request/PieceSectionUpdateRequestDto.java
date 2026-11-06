@@ -11,6 +11,7 @@ public record PieceSectionUpdateRequestDto(
     int timeSignatureDenominator,
     int barCount,
     int bpm,
+    int repeatCount,
     UUID scoreSheetId,
     Float posX1,
     Float posY1,

@@ -21,8 +21,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shadcn/components/ui/select.tsx";
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/shadcn/components/ui/popover.tsx";
 import { usePieceStore } from "@/zustand/pieceStore.ts";
-import { CheckIcon, GripVerticalIcon, PencilIcon, XIcon } from "lucide-react";
+import {
+  CheckIcon,
+  GripVerticalIcon,
+  PencilIcon,
+  RepeatIcon,
+  SlidersHorizontalIcon,
+  XIcon,
+} from "lucide-react";
 import type { Dispatch, DragEvent, SetStateAction } from "react";
 import { parseNullableNumberFromInput } from "@/service/utils.ts";
 import DeleteButton from "@/components/deleteButton.tsx";
@@ -222,12 +237,58 @@ export default function PieceSectionItem({
                 <Button variant="outline" size="icon-sm" onClick={onCancelEdit}>
                   <XIcon />
                 </Button>
-                {!isNewSection && (
-                  <DeleteButton
-                    title="Delete this section?"
-                    action={handleDeleteSection}
-                  />
-                )}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon-sm"
+                      aria-label="Section options"
+                    >
+                      <SlidersHorizontalIcon />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 space-y-3">
+                    <PopoverHeader>
+                      <PopoverTitle>Section options</PopoverTitle>
+                      <PopoverDescription>
+                        Configure repetitions and section settings.
+                      </PopoverDescription>
+                    </PopoverHeader>
+
+                    <div className="space-y-1.5">
+                      <Label className="text-xs text-muted-foreground">
+                        Repeat count
+                      </Label>
+                      <Input
+                        type="number"
+                        min={1}
+                        step={1}
+                        value={sectionForm.repeatCount ?? 1}
+                        onChange={(event) => {
+                          const value = parseNullableNumberFromInput(
+                            event.target.value,
+                          );
+                          updateEditingForm({
+                            repeatCount:
+                              value !== null ? Math.max(1, value) : 1,
+                          });
+                        }}
+                      />
+                    </div>
+
+                    {!isNewSection && (
+                      <div className="pt-2 border-t flex items-center justify-between">
+                        <Label className="text-xs text-destructive font-medium">
+                          Delete section
+                        </Label>
+                        <DeleteButton
+                          title="Delete this section?"
+                          action={handleDeleteSection}
+                        />
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
           </>
@@ -262,6 +323,18 @@ export default function PieceSectionItem({
                 <Label className="text-xs text-muted-foreground">BPM</Label>
                 <div className="mt-1 font-medium">{String(section.bpm)}</div>
               </div>
+
+              {section.repeatCount > 1 && (
+                <div className="flex-1">
+                  <Label className="text-xs text-muted-foreground">
+                    Repeats
+                  </Label>
+                  <div className="mt-1 font-medium flex items-center gap-1">
+                    <RepeatIcon className="size-3.5 text-muted-foreground" />
+                    <span>{String(section.repeatCount)}x</span>
+                  </div>
+                </div>
+              )}
 
               {canEdit && isEditMode && (
                 <div className="flex gap-1 self-end">

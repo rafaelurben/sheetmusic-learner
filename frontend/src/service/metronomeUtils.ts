@@ -68,17 +68,24 @@ export function calculateSectionTimings(
   let totalOffsetMs = 0;
 
   for (const section of sections) {
+    const repeats = Math.max(1, section.repeatCount);
     const durationMs =
       section.barCount *
       section.timeSignatureNumerator *
       (60_000 / section.bpm / tempoMultiplier);
-    items.push({
-      durationMs: durationMs,
-      offsetMs: totalOffsetMs,
-      sectionId: section.id,
-      sectionPosition: section.position,
-    });
-    totalOffsetMs += durationMs;
+
+    for (let repeatIndex = 0; repeatIndex < repeats; repeatIndex++) {
+      items.push({
+        durationMs: durationMs,
+        offsetMs: totalOffsetMs,
+        sectionId: section.id,
+        sectionPosition: section.position,
+        repeatIndex: repeatIndex,
+        repeatCount: repeats,
+        willRepeat: repeatIndex < repeats - 1,
+      });
+      totalOffsetMs += durationMs;
+    }
   }
 
   return items;

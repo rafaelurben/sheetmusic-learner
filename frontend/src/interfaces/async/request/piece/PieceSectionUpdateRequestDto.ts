@@ -10,6 +10,7 @@ export default interface PieceSectionUpdateRequestDto {
   timeSignatureDenominator: number;
   barCount: number;
   bpm: number;
+  repeatCount: number;
   scoreSheetId: string | null;
   posX1: number | null;
   posY1: number | null;

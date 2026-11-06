@@ -68,6 +68,7 @@ export default function PieceSectionsCard({
     timeSignatureDenominator: 4,
     barCount: null,
     bpm: null,
+    repeatCount: 1,
     scoreSheetId: UNASSIGNED_SCORE_SHEET_VALUE,
     posX1: 0,
     posY1: 0,
@@ -169,6 +170,7 @@ export default function PieceSectionsCard({
         timeSignatureDenominator: sectionForm.timeSignatureDenominator ?? 4,
         barCount: sectionForm.barCount ?? 0,
         bpm: sectionForm.bpm ?? 120,
+        repeatCount: sectionForm.repeatCount ?? 1,
         scoreSheetId:
           sectionForm.scoreSheetId === UNASSIGNED_SCORE_SHEET_VALUE
             ? ""
@@ -271,6 +273,7 @@ export default function PieceSectionsCard({
                     timeSignatureDenominator: section.timeSignatureDenominator,
                     barCount: section.barCount,
                     bpm: section.bpm,
+                    repeatCount: section.repeatCount,
                     scoreSheetId:
                       section.scoreSheetId ?? UNASSIGNED_SCORE_SHEET_VALUE,
                     posX1: section.posX1,
