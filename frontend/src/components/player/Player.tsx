@@ -101,6 +101,17 @@ export default function Player({
           sectionPlaybackState={sectionStateOverride}
         />
 
+        <PlayerMetronome
+          playing={playbackState.playing}
+          lastPlayTimestamp={playbackState.lastPlayTimestamp}
+          lastPlaySectionPosition={playbackState.lastPlaySectionPosition}
+          tempoMultiplier={playbackState.tempoMultiplier}
+          countIn={playbackState.countIn}
+          sortedSections={sortedSections}
+          onSectionStateChange={setSectionStateOverride}
+          onPlaybackEnded={onPause}
+        />
+
         <PlayerPlaybackControls
           sections={sortedSections}
           currentSection={currentSection}
@@ -116,17 +127,6 @@ export default function Player({
           onFullscreenToggle={handleToggleFullscreen}
           isFullScreen={isFullScreen}
           allowFullScreen={allowFullScreen}
-        />
-
-        <PlayerMetronome
-          playing={playbackState.playing}
-          lastPlayTimestamp={playbackState.lastPlayTimestamp}
-          lastPlaySectionPosition={playbackState.lastPlaySectionPosition}
-          tempoMultiplier={playbackState.tempoMultiplier}
-          countIn={playbackState.countIn}
-          sortedSections={sortedSections}
-          onSectionStateChange={setSectionStateOverride}
-          onPlaybackEnded={onPause}
         />
       </CardContent>
     </Card>
