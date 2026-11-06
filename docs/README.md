@@ -23,8 +23,6 @@
 - [Project overview](project/overview.md)
   - Tech stack
   - Technology decisions
-- [Project planning & journal](project/planning-and-journal.md)
-  - Project timeline and milestones
 - [Project requirements](project/requirements.md)
   - Functional and non-functional requirements
   - Fulfillment table

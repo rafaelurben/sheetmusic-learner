@@ -30,7 +30,7 @@ tempo control. The application is designed to make collaborative music practice 
     - External IdP for OAuth2/OIDC authentication
 - Other:
     - Docker (containerization)
-    - GitLab CI/CD (continuous integration and deployment)
+    - GitHub Workflows (continuous integration and deployment)
     - Git (version control)
     - PlantUML (diagrams)
     - OpenAPI Generator
@@ -55,7 +55,6 @@ Some technologies were already (wrongly) defined as part of the project requirem
       Hibernate Envers, which provides auditing capabilities out of the box, allowing us to track changes to entities.
     - Liquibase was chosen for database migrations because of its simplicity.
 - Docker was chosen for containerization to ensure consistency across different environments and to simplify deployment.
-- GitLab CI/CD was chosen for continuous integration and deployment because GitLab is a prerequirement for the project.
 - OpenAPI Generator was chosen for an easy way to use an API-first approach and to generate API documentation and
   client code.
 - PlantUML was chosen for diagrams because of its simplicity and ease of use, especially for sequence diagrams and

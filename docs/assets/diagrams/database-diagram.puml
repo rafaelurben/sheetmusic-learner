@@ -92,6 +92,7 @@ entity "Room" as room {
   last_play_section_position: number
   last_play_timestamp: datetime
   tempo_multiplier: float
+  count_in: boolean
   ..
   timestamp_created: datetime
   timestamp_updated: datetime

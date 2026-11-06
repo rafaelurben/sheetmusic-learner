@@ -43,10 +43,10 @@ migrated using liquibase migrations created manually or using IDE plugins.
 - `docker-compose-full.yml`: Docker Compose configuration with all services (including frontend and backend) for
   local testing of the built docker containers.
 - `deploy/`: Docker Compose configuration for deployment.
-- `.gitlab-ci.yml`: GitLab CI/CD pipeline configuration for building, testing, and uploading the docker images.
+- `.github/workflows`: GitHub workflow configuration for building, testing, uploading the docker images and releasing.
 
 ## deployment
 
 The application is deployed using the docker images build from the pipeline using the docker compose configuration
-in the `deploy/` directory. The application is deployed using Coolify (https://coolify.io/) which is a self-hosted
+in the `deploy/` directory. The application is deployed using Coolify (https://coolify.io/), which is a self-hosted
 platform for deploying and managing applications.
