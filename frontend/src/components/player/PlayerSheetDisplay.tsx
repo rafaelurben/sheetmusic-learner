@@ -6,6 +6,7 @@ import type { PlayerSectionState } from "@/interfaces/player/playerSectionState.
 import { useSorted } from "@/service/hooks.ts";
 import { type CSSProperties, useRef, useState } from "react";
 import { RepeatIcon } from "lucide-react";
+import { useMainStore } from "@/zustand/mainStore.ts";
 
 interface PlayerSheetDisplayProps {
   piece: PieceDto;
@@ -32,6 +33,9 @@ export default function PlayerSheetDisplay({
       )
     : undefined;
   const displayedScoreSheet = visibleScoreSheet ?? sortedScoreSheets[0];
+  const sectionHighlightingEnabled = useMainStore(
+    (state) => state.sectionHighlightingEnabled,
+  );
   const highlightedSection =
     currentSection && currentSection.scoreSheetId === visibleScoreSheet?.id
       ? currentSection
@@ -78,7 +82,7 @@ export default function PlayerSheetDisplay({
             onLoad={updateAspectRatio}
           />
 
-          {highlightedSection && (
+          {sectionHighlightingEnabled && highlightedSection && (
             <div
               id="section-highlight"
               className="pointer-events-none absolute overflow-hidden rounded-md border-2 border-section-highlight bg-section-highlight/10 shadow-sm"
