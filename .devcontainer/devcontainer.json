@@ -5,7 +5,9 @@
     "ghcr.io/devcontainers/features/docker-in-docker:3": {
       "moby": false
     },
-    "ghcr.io/devcontainers/features/node:2": {},
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "26"
+    },
     "ghcr.io/devcontainers/features/java:1": {
       "version": "25",
       "installMaven": true,

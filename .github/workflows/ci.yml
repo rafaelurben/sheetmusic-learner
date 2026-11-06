@@ -52,7 +52,7 @@ jobs:
     name: checks::frontend-tests
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
+      image: ghcr.io/rafaelurben/node26-alpine-with-jdk25:latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache npm data
@@ -83,7 +83,7 @@ jobs:
     name: checks::frontend
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
+      image: ghcr.io/rafaelurben/node26-alpine-with-jdk25:latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache npm data
@@ -136,7 +136,7 @@ jobs:
       - checks-frontend
       - checks-frontend-tests
     container:
-      image: ghcr.io/rafaelurben/node25-trixie-with-jdk25:latest
+      image: ghcr.io/rafaelurben/node26-alpine-with-jdk25:latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Cache npm data
