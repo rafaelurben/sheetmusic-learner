@@ -3,12 +3,15 @@
  */
 import {
   Card,
+  CardAction,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/shadcn/components/ui/card.tsx";
 import { Button } from "@/shadcn/components/ui/button.tsx";
+import { Switch } from "@/shadcn/components/ui/switch.tsx";
+import { Label } from "@/shadcn/components/ui/label.tsx";
 import type { SectionDto } from "@/api/generated/openapi";
 import type PieceSectionAddRequestDto from "@/interfaces/async/request/piece/PieceSectionAddRequestDto.ts";
 import type PieceSectionUpdateRequestDto from "@/interfaces/async/request/piece/PieceSectionUpdateRequestDto.ts";
@@ -34,6 +37,7 @@ export default function PieceSectionsCard({
   sections,
   canEdit,
 }: Readonly<PieceSectionsCardProps>) {
+  const [isEditMode, setIsEditMode] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [draggedSectionId, setDraggedSectionId] = useState<string | null>(null);
   const [dropTarget, setDropTarget] = useState<{
@@ -50,7 +54,8 @@ export default function PieceSectionsCard({
   const sortedSections = [...sections].sort(
     (left, right) => left.position - right.position,
   );
-  const canReorder = canEdit && sectionForm === null;
+  const canReorder = canEdit && isEditMode && sectionForm === null;
+  const showAddButton = canEdit && (isEditMode || sections.length === 0);
   const maxPosition = Math.max(
     -1,
     ...sections.map((section) => section.position),
@@ -179,11 +184,35 @@ export default function PieceSectionsCard({
     <Card className="gap-2">
       <CardHeader>
         <CardTitle>Sections</CardTitle>
+        {canEdit && sections.length > 0 && (
+          <CardAction>
+            <div className="flex items-center gap-2">
+              <Label
+                className="text-sm text-muted-foreground"
+                htmlFor="piece-sections-edit-mode"
+              >
+                Edit
+              </Label>
+              <Switch
+                id="piece-sections-edit-mode"
+                checked={isEditMode}
+                onCheckedChange={(nextEditMode) => {
+                  setIsEditMode(nextEditMode);
+                  if (!nextEditMode) {
+                    setEditingSectionId(null);
+                    setSectionForm(null);
+                    setIsCreating(false);
+                  }
+                }}
+              />
+            </div>
+          </CardAction>
+        )}
       </CardHeader>
       <CardContent className="px-3">
         <ScrollArea
           className={
-            canEdit
+            showAddButton
               ? "h-fit lg:h-[calc(100vh-18.5rem)]"
               : "h-fit lg:h-[calc(100vh-15rem)]"
           }
@@ -192,7 +221,7 @@ export default function PieceSectionsCard({
             {sections.length === 0 && (
               <div className="flex h-full min-h-60 flex-col items-center justify-center gap-4 rounded-md border-2 border-dashed text-sm text-muted-foreground">
                 <span>No sections available.</span>
-                {canEdit && (
+                {showAddButton && (
                   <Button
                     className="gap-2"
                     onClick={startCreating}
@@ -210,6 +239,7 @@ export default function PieceSectionsCard({
                 key={section.id}
                 section={section}
                 canEdit={canEdit}
+                isEditMode={isEditMode}
                 isEditing={editingSectionId === section.id}
                 sectionForm={sectionForm}
                 isDraggable={canReorder}
@@ -261,6 +291,7 @@ export default function PieceSectionsCard({
               <PieceSectionItem
                 section={newSectionDraft}
                 canEdit={canEdit}
+                isEditMode={isEditMode}
                 isEditing
                 isNewSection
                 sectionForm={sectionForm}
@@ -278,7 +309,7 @@ export default function PieceSectionsCard({
           </div>
         </ScrollArea>
       </CardContent>
-      {canEdit && (
+      {showAddButton && (
         <CardFooter>
           <Button
             className="w-full gap-2 mt-3"

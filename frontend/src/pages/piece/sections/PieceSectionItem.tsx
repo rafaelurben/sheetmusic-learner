@@ -30,6 +30,7 @@ import DeleteButton from "@/components/deleteButton.tsx";
 interface PieceSectionItemProps {
   section: SectionDto;
   canEdit: boolean;
+  isEditMode?: boolean;
   isEditing: boolean;
   isNewSection?: boolean;
   sectionForm: SectionFormState | null;
@@ -50,6 +51,7 @@ interface PieceSectionItemProps {
 export default function PieceSectionItem({
   section,
   canEdit,
+  isEditMode = false,
   isEditing,
   isNewSection = false,
   sectionForm,
@@ -261,7 +263,7 @@ export default function PieceSectionItem({
                 <div className="mt-1 font-medium">{String(section.bpm)}</div>
               </div>
 
-              {canEdit && (
+              {canEdit && isEditMode && (
                 <div className="flex gap-1 self-end">
                   {isDraggable ? (
                     <Button
