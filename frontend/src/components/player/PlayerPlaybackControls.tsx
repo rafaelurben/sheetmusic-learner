@@ -5,13 +5,14 @@ import {
   ChevronFirstIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  CogIcon,
+  EyeIcon,
   Maximize2Icon,
   MetronomeIcon,
   Minimize2Icon,
   PauseIcon,
   PlayIcon,
   RabbitIcon,
+  SlidersHorizontalIcon,
 } from "lucide-react";
 import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
@@ -183,14 +184,14 @@ export default function PlayerPlaybackControls({
             <Button
               variant="outline"
               size="icon"
-              aria-label="Open player controls"
+              aria-label="Open playback options"
             >
-              <CogIcon />
+              <SlidersHorizontalIcon />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-80">
             <PopoverHeader>
-              <PopoverTitle>Playback controls</PopoverTitle>
+              <PopoverTitle>Playback options</PopoverTitle>
               <PopoverDescription>Readonly during playback.</PopoverDescription>
             </PopoverHeader>
 
@@ -213,12 +214,35 @@ export default function PlayerPlaybackControls({
                 disabled={playing || readonly}
                 className="w-full"
               />
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              aria-label="Open display options"
+            >
+              <EyeIcon />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <PopoverHeader>
+              <PopoverTitle>Display options</PopoverTitle>
+            </PopoverHeader>
+
+            <div className="mt-4 flex flex-col gap-3">
               <div className="flex items-center justify-between">
-                <Label className="text-sm font-medium">
-                  <MetronomeIcon size="1rem" />
-                  Show metronome
+                <Label
+                  className="text-sm font-medium flex items-center gap-2"
+                  htmlFor="display-show-metronome"
+                >
+                  <MetronomeIcon size="1rem" /> Show metronome
                 </Label>
                 <Switch
+                  id="display-show-metronome"
                   checked={showMetronome}
                   onCheckedChange={setShowMetronome}
                 />
