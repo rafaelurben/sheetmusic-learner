@@ -94,7 +94,7 @@ Categories: Piece-management
 
 An authorized user can define sections of a score, which are specific ranges of measures. Sections can be named (e.g.
 "Chorus", "Verse", "Bridge"). Sections are associated with a specific score page and can be used for navigation and
-playback.
+playback. Sections can also be duplicated to quickly recreate repeated structures.
 
 #### FR-07 — Time signature and tempo information
 

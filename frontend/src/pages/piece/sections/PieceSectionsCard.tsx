@@ -80,6 +80,27 @@ export default function PieceSectionsCard({
     stompPublishingService.pieceSectionAdd(piece.id, payload);
   };
 
+  const handleDuplicateSection = (section: SectionDto) => {
+    setEditingSectionId(null);
+    setSectionForm(null);
+    setIsCreating(false);
+
+    publishSectionAdd({
+      position: section.position + 1,
+      name: `${section.name} copy`,
+      timeSignatureNumerator: section.timeSignatureNumerator,
+      timeSignatureDenominator: section.timeSignatureDenominator,
+      barCount: section.barCount,
+      bpm: section.bpm,
+      repeatCount: section.repeatCount,
+      scoreSheetId: section.scoreSheetId ?? null,
+      posX1: section.posX1,
+      posY1: section.posY1,
+      posX2: section.posX2,
+      posY2: section.posY2,
+    });
+  };
+
   const publishSectionUpdate = (
     section: SectionDto,
     position: number,
@@ -286,6 +307,9 @@ export default function PieceSectionsCard({
                   setEditingSectionId(null);
                   setSectionForm(null);
                   setIsCreating(false);
+                }}
+                onDuplicate={() => {
+                  handleDuplicateSection(section);
                 }}
               />
             ))}

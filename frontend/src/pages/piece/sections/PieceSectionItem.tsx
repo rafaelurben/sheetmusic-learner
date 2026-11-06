@@ -32,15 +32,26 @@ import {
 import { usePieceStore } from "@/zustand/pieceStore.ts";
 import {
   CheckIcon,
+  CopyIcon,
   GripVerticalIcon,
+  MoreHorizontalIcon,
   PencilIcon,
   RepeatIcon,
   SlidersHorizontalIcon,
+  Trash2Icon,
   XIcon,
 } from "lucide-react";
 import type { Dispatch, DragEvent, SetStateAction } from "react";
 import { parseNullableNumberFromInput } from "@/service/utils.ts";
-import DeleteButton from "@/components/deleteButton.tsx";
+import { ButtonGroup } from "@/shadcn/components/ui/button-group.tsx";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shadcn/components/ui/dropdown-menu.tsx";
 
 interface PieceSectionItemProps {
   section: SectionDto;
@@ -60,6 +71,7 @@ interface PieceSectionItemProps {
   onDrop?: (event: DragEvent<HTMLDivElement>) => void;
   onSaveCreate?: (form: SectionFormState) => void;
   onStartEdit?: () => void;
+  onDuplicate?: () => void;
   onCancelEdit: () => void;
 }
 
@@ -81,6 +93,7 @@ export default function PieceSectionItem({
   onDrop,
   onSaveCreate,
   onStartEdit,
+  onDuplicate,
   onCancelEdit,
 }: Readonly<PieceSectionItemProps>) {
   const pieceId = usePieceStore((state) => state.piece.id);
@@ -275,18 +288,6 @@ export default function PieceSectionItem({
                         }}
                       />
                     </div>
-
-                    {!isNewSection && (
-                      <div className="pt-2 border-t flex items-center justify-between">
-                        <Label className="text-xs text-destructive font-medium">
-                          Delete section
-                        </Label>
-                        <DeleteButton
-                          title="Delete this section?"
-                          action={handleDeleteSection}
-                        />
-                      </div>
-                    )}
                   </PopoverContent>
                 </Popover>
               </div>
@@ -368,15 +369,44 @@ export default function PieceSectionItem({
                       <GripVerticalIcon />
                     </Button>
                   )}
-                  <Button
-                    variant="outline"
-                    size="icon-sm"
-                    onClick={() => {
-                      onStartEdit?.();
-                    }}
-                  >
-                    <PencilIcon />
-                  </Button>
+                  <ButtonGroup>
+                    <Button
+                      variant="outline"
+                      size="icon-sm"
+                      onClick={() => {
+                        onStartEdit?.();
+                      }}
+                    >
+                      <PencilIcon />
+                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon-sm"
+                          aria-label="More options"
+                        >
+                          <MoreHorizontalIcon />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-40">
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem onClick={onDuplicate}>
+                            <CopyIcon />
+                            Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            variant="destructive"
+                            onClick={handleDeleteSection}
+                          >
+                            <Trash2Icon />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </ButtonGroup>
                 </div>
               )}
             </div>
