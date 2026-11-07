@@ -21,3 +21,5 @@ databaseChangeLog:
       file: db/changelog/2026-11-06-01-room-count-in.yaml
   - include:
       file: db/changelog/2026-11-06-02-section-repeat-count.yaml
+  - include:
+      file: db/changelog/2026-11-07-01-section-pause-after-section.yaml

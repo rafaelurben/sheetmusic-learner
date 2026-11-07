@@ -53,6 +53,10 @@ public class Section extends BaseEntity implements WithId<UUID>, WithPosition {
   @Builder.Default
   private Integer repeatCount = 1;
 
+  @Column(name = "pause_after_section", nullable = false)
+  @Builder.Default
+  private Boolean pauseAfterSection = false;
+
   @Column(name = "pos_x1")
   @Min(0)
   @Max(1)

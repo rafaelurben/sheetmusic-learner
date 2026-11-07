@@ -90,3 +90,46 @@ export function calculateSectionTimings(
 
   return items;
 }
+
+export function getPlaybackSections(
+  sortedSections: SectionDto[],
+  lastPlaySectionPosition?: number | null,
+): {
+  playbackSections: SectionDto[];
+  nextSectionPosition?: number;
+} {
+  if (sortedSections.length === 0) {
+    return { playbackSections: [], nextSectionPosition: undefined };
+  }
+
+  let startIndex = 0;
+  if (typeof lastPlaySectionPosition === "number") {
+    const foundIndex = sortedSections.findIndex(
+      (section) => section.position === lastPlaySectionPosition,
+    );
+    if (foundIndex >= 0) {
+      startIndex = foundIndex;
+    } else if (
+      lastPlaySectionPosition >= 0 &&
+      lastPlaySectionPosition < sortedSections.length
+    ) {
+      startIndex = lastPlaySectionPosition;
+    }
+  }
+
+  const playbackSections: SectionDto[] = [];
+  let nextSectionPosition: number | undefined = undefined;
+
+  for (let i = startIndex; i < sortedSections.length; i++) {
+    const section = sortedSections[i];
+    playbackSections.push(section);
+    if (section.pauseAfterSection) {
+      if (i + 1 < sortedSections.length) {
+        nextSectionPosition = sortedSections[i + 1].position;
+      }
+      break;
+    }
+  }
+
+  return { playbackSections, nextSectionPosition };
+}

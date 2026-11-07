@@ -12,6 +12,7 @@ public record PieceSectionUpdateRequestDto(
     int barCount,
     int bpm,
     int repeatCount,
+    boolean pauseAfterSection,
     UUID scoreSheetId,
     Float posX1,
     Float posY1,

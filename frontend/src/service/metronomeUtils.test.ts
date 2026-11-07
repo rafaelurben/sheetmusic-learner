@@ -8,6 +8,7 @@ import {
   calculateSectionTimings,
   convertSectionToMetronomePlaylist,
   createCountInMetronomePlaylist,
+  getPlaybackSections,
 } from "@/service/metronomeUtils";
 
 function createSection(overrides: Partial<SectionDto> = {}): SectionDto {
@@ -20,6 +21,7 @@ function createSection(overrides: Partial<SectionDto> = {}): SectionDto {
     barCount: 2,
     bpm: 120,
     repeatCount: 1,
+    pauseAfterSection: false,
     scoreSheetId: null,
     posX1: 0,
     posY1: 0,
@@ -234,5 +236,77 @@ describe("calculateSectionTimings", () => {
     const timings = calculateSectionTimings([createSection({ bpm: 30 })], 2);
 
     expect(timings[0]?.durationMs).toBe(8000);
+  });
+});
+
+describe("getPlaybackSections", () => {
+  it("returns empty array and undefined for empty sections list", () => {
+    const result = getPlaybackSections([]);
+    expect(result.playbackSections).toEqual([]);
+    expect(result.nextSectionPosition).toBeUndefined();
+  });
+
+  it("returns all sections when no fermate is set", () => {
+    const sections = [
+      createSection({ id: "sec-0", position: 0 }),
+      createSection({ id: "sec-1", position: 1 }),
+    ];
+    const result = getPlaybackSections(sections, 0);
+
+    expect(result.playbackSections).toHaveLength(2);
+    expect(result.playbackSections[0]?.id).toBe("sec-0");
+    expect(result.playbackSections[1]?.id).toBe("sec-1");
+    expect(result.nextSectionPosition).toBeUndefined();
+  });
+
+  it("slices from lastPlaySectionPosition when starting mid-piece", () => {
+    const sections = [
+      createSection({ id: "sec-0", position: 0 }),
+      createSection({ id: "sec-1", position: 1 }),
+      createSection({ id: "sec-2", position: 2 }),
+    ];
+    const result = getPlaybackSections(sections, 1);
+
+    expect(result.playbackSections).toHaveLength(2);
+    expect(result.playbackSections[0]?.id).toBe("sec-1");
+    expect(result.playbackSections[1]?.id).toBe("sec-2");
+    expect(result.nextSectionPosition).toBeUndefined();
+  });
+
+  it("stops at section with pauseAfterSection and returns next section position", () => {
+    const sections = [
+      createSection({ id: "sec-0", position: 0 }),
+      createSection({ id: "sec-1", position: 1, pauseAfterSection: true }),
+      createSection({ id: "sec-2", position: 2 }),
+    ];
+    const result = getPlaybackSections(sections, 0);
+
+    expect(result.playbackSections).toHaveLength(2);
+    expect(result.playbackSections[0]?.id).toBe("sec-0");
+    expect(result.playbackSections[1]?.id).toBe("sec-1");
+    expect(result.nextSectionPosition).toBe(2);
+  });
+
+  it("returns nextSectionPosition undefined when fermate is on the last section", () => {
+    const sections = [
+      createSection({ id: "sec-0", position: 0 }),
+      createSection({ id: "sec-1", position: 1, pauseAfterSection: true }),
+    ];
+    const result = getPlaybackSections(sections, 0);
+
+    expect(result.playbackSections).toHaveLength(2);
+    expect(result.nextSectionPosition).toBeUndefined();
+  });
+
+  it("handles non-consecutive section positions properly", () => {
+    const sections = [
+      createSection({ id: "sec-0", position: 10, pauseAfterSection: true }),
+      createSection({ id: "sec-1", position: 25 }),
+    ];
+    const result = getPlaybackSections(sections, 10);
+
+    expect(result.playbackSections).toHaveLength(1);
+    expect(result.playbackSections[0]?.id).toBe("sec-0");
+    expect(result.nextSectionPosition).toBe(25);
   });
 });

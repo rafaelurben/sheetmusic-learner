@@ -13,6 +13,7 @@ import { Button } from "@/shadcn/components/ui/button.tsx";
 import { Card, CardContent } from "@/shadcn/components/ui/card.tsx";
 import { Input } from "@/shadcn/components/ui/input.tsx";
 import { Label } from "@/shadcn/components/ui/label.tsx";
+import { Switch } from "@/shadcn/components/ui/switch.tsx";
 import { cn } from "@/shadcn/lib/utils.ts";
 import {
   Select,
@@ -285,6 +286,22 @@ export default function PieceSectionItem({
                             repeatCount:
                               value !== null ? Math.max(1, value) : 1,
                           });
+                        }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1">
+                      <Label
+                        htmlFor="section-pause-after-section"
+                        className="text-xs text-muted-foreground"
+                      >
+                        Fermate
+                      </Label>
+                      <Switch
+                        id="section-pause-after-section"
+                        checked={sectionForm.pauseAfterSection}
+                        onCheckedChange={(checked) => {
+                          updateEditingForm({ pauseAfterSection: checked });
                         }}
                       />
                     </div>

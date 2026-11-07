@@ -69,6 +69,7 @@ export default function PieceSectionsCard({
     barCount: null,
     bpm: null,
     repeatCount: 1,
+    pauseAfterSection: false,
     scoreSheetId: UNASSIGNED_SCORE_SHEET_VALUE,
     posX1: 0,
     posY1: 0,
@@ -93,6 +94,7 @@ export default function PieceSectionsCard({
       barCount: section.barCount,
       bpm: section.bpm,
       repeatCount: section.repeatCount,
+      pauseAfterSection: section.pauseAfterSection,
       scoreSheetId: section.scoreSheetId ?? null,
       posX1: section.posX1,
       posY1: section.posY1,
@@ -192,6 +194,7 @@ export default function PieceSectionsCard({
         barCount: sectionForm.barCount ?? 0,
         bpm: sectionForm.bpm ?? 120,
         repeatCount: sectionForm.repeatCount ?? 1,
+        pauseAfterSection: sectionForm.pauseAfterSection,
         scoreSheetId:
           sectionForm.scoreSheetId === UNASSIGNED_SCORE_SHEET_VALUE
             ? ""
@@ -295,6 +298,7 @@ export default function PieceSectionsCard({
                     barCount: section.barCount,
                     bpm: section.bpm,
                     repeatCount: section.repeatCount,
+                    pauseAfterSection: section.pauseAfterSection,
                     scoreSheetId:
                       section.scoreSheetId ?? UNASSIGNED_SCORE_SHEET_VALUE,
                     posX1: section.posX1,
