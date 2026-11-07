@@ -6,6 +6,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   EyeIcon,
+  HighlighterIcon,
   Maximize2Icon,
   MetronomeIcon,
   Minimize2Icon,
@@ -66,6 +67,12 @@ export default function PlayerPlaybackControls({
 }: Readonly<PlayerPlaybackControlsProps>) {
   const showMetronome = useMainStore((s) => s.showMetronome);
   const setShowMetronome = useMainStore((s) => s.setShowMetronome);
+  const sectionHighlightingEnabled = useMainStore(
+    (s) => s.sectionHighlightingEnabled,
+  );
+  const setSectionHighlightingEnabled = useMainStore(
+    (s) => s.setSectionHighlightingEnabled,
+  );
   const lastSection = sections.at(-1);
 
   let sectionPositionText = "No sections available!";
@@ -265,6 +272,20 @@ export default function PlayerPlaybackControls({
                   id="display-show-metronome"
                   checked={showMetronome}
                   onCheckedChange={setShowMetronome}
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <Label
+                  className="text-sm font-medium flex items-center gap-2"
+                  htmlFor="display-section-highlighting"
+                >
+                  <HighlighterIcon size="1rem" /> Highlight current section
+                </Label>
+                <Switch
+                  id="display-section-highlighting"
+                  checked={sectionHighlightingEnabled}
+                  onCheckedChange={setSectionHighlightingEnabled}
                 />
               </div>
             </div>

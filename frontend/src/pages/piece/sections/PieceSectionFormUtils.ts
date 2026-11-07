@@ -13,6 +13,7 @@ export interface SectionFormState {
   barCount: number | null;
   bpm: number | null;
   repeatCount: number | null;
+  pauseAfterSection: boolean;
   scoreSheetId: string;
   posX1: number;
   posY1: number;
@@ -45,6 +46,7 @@ export function buildSectionPayloadFromForm(
     bpm: form.bpm,
     repeatCount:
       form.repeatCount && form.repeatCount >= 1 ? form.repeatCount : 1,
+    pauseAfterSection: form.pauseAfterSection,
     scoreSheetId:
       form.scoreSheetId === UNASSIGNED_SCORE_SHEET_VALUE
         ? null

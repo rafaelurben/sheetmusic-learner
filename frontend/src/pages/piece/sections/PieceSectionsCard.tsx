@@ -69,6 +69,7 @@ export default function PieceSectionsCard({
     barCount: null,
     bpm: null,
     repeatCount: 1,
+    pauseAfterSection: false,
     scoreSheetId: UNASSIGNED_SCORE_SHEET_VALUE,
     posX1: 0,
     posY1: 0,
@@ -78,6 +79,28 @@ export default function PieceSectionsCard({
 
   const publishSectionAdd = (payload: PieceSectionAddRequestDto) => {
     stompPublishingService.pieceSectionAdd(piece.id, payload);
+  };
+
+  const handleDuplicateSection = (section: SectionDto) => {
+    setEditingSectionId(null);
+    setSectionForm(null);
+    setIsCreating(false);
+
+    publishSectionAdd({
+      position: section.position + 1,
+      name: `${section.name} copy`,
+      timeSignatureNumerator: section.timeSignatureNumerator,
+      timeSignatureDenominator: section.timeSignatureDenominator,
+      barCount: section.barCount,
+      bpm: section.bpm,
+      repeatCount: section.repeatCount,
+      pauseAfterSection: section.pauseAfterSection,
+      scoreSheetId: section.scoreSheetId ?? null,
+      posX1: section.posX1,
+      posY1: section.posY1,
+      posX2: section.posX2,
+      posY2: section.posY2,
+    });
   };
 
   const publishSectionUpdate = (
@@ -171,6 +194,7 @@ export default function PieceSectionsCard({
         barCount: sectionForm.barCount ?? 0,
         bpm: sectionForm.bpm ?? 120,
         repeatCount: sectionForm.repeatCount ?? 1,
+        pauseAfterSection: sectionForm.pauseAfterSection,
         scoreSheetId:
           sectionForm.scoreSheetId === UNASSIGNED_SCORE_SHEET_VALUE
             ? ""
@@ -274,6 +298,7 @@ export default function PieceSectionsCard({
                     barCount: section.barCount,
                     bpm: section.bpm,
                     repeatCount: section.repeatCount,
+                    pauseAfterSection: section.pauseAfterSection,
                     scoreSheetId:
                       section.scoreSheetId ?? UNASSIGNED_SCORE_SHEET_VALUE,
                     posX1: section.posX1,
@@ -286,6 +311,9 @@ export default function PieceSectionsCard({
                   setEditingSectionId(null);
                   setSectionForm(null);
                   setIsCreating(false);
+                }}
+                onDuplicate={() => {
+                  handleDuplicateSection(section);
                 }}
               />
             ))}

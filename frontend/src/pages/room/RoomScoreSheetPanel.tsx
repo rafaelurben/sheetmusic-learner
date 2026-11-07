@@ -64,13 +64,18 @@ export default function RoomScoreSheetPanel({
     stompPublishingService.roomControlPlay(room.id);
   }, [room.id, canEditRoom]);
 
-  const publishPause = useCallback(() => {
-    if (!canEditRoom) {
-      return;
-    }
+  const publishPause = useCallback(
+    (sectionPosition?: number) => {
+      if (!canEditRoom) {
+        return;
+      }
 
-    stompPublishingService.roomControlPause(room.id);
-  }, [room.id, canEditRoom]);
+      stompPublishingService.roomControlPause(room.id, {
+        sectionPosition: sectionPosition ?? undefined,
+      });
+    },
+    [room.id, canEditRoom],
+  );
 
   return (
     <Player

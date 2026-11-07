@@ -299,7 +299,7 @@ Application destinations are used for sending messages from clients to the serve
 | `/app/room.{id}/update`              | Update room metadata (visibility, title, etc.) (owner action) | Room Metadata              |
 | `/app/room.{id}/change-piece`        | Change selected piece for the room (owner action)             | Piece id                   |
 | `/app/room.{id}/control/play`        | Start playback in the room (owner action)                     |                            |
-| `/app/room.{id}/control/pause`       | Pause playback in the room (owner action)                     |                            |
+| `/app/room.{id}/control/pause`       | Pause playback in the room (owner action)                     | Optional section position  |
 | `/app/room.{id}/control/position`    | Change current position / select page (owner action)          | Current position           |
 | `/app/room.{id}/control/config`      | Update playback configuration while paused (owner action)     | Tempo multiplier, count in |
 | `/app/room.{id}/chat`                | Send a chat message to a room                                 | Message                    |

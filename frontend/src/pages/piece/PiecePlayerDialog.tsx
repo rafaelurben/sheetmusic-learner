@@ -46,10 +46,12 @@ export default function PiecePlayerDialog({
     }));
   };
 
-  const handlePause = () => {
+  const handlePause = (sectionPosition?: number) => {
     setPlaybackState((currentState) => ({
       ...currentState,
       playing: false,
+      lastPlaySectionPosition:
+        sectionPosition ?? currentState.lastPlaySectionPosition,
     }));
   };
 

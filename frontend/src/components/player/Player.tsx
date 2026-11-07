@@ -24,7 +24,7 @@ interface PlayerProps {
   showControls: boolean;
   allowFullScreen: boolean;
   onPlay: () => void;
-  onPause: () => void;
+  onPause: (sectionPosition?: number) => void;
   onTempoMultiplierChange: (nextTempoMultiplier: number) => void;
   onCountInChange: (nextCountIn: boolean) => void;
   onSectionChange: (nextSectionPosition: number) => void;
@@ -53,6 +53,10 @@ export default function Player({
   const currentSection = sortedSections.find(
     (section) => section.position === currentSectionPosition,
   );
+
+  const handleManualPause = () => {
+    onPause(currentSectionPosition);
+  };
 
   const handleToggleFullscreen = () => {
     if (!allowFullScreen) return;
@@ -101,23 +105,6 @@ export default function Player({
           sectionPlaybackState={sectionStateOverride}
         />
 
-        <PlayerPlaybackControls
-          sections={sortedSections}
-          currentSection={currentSection}
-          playing={playbackState.playing}
-          readonly={!showControls}
-          tempoMultiplier={playbackState.tempoMultiplier}
-          countIn={playbackState.countIn}
-          onPlay={onPlay}
-          onPause={onPause}
-          onTempoMultiplierChange={onTempoMultiplierChange}
-          onCountInChange={onCountInChange}
-          onSectionChange={onSectionChange}
-          onFullscreenToggle={handleToggleFullscreen}
-          isFullScreen={isFullScreen}
-          allowFullScreen={allowFullScreen}
-        />
-
         <PlayerMetronome
           playing={playbackState.playing}
           lastPlayTimestamp={playbackState.lastPlayTimestamp}
@@ -127,6 +114,23 @@ export default function Player({
           sortedSections={sortedSections}
           onSectionStateChange={setSectionStateOverride}
           onPlaybackEnded={onPause}
+        />
+
+        <PlayerPlaybackControls
+          sections={sortedSections}
+          currentSection={currentSection}
+          playing={playbackState.playing}
+          readonly={!showControls}
+          tempoMultiplier={playbackState.tempoMultiplier}
+          countIn={playbackState.countIn}
+          onPlay={onPlay}
+          onPause={handleManualPause}
+          onTempoMultiplierChange={onTempoMultiplierChange}
+          onCountInChange={onCountInChange}
+          onSectionChange={onSectionChange}
+          onFullscreenToggle={handleToggleFullscreen}
+          isFullScreen={isFullScreen}
+          allowFullScreen={allowFullScreen}
         />
       </CardContent>
     </Card>

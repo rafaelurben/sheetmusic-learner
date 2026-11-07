@@ -61,6 +61,7 @@ entity "Section" as section {
   bar_count: number
   bpm: number
   repeat_count: number
+  pause_after_section: boolean
   pos_x1: float
   pos_y1: float
   pos_x2: float

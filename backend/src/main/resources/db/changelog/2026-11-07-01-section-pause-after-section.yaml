@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20261107-01-add-section-pause-after-section
+      author: Rafael Urben
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            tableName: sections
+            columns:
+              - column:
+                  name: pause_after_section
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+        - addColumn:
+            tableName: sections_aud
+            columns:
+              - column:
+                  name: pause_after_section
+                  type: BOOLEAN
+                  defaultValueBoolean: false

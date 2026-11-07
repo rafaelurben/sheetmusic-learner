@@ -9,6 +9,7 @@ import {
   calculateSectionTimings,
   convertSectionToMetronomePlaylist,
   createCountInMetronomePlaylist,
+  getPlaybackSections,
 } from "@/service/metronomeUtils.ts";
 import type { PlayerPlaylistItem } from "@/interfaces/player/playerPlaylistItem.ts";
 import type { PlayerSectionState } from "@/interfaces/player/playerSectionState.ts";
@@ -23,7 +24,7 @@ interface PlayerMetronomeProps {
   countIn: boolean;
   sortedSections: SectionDto[];
   onSectionStateChange: (override: PlayerSectionState | null) => void;
-  onPlaybackEnded: () => void;
+  onPlaybackEnded: (nextSectionPosition?: number) => void;
 }
 
 const AUDIO_CONTEXT_INIT_TOAST_ID = "room-audio-context-init";
@@ -113,7 +114,10 @@ export default function PlayerMetronome({
     const playTimestamp = lastPlayTimestamp
       ? new Date(lastPlayTimestamp)
       : new Date();
-    const playbackSections = sortedSections.slice(lastPlaySectionPosition ?? 0);
+    const { playbackSections } = getPlaybackSections(
+      sortedSections,
+      lastPlaySectionPosition,
+    );
     if (playbackSections.length === 0) {
       return;
     }
@@ -160,7 +164,10 @@ export default function PlayerMetronome({
     const playTimestamp = lastPlayTimestamp
       ? new Date(lastPlayTimestamp)
       : new Date();
-    const playbackSections = sortedSections.slice(lastPlaySectionPosition ?? 0);
+    const { playbackSections, nextSectionPosition } = getPlaybackSections(
+      sortedSections,
+      lastPlaySectionPosition,
+    );
     if (playbackSections.length === 0) {
       return;
     }
@@ -221,7 +228,7 @@ export default function PlayerMetronome({
     timeoutHandles.push(
       setTimeout(
         () => {
-          onPlaybackEnded();
+          onPlaybackEnded(nextSectionPosition);
         },
         globalOffsetMs +
           timings
@@ -266,7 +273,10 @@ export default function PlayerMetronome({
     const playTimestamp = lastPlayTimestamp
       ? new Date(lastPlayTimestamp)
       : new Date();
-    const playbackSections = sortedSections.slice(lastPlaySectionPosition ?? 0);
+    const { playbackSections } = getPlaybackSections(
+      sortedSections,
+      lastPlaySectionPosition,
+    );
     if (playbackSections.length === 0) {
       return;
     }
@@ -410,11 +420,15 @@ export default function PlayerMetronome({
     if (matchedSection) {
       displaySection = matchedSection;
     }
-  } else if (
-    typeof lastPlaySectionPosition === "number" &&
-    sortedSections[lastPlaySectionPosition]
-  ) {
-    displaySection = sortedSections[lastPlaySectionPosition];
+  } else if (typeof lastPlaySectionPosition === "number") {
+    const matchedSection = sortedSections.find(
+      (s) => s.position === lastPlaySectionPosition,
+    );
+    if (matchedSection) {
+      displaySection = matchedSection;
+    } else if (sortedSections[lastPlaySectionPosition]) {
+      displaySection = sortedSections[lastPlaySectionPosition];
+    }
   }
 
   const effectiveBpm = Math.round(displaySection.bpm * tempoMultiplier);
