@@ -35,11 +35,13 @@ class StompService {
       "StompService: Connecting with token:",
       token.substring(0, 20) + "...",
     );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-class-instance-assignment
     this.client = new Client({
       brokerURL:
         (globalThis.location.protocol === "https:" ? "wss://" : "ws://") +
         globalThis.location.host +
         "/ws",
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-class-instance-assignment
       connectHeaders: {
         Authorization: `Bearer ${token}`,
       },
