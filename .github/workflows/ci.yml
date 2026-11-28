@@ -175,7 +175,7 @@ jobs:
          needs.build-backend.result == 'skipped' &&
          needs.build-frontend.result == 'skipped')
       )
-    uses: rafaelurben/cloud-deployments/.github/workflows/release.yml@main
+    uses: rafaelurben/cloud-deployments/.github/workflows/release.yml@ec8441358a97be0d8496b48af4ad79c0181255df # main
     with:
       project-name: sheetmusic-learner
       registry-host: ${{ vars.CI_REGISTRY }}
